@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .success { color: green; padding: 10px; background: #e8f5e8; }
+        .info { margin: 20px 0; padding: 15px; background: #e3f2fd; }
+    </style>
+</head>
+<body>
+<h1>Simple Dashboard</h1>
+
+<div class="success" th:if="${param.login}">
+    ✅ Login successful! You are now in the dashboard.
+</div>
+
+<div class="info">
+    <h3>Welcome to the Customer Consultant Dashboard!</h3>
+    <p>This is a simple test page to verify login is working.</p>
+</div>
+
+<div>
+    <h4>Session Information:</h4>
+    <p>User ID: <span th:text="${session.userId}">N/A</span></p>
+    <p>User Role: <span th:text="${session.userRole}">N/A</span></p>
+    <p>User Name: <span th:text="${session.userName}">N/A</span></p>
+</div>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/logout}" style="color: blue; text-decoration: underline;">Logout</a> |
+    <a th:href="@{/consultant/dashboard}" style="color: blue; text-decoration: underline;">Full Dashboard</a> |
+    <a th:href="@{/debug/session}" style="color: blue; text-decoration: underline;">Debug Session</a>
+</div>
+</body>
+</html>

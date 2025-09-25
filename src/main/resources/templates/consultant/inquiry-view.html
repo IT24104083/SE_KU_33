@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Inquiry Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${pageTitle}">Inquiry Details</h1>
+
+    <!-- Error message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}">Error message</span>
+    </div>
+
+    <!-- Inquiry Details -->
+    <div th:if="${inquiry != null}" class="card">
+        <h2>Inquiry Information</h2>
+        <table class="table">
+            <tr>
+                <th>Inquiry ID</th>
+                <td th:text="${inquiry.inquiryID}"></td>
+            </tr>
+            <tr>
+                <th>Event Type</th>
+                <td th:text="${inquiry.eventType}"></td>
+            </tr>
+            <tr>
+                <th>Proposed Date</th>
+                <td th:text="${inquiry.proposedDate}"></td>
+            </tr>
+            <tr>
+                <th>Number of Guests</th>
+                <td th:text="${inquiry.guestCount}"></td>
+            </tr>
+            <tr>
+                <th>Budget (LKR)</th>
+                <td th:text="${inquiry.budget}"></td>
+            </tr>
+            <tr>
+                <th>Services Required</th>
+                <td>
+                    <span th:if="${inquiry.photographer}">Photographer, </span>
+                    <span th:if="${inquiry.catering}">Catering, </span>
+                    <span th:if="${inquiry.dj}">DJ Services, </span>
+                    <span th:if="${inquiry.decorations}">Decorations</span>
+                    <span th:if="${!inquiry.photographer and !inquiry.catering and !inquiry.dj and !inquiry.decorations}">
+                        None
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Special Requests</th>
+                <td th:text="${inquiry.specialRequests} ?: 'None'"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${inquiry.status}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Customer Details -->
+    <div th:if="${customer != null}" class="card">
+        <h2>Customer Information</h2>
+        <table class="table">
+            <tr>
+                <th>Customer ID</th>
+                <td th:text="${customer.customerID}"></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td th:text="${customer.customerName}"></td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td th:text="${customer.phone} ?: 'Not provided'"></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td th:text="${customer.email} ?: 'Not provided'"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+        <a th:href="@{/consultant/inquiries}" class="btn btn-secondary">Back to Inquiries</a>
+    </div>
+</div>
+</body>
+</html>

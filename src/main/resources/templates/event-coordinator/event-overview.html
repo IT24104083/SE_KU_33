@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Overview - Event Coordinator</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
+  <style>
+    .overview-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .overview-card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .overview-card h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 1.2em;
+    }
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #007bff;
+      margin: 10px 0;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn-large {
+      padding: 15px 25px;
+      font-size: 1.1em;
+      min-width: 200px;
+    }
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>
+    Event #<span th:text="${event.EventID}"></span> Overview
+    <span class="status-badge" th:class="${event.Status == 'Pending' ? 'status-pending' : 'status-confirmed'}"
+          th:text="${event.Status}"></span>
+  </h1>
+
+  <!-- Navigation -->
+  <div style="margin-bottom: 20px;">
+    <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">← Dashboard</a>
+    <a th:href="@{/event-coordinator/events/needing-assignments}" class="btn btn-primary">All Assignments</a>
+  </div>
+
+  <!-- Flash Messages -->
+  <div th:if="${success}" class="alert alert-success">
+    <span th:text="${success}"></span>
+  </div>
+  <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- Event Details -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Event Details</h2>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <p><strong>Event Type:</strong> <span th:text="${event.EventType}"></span></p>
+          <p><strong>Event Date:</strong> <span th:text="${event.EventDate}"></span></p>
+          <p><strong>Status:</strong> <span th:text="${event.Status}"></span></p>
+        </div>
+        <div class="col">
+          <p><strong>Customer:</strong> <span th:text="${event.Customer_Name}"></span></p>
+          <p><strong>Email:</strong> <span th:text="${event.Email}"></span></p>
+          <p><strong>Phone:</strong> <span th:text="${event.Phone} ?: 'Not provided'"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overview Cards -->
+  <div class="overview-cards">
+    <!-- Venue Card -->
+    <div class="overview-card">
+      <h3>Venue</h3>
+      <div th:if="${venueAssigned}" class="stat-number" style="color: #28a745;">✓</div>
+      <div th:unless="${venueAssigned}" class="stat-number" style="color: #dc3545;">✗</div>
+      <p th:text="${venueAssigned ? 'Venue Assigned' : 'No Venue Assigned'}"></p>
+      <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}"
+         class="btn btn-primary btn-large">
+        Manage Venue
+      </a>
+    </div>
+
+    <!-- Vendors Card -->
+    <div class="overview-card">
+      <h3>Vendors</h3>
+      <div class="stat-number" th:text="${assignedVendorsCount}">0</div>
+      <p>Services Assigned</p>
+      <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
+         class="btn btn-primary btn-large">
+        Manage Vendors
+      </a>
+    </div>
+
+    <!-- Services Card -->
+    <div class="overview-card">
+      <h3>Requested Services</h3>
+      <div class="stat-number" th:text="${(inquiry.Photographer ? 1 : 0) + (inquiry.Catering ? 1 : 0) + (inquiry.DJ ? 1 : 0) + (inquiry.Decorations ? 1 : 0)}">0</div>
+      <p>Services Requested</p>
+      <div style="margin-top: 15px;">
+        <span th:if="${inquiry.Photographer}" class="service-badge">Photographer</span>
+        <span th:if="${inquiry.Catering}" class="service-badge">Catering</span>
+        <span th:if="${inquiry.DJ}" class="service-badge">DJ</span>
+        <span th:if="${inquiry.Decorations}" class="service-badge">Decorations</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Quick Actions</h2>
+    </div>
+    <div class="card-body">
+      <div class="action-buttons">
+        <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}"
+           class="btn btn-primary btn-large">
+          📍 Manage Venue
+        </a>
+        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
+           class="btn btn-primary btn-large">
+          👥 Manage Vendors
+        </a>
+        <form th:action="@{/event-coordinator/events/confirm-event}" method="post" style="display: inline;">
+          <input type="hidden" name="eventId" th:value="${event.EventID}">
+          <button type="submit" class="btn btn-success btn-large"
+                  th:disabled="${event.Status == 'Confirmed'}"
+                  onclick="return confirm('Are you sure you want to confirm this event? This will finalize all assignments.')">
+            ✅ Confirm Event
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assigned Vendors Preview -->
+  <div th:if="${assignedVendors != null and !assignedVendors.empty}" class="card">
+    <div class="card-header">
+      <h2>Currently Assigned Vendors</h2>
+    </div>
+    <div class="card-body">
+      <div class="vendor-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div th:each="vendor : ${assignedVendors}" class="vendor-card">
+          <h4 th:text="${vendor.ServiceType}"></h4>
+          <p><strong>Vendor:</strong> <span th:text="${vendor.VendorName}"></span></p>
+          <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
+          <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

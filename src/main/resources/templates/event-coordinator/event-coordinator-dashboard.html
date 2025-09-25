@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Coordinator Dashboard</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container">
+  <h1>Event Coordinator Dashboard</h1>
+
+  <div class="dashboard-nav">
+    <a th:href="@{/event-coordinator/dashboard}" class="nav-item active">Dashboard Home</a>
+    <a th:href="@{/event-coordinator/events/needing-assignments}" class="nav-item">Events Needing Assignments</a>
+    <a th:href="@{/logout}" class="nav-item logout-btn">Logout</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success">
+    <span th:text="${success}"></span>
+  </div>
+  <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <h3 th:text="${pendingInquiriesCount != null ? pendingInquiriesCount : 0}">0</h3>
+      <p>Pending Inquiries</p>
+    </div>
+    <div class="stat-box">
+      <h3 th:text="${pendingEventsCount != null ? pendingEventsCount : 0}">0</h3>
+      <p>Pending Events</p>
+    </div>
+    <div class="stat-box">
+      <h3 th:text="${confirmedEventsCount != null ? confirmedEventsCount : 0}">0</h3>
+      <p>Confirmed Events</p>
+    </div>
+    <div class="stat-box">
+      <h3 th:text="${rejectedCount != null ? rejectedCount : 0}">0</h3>
+      <p>Rejected Inquiries</p>
+    </div>
+  </div>
+
+  <div class="card quick-actions-card">
+    <div class="card-header">
+      <h3>Quick Actions</h3>
+    </div>
+    <div class="card-body">
+      <a th:href="@{/event-coordinator/events/needing-assignments}" class="btn btn-primary">
+        Manage Vendor Assignments
+      </a>
+      <a th:href="@{#pending-inquiries}" class="btn btn-secondary">
+        View Pending Inquiries
+      </a>
+    </div>
+  </div>
+
+  <div id="pending-inquiries" th:if="${pendingInquiries != null and !pendingInquiries.empty}" class="card">
+    <div class="card-header">
+      <h2>Pending Inquiries</h2>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Event Type</th>
+          <th>Proposed Date</th>
+          <th>Guests</th>
+          <th>Budget (LKR)</th>
+          <th>Customer ID</th>
+          <th>Services Required</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="inquiry : ${pendingInquiries}">
+          <td th:text="${inquiry.inquiryID}"></td>
+          <td th:text="${inquiry.eventType}"></td>
+          <td th:text="${inquiry.proposedDate}"></td>
+          <td th:text="${inquiry.guestCount}"></td>
+          <td th:text="${inquiry.budget != null ? inquiry.budget : 'Not specified'}"></td>
+          <td th:text="${inquiry.customerID}"></td>
+          <td>
+            <span th:if="${inquiry.photographer}" class="service-badge">Photographer</span>
+            <span th:if="${inquiry.catering}" class="service-badge">Catering</span>
+            <span th:if="${inquiry.dj}" class="service-badge">DJ</span>
+            <span th:if="${inquiry.decorations}" class="service-badge">Decorations</span>
+            <span th:if="${!(inquiry.photographer or inquiry.catering or inquiry.dj or inquiry.decorations)}">
+              None
+            </span>
+          </td>
+          <td>
+            <a th:href="@{/event-coordinator/inquiries/view/{id}(id=${inquiry.inquiryID})}"
+               class="btn btn-sm btn-info">View & Process</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="pending-events" th:if="${pendingEvents != null and !pendingEvents.empty}" class="card">
+    <div class="card-header">
+      <h2>Created Events With Pending Status</h2>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Event ID</th>
+          <th>Event Type</th>
+          <th>Event Date</th>
+          <th>Customer Name</th>
+          <th>Status</th>
+          <th>Inquiry ID</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${pendingEvents}">
+          <td th:text="${event.EventID}"></td>
+          <td th:text="${event.EventType}"></td>
+          <td th:text="${event.EventDate}"></td>
+          <td th:text="${event.Customer_Name}"></td>
+          <td>
+            <span class="status-pending" th:text="${event.Status}"></span>
+          </td>
+          <td th:text="${event.InquiryID}"></td>
+          <td>
+            <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
+               class="btn btn-sm btn-primary">Manage</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="confirmed-events" th:if="${confirmedEvents != null and !confirmedEvents.empty}" class="card">
+    <div class="card-header">
+      <h2>Created Events With Confirmed Status</h2>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Event ID</th>
+          <th>Event Type</th>
+          <th>Event Date</th>
+          <th>Customer Name</th>
+          <th>Status</th>
+          <th>Inquiry ID</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${confirmedEvents}">
+          <td th:text="${event.EventID}"></td>
+          <td th:text="${event.EventType}"></td>
+          <td th:text="${event.Customer_Name}"></td>
+          <td>
+            <span class="status-confirmed" th:text="${event.Status}"></span>
+          </td>
+          <td th:text="${event.InquiryID}"></td>
+          <td>
+            <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
+               class="btn btn-sm btn-primary">View</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div th:if="${rejectedInquiries != null and !rejectedInquiries.empty}" class="card">
+    <div class="card-header">
+      <h2>Rejected Inquiries</h2>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Inquiry ID</th>
+          <th>Event Type</th>
+          <th>Proposed Date</th>
+          <th>Customer Name</th>
+          <th>Budget (LKR)</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="inquiry : ${rejectedInquiries}">
+          <td th:text="${inquiry.InquiryID}"></td>
+          <td th:text="${inquiry.EventType}"></td>
+          <td th:text="${inquiry.ProposedDate}"></td>
+          <td th:text="${inquiry.Customer_Name}"></td>
+          <td th:text="${inquiry.Budget != null ? inquiry.Budget : 'Not specified'}"></td>
+          <td th:text="${inquiry.Status}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div th:if="${(pendingInquiries == null or pendingInquiries.empty) and
+                 (pendingEvents == null or pendingEvents.empty) and
+                 (confirmedEvents == null or confirmedEvents.empty) and
+                 (rejectedInquiries == null or rejectedInquiries.empty)}"
+       class="alert alert-info">
+    <p>No data available. Check back later for new inquiries.</p>
+  </div>
+</div>
+</body>
+</html>

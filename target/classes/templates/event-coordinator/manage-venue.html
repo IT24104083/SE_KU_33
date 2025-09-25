@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Venue - Event Coordinator</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container venue-container">
+    <h1>Manage Venue for Event #<span th:text="${event.EventID}"></span></h1>
+
+    <div class="dashboard-nav">
+        <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="nav-item btn-secondary">← Back to Overview</a>
+        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="nav-item btn-primary">Manage Vendors</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="card filter-section">
+        <div class="card-header">
+            <h3>Filter Venues</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" method="get">
+                <input type="hidden" name="id" th:value="${event.EventID}">
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Sort by Price:</label>
+                        <div>
+                            <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID}, sort='min-max')}"
+                               class="btn btn-sm"
+                               th:class="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
+                                Min to Max
+                            </a>
+                            <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID}, sort='max-min')}"
+                               class="btn btn-sm"
+                               th:class="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
+                                Max to Min
+                            </a>
+                            <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}"
+                               class="btn btn-sm btn-secondary">
+                                Clear Sort
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Price Range:</label>
+                        <div class="price-inputs">
+                            <input type="number" name="minPrice" th:value="${currentMinPrice}" placeholder="Min price" class="form-control price-input" step="0.01" min="0">
+                            <input type="number" name="maxPrice" th:value="${currentMaxPrice}" placeholder="Max price" class="form-control price-input" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="btn btn-secondary">Clear All</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${venueAssigned}" class="card assigned-item">
+        <div class="card-header">
+            <h2>Currently Assigned Venue</h2>
+        </div>
+        <div class="card-body">
+            <div class="venue-details">
+                <p><strong>Name:</strong> <span th:text="${currentVenue.Name}"></span></p>
+                <p><strong>Location:</strong> <span th:text="${currentVenue.Location}"></span></p>
+                <p><strong>Capacity:</strong> <span th:text="${currentVenue.Capacity}"></span> guests</p>
+                <p><strong>Cost:</strong> LKR <span th:text="${#numbers.formatDecimal(currentVenue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></p>
+            </div>
+            <form th:action="@{/event-coordinator/events/remove-venue}" method="post" style="margin-top: 15px;">
+                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want to remove this venue?')">
+                    Remove Venue
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div th:unless="${venueAssigned}" class="alert alert-info">
+        <h3>No Venue Assigned</h3>
+        <p>Please select a venue from the available options below.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Available Venues <span th:if="${availableVenues != null}" class="badge bg-secondary" th:text="${availableVenues.size()}"></span></h2>
+        </div>
+        <div class="card-body">
+            <div class="venue-grid">
+                <div th:each="venue : ${availableVenues}" class="venue-card">
+                    <h3 th:text="${venue.Name}"></h3>
+                    <p><strong>Location:</strong> <span th:text="${venue.Location}"></span></p>
+                    <p><strong>Capacity:</strong> <span th:text="${venue.Capacity}"></span> guests</p>
+                    <p><strong>Cost:</strong> LKR <span th:text="${#numbers.formatDecimal(venue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></p>
+                    <p><strong>Status:</strong> <span class="status-badge status-available" th:text="${venue.Availability}"></span></p>
+                    <form th:action="@{/event-coordinator/events/assign-venue}" method="post">
+                        <input type="hidden" name="eventId" th:value="${event.EventID}">
+                        <input type="hidden" name="venueId" th:value="${venue.VenueID}">
+                        <button type="submit" class="btn btn-success">Assign This Venue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${availableVenues != null and availableVenues.empty}" class="alert alert-warning">
+        <p>No available venues match your filters. Please try different filter criteria.</p>
+    </div>
+</div>
+</body>
+</html>

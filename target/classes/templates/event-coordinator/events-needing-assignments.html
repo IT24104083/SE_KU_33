@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Events Needing Assignments</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <style>
+        .event-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .service-indicator {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 4px;
+            font-weight: 500;
+        }
+        .service-needed {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .service-assigned {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .service-not-requested {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+        .priority-high {
+            border-left: 4px solid #dc3545;
+        }
+        .priority-medium {
+            border-left: 4px solid #ffc107;
+        }
+        .priority-low {
+            border-left: 4px solid #28a745;
+        }
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .event-info {
+            flex: 1;
+        }
+        .event-actions {
+            margin-left: 20px;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .service-item {
+            padding: 10px;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        .service-status {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .urgent-badge {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .total-events {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="stats-header">
+        <h1>Events Needing Assignments</h1>
+        <div class="total-events">
+            Total Events: <span th:text="${events != null ? events.size() : 0}">0</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="margin-bottom: 20px;">
+        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+        <a th:href="@{/event-coordinator/events/needing-assignments}" class="btn btn-primary">Refresh</a>
+    </div>
+
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Events List -->
+    <div th:if="${events != null and !events.empty}">
+        <div th:each="event : ${events}" class="event-card"
+             th:class="${event.NeededServices > 2 ? 'priority-high' :
+                       event.NeededServices > 0 ? 'priority-medium' :
+                       'priority-low'}">
+
+            <div class="event-header">
+                <div class="event-info">
+                    <h3>
+                        Event #<span th:text="${event.EventID}"></span> -
+                        <span th:text="${event.EventType}"></span>
+                        <span th:if="${event.NeededServices > 2}" class="urgent-badge">URGENT</span>
+                    </h3>
+                    <p><strong>Date:</strong> <span th:text="${event.EventDate}"></span></p>
+                    <p><strong>Customer:</strong> <span th:text="${event.Customer_Name}"></span></p>
+                    <p><strong>Services Needed:</strong>
+                        <span th:text="${event.NeededServices}">0</span> out of
+                        <span th:text="${(event.Photographer ? 1 : 0) + (event.Catering ? 1 : 0) + (event.DJ ? 1 : 0) + (event.Decorations ? 1 : 0)}">0</span>
+                    </p>
+                </div>
+
+                <div class="event-actions">
+                    <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
+                       class="btn btn-primary">
+                        Manage Assignments
+                    </a>
+                </div>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="services-grid">
+                <!-- Photographer -->
+                <div class="service-item">
+                    <strong>Photographer</strong>
+                    <div class="service-status">
+                        <span th:if="${event.Photographer}">
+                            <span th:if="${event.PhotographerAssigned}" class="service-indicator service-assigned">
+                                ✓ Assigned
+                            </span>
+                            <span th:unless="${event.PhotographerAssigned}" class="service-indicator service-needed">
+                                ⚡ Needed
+                            </span>
+                        </span>
+                        <span th:unless="${event.Photographer}" class="service-indicator service-not-requested">
+                            Not Requested
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Catering -->
+                <div class="service-item">
+                    <strong>Catering</strong>
+                    <div class="service-status">
+                        <span th:if="${event.Catering}">
+                            <span th:if="${event.CatererAssigned}" class="service-indicator service-assigned">
+                                ✓ Assigned
+                            </span>
+                            <span th:unless="${event.CatererAssigned}" class="service-indicator service-needed">
+                                ⚡ Needed
+                            </span>
+                        </span>
+                        <span th:unless="${event.Catering}" class="service-indicator service-not-requested">
+                            Not Requested
+                        </span>
+                    </div>
+                </div>
+
+                <!-- DJ -->
+                <div class="service-item">
+                    <strong>DJ</strong>
+                    <div class="service-status">
+                        <span th:if="${event.DJ}">
+                            <span th:if="${event.DJAssigned}" class="service-indicator service-assigned">
+                                ✓ Assigned
+                            </span>
+                            <span th:unless="${event.DJAssigned}" class="service-indicator service-needed">
+                                ⚡ Needed
+                            </span>
+                        </span>
+                        <span th:unless="${event.DJ}" class="service-indicator service-not-requested">
+                            Not Requested
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Decorations -->
+                <div class="service-item">
+                    <strong>Decorations</strong>
+                    <div class="service-status">
+                        <span th:if="${event.Decorations}">
+                            <span th:if="${event.DecoratorAssigned}" class="service-indicator service-assigned">
+                                ✓ Assigned
+                            </span>
+                            <span th:unless="${event.DecoratorAssigned}" class="service-indicator service-needed">
+                                ⚡ Needed
+                            </span>
+                        </span>
+                        <span th:unless="${event.Decorations}" class="service-indicator service-not-requested">
+                            Not Requested
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Status -->
+            <div style="margin-top: 15px; padding: 10px; background: #e9ecef; border-radius: 4px;">
+                <strong>Venue:</strong>
+                <span th:if="${event.VenueID != null}" class="service-indicator service-assigned">
+                    ✓ Assigned
+                </span>
+                <span th:if="${event.VenueID == null}" class="service-indicator service-needed">
+                    ⚡ Needed
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Events Message -->
+    <div th:if="${events == null or events.empty}" class="alert alert-info">
+        <div style="text-align: center; padding: 30px;">
+            <h3>🎉 All Caught Up!</h3>
+            <p>No events currently need vendor assignments. All events are fully assigned!</p>
+            <p>Check back later for new events or review completed events.</p>
+            <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div th:if="${events != null and !events.empty}" class="card" style="margin-top: 30px;">
+        <div class="card-header">
+            <h3>Assignment Summary</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <strong>Total Events:</strong> <span th:text="${events.size()}">0</span>
+                </div>
+                <div class="col">
+                    <strong>Urgent Events:</strong>
+                    <span th:text="${#lists.stream(events).filter(e -> e.NeededServices > 2).count()}">0</span>
+                </div>
+                <div class="col">
+                    <strong>Medium Priority:</strong>
+                    <span th:text="${#lists.stream(events).filter(e -> e.NeededServices > 0 && e.NeededServices <= 2).count()}">0</span>
+                </div>
+                <div class="col">
+                    <strong>Completed:</strong>
+                    <span th:text="${#lists.stream(events).filter(e -> e.NeededServices == 0).count()}">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #333;
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>Customer Details</h1>
+        </div>
+
+        <div th:if="${customer}">
+            <div class="detail-row">
+                <span class="detail-label">Customer ID:</span>
+                <span class="detail-value" th:text="${customer.customerID}"></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Full Name:</span>
+                <span class="detail-value" th:text="${customer.customerName}"></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value" th:text="${customer.email}"></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Phone:</span>
+                <span class="detail-value" th:text="${customer.phone != null} ? ${customer.phone} : 'Not provided'"></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Password:</span>
+                <span class="detail-value" th:text="${customer.password}"></span>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a th:href="@{/consultant/customers}" class="btn btn-secondary">← Back to Customers</a>
+            <a th:href="@{/consultant/dashboard}" class="btn btn-secondary">Dashboard</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

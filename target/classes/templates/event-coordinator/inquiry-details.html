@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Inquiry Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            border-radius: 8px 8px 0 0;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        .col {
+            flex: 1;
+            min-width: 300px;
+            padding: 10px;
+        }
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .service-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 0.9em;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-primary { background: #007bff; color: white; }
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Inquiry Details</h1>
+
+    <!-- Show warning if event already exists -->
+    <div th:if="${eventExists}" class="alert alert-warning">
+        <strong>Note:</strong> An event has already been created for this inquiry.
+    </div>
+
+    <div th:if="${inquiry}">
+        <!-- Customer Information Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Customer Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">Customer Name</div>
+                            <div class="info-value" th:text="${inquiry.Customer_Name}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value" th:text="${inquiry.Phone} ?: 'Not provided'"></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value" th:text="${inquiry.Email} ?: 'Not provided'"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Customer ID</div>
+                            <div class="info-value" th:text="${inquiry.CustomerID}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Details Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Event Details</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">Inquiry ID</div>
+                            <div class="info-value" th:text="${inquiry.InquiryID}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Event Type</div>
+                            <div class="info-value" th:text="${inquiry.EventType}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Proposed Date</div>
+                            <div class="info-value" th:text="${inquiry.ProposedDate}"></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">Guest Count</div>
+                            <div class="info-value" th:text="${inquiry.GuestCount}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Budget (LKR)</div>
+                            <div class="info-value" th:text="${inquiry.Budget} ?: 'Not specified'"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Status</div>
+                            <div class="info-value" th:text="${inquiry.Status}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Required Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Services Required</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">Photographer</div>
+                            <div class="info-value">
+                                <span th:if="${inquiry.Photographer}" class="service-badge">Required</span>
+                                <span th:unless="${inquiry.Photographer}">Not Required</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Catering</div>
+                            <div class="info-value">
+                                <span th:if="${inquiry.Catering}" class="service-badge">Required</span>
+                                <span th:unless="${inquiry.Catering}">Not Required</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-group">
+                            <div class="info-label">DJ</div>
+                            <div class="info-value">
+                                <span th:if="${inquiry.DJ}" class="service-badge">Required</span>
+                                <span th:unless="${inquiry.DJ}">Not Required</span>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Decorations</div>
+                            <div class="info-value">
+                                <span th:if="${inquiry.Decorations}" class="service-badge">Required</span>
+                                <span th:unless="${inquiry.Decorations}">Not Required</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Requests Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Special Requests & Notes</h2>
+            </div>
+            <div class="card-body">
+                <div class="info-group">
+                    <div class="info-value" style="min-height: 60px; white-space: pre-wrap;"
+                         th:text="${inquiry.SpecialRequests} ?: 'No special requests or notes provided.'">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card">
+            <div class="card-body">
+                <!-- Create Event Form - Only show if no event exists yet and status is Pending -->
+                <div th:unless="${eventExists}">
+                    <div th:if="${inquiry.Status == 'Pending'}">
+                        <h3>Process Inquiry</h3>
+                        <form th:action="@{/event-coordinator/events/create}" method="post">
+                            <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
+                            <input type="hidden" name="customerId" th:value="${inquiry.CustomerID}">
+                            <input type="hidden" name="eventType" th:value="${inquiry.EventType}">
+                            <input type="hidden" name="eventDate" th:value="${inquiry.ProposedDate}">
+
+                            <button type="submit" class="btn btn-success">
+                                ✅ Create Event & Accept Inquiry
+                            </button>
+                        </form>
+
+                        <form th:action="@{/event-coordinator/inquiries/reject}" method="post" style="margin-top: 10px;">
+                            <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to reject this inquiry? This action cannot be undone.')">
+                                ❌ Reject Inquiry
+                            </button>
+                        </form>
+                    </div>
+
+                    <div th:if="${inquiry.Status != 'Pending'}" class="alert alert-info">
+                        <p>This inquiry has already been processed. Status: <strong th:text="${inquiry.Status}"></strong></p>
+                    </div>
+                </div>
+
+                <div th:if="${eventExists}" class="alert alert-info">
+                    <p>An event has already been created for this inquiry. No further action is required.</p>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
+                        ← Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:unless="${inquiry}" class="alert alert-danger">
+        <p>Inquiry not found.</p>
+        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Session Debug</title>
+</head>
+<body>
+<h1>Session Debug Information</h1>
+
+<div>
+    <h3>Session Attributes:</h3>
+    <p>User ID: <span th:text="${userId}">N/A</span></p>
+    <p>User Role: <span th:text="${userRole}">N/A</span></p>
+    <p>User Name: <span th:text="${userName}">N/A</span></p>
+</div>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/login}">Back to Login</a> |
+    <a th:href="@{/logout}">Logout</a>
+</div>
+</body>
+</html>

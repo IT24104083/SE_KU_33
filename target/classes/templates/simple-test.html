@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Test</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Template Test Page</h1>
+        <nav>
+            <a th:href="@{/customer-consultant/dashboard}">Dashboard</a>
+            <a th:href="@{/customer-consultant/customers}">Customers</a>
+            <a th:href="@{/customer-consultant/inquiries}">Inquiries</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="test-content">
+            <h2>Thymeleaf Template Test</h2>
+            <div class="test-message" th:text="${message}">Default message</div>
+            <p class="success-message">✅ If you can see this, Thymeleaf is working correctly!</p>
+
+            <div class="test-links">
+                <a th:href="@{/customer-consultant/dashboard}" class="btn btn-primary">Go to Dashboard</a>
+                <a th:href="@{/customer-consultant/customers}" class="btn btn-secondary">View Customers</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Event Management System. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

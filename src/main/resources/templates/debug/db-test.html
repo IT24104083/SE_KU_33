@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .success { color: green; }
+        .error { color: red; }
+        table { border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Database Connection Test</h1>
+
+<p th:if="${message}" class="success" th:text="${message}"></p>
+<p th:if="${error}" class="error" th:text="${error}"></p>
+
+<div th:if="${users}">
+    <h3>Users in SystemUsers table:</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Role</th>
+            <th>Full Name</th>
+        </tr>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.UserID}"></td>
+            <td th:text="${user.Email}"></td>
+            <td th:text="${user.Password}"></td>
+            <td th:text="${user.UserRole}"></td>
+            <td th:text="${user.FullName}"></td>
+        </tr>
+    </table>
+</div>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/login}">Back to Login</a> |
+    <a th:href="@{/debug/session}">Session Debug</a>
+</div>
+</body>
+</html>

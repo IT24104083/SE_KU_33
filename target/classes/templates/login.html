@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Management System - Login</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container">
+  <h1>Event Management System</h1>
+  <h2>Login Portal</h2>
+
+  <!-- Error message -->
+  <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}">Invalid email or password!</span>
+  </div>
+
+  <!-- Logout message -->
+  <div th:if="${logout}" class="alert alert-success">
+    <span th:text="${logout}">You have been logged out successfully.</span>
+  </div>
+
+  <!-- Login form -->
+  <form th:action="@{/login}" method="post">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" th:value="${email}" required/>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required/>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+  </form>
+
+  <!-- Demo credentials -->
+  <div class="demo-credentials">
+    <p>Demo Credentials:</p>
+    <ul>
+      <li>Customer Consultant: consultant@eventmgmt.com / consultant123</li>
+      <li>Event Coordinator: eventcoord@eventmgmt.com / eventcoord123</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

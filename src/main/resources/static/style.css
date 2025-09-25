@@ -1,0 +1,381 @@
+/*
+    Futuristic Event Dashboard Styles
+    Palette: Red (#BF0000), Black (#242024), Light Gray (#DDDDDD), White (#F3F4F5)
+*/
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Added Orbitron for futuristic feel */
+    background-color: #1a1a1a; /* Darker base for a deep space/tech feel */
+    color: #F3F4F5;
+    padding: 20px;
+    background-image: radial-gradient(circle at center, #2e2e2e 0%, #1a1a1a 80%); /* Subtle gradient for depth */
+}
+
+.container {
+    max-width: 1300px; /* Slightly wider for more digital real estate */
+    margin: 0 auto;
+    padding: 30px;
+    background: linear-gradient(145deg, rgba(36, 32, 36, 0.95), rgba(26, 26, 26, 0.95)); /* Semi-transparent, angular feel */
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7), 0 0 15px #BF0000; /* Deep shadow with a red glow */
+    border: 1px solid rgba(191, 0, 0, 0.3); /* Subtle red border */
+}
+
+h1 {
+    color: #F3F4F5;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.8em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px rgba(191, 0, 0, 0.6); /* Red glow for title */
+}
+
+/* Dashboard Navigation */
+.dashboard-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.dashboard-nav a {
+    padding: 15px 25px;
+    text-decoration: none;
+    background-color: #3d3d3d;
+    color: #DDDDDD;
+    border-radius: 10px;
+    transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid #4a4a4a;
+}
+
+.dashboard-nav a:hover,
+.dashboard-nav a.active {
+    background-color: #BF0000;
+    color: white;
+    box-shadow: 0 0 15px rgba(191, 0, 0, 0.8); /* Stronger glow on hover/active */
+    border-color: #BF0000;
+}
+
+.logout-btn {
+    background-color: #555;
+    border-color: #6c757d;
+}
+
+.logout-btn:hover {
+    background-color: #6c757d;
+    box-shadow: 0 0 10px rgba(108, 117, 125, 0.6);
+}
+
+/* Stats section */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-box {
+    background: #2e2e2e;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4), inset 0 0 5px rgba(191, 0, 0, 0.2); /* Inner glow */
+    border: 1px solid #4a4a4a;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px #E30220; /* Lift and stronger red glow */
+}
+
+.stat-box h3 {
+    margin: 0;
+    font-size: 3em;
+    color: #BF0000;
+    text-shadow: 0 0 8px rgba(191, 0, 0, 0.7); /* Numerical glow */
+}
+
+.stat-box p {
+    margin: 10px 0 0 0;
+    color: #DDDDDD;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Cards and Tables */
+.card {
+    background: #2e2e2e;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #4a4a4a;
+}
+
+.card-header {
+    background: linear-gradient(90deg, #242024, #3a3a3a);
+    padding: 18px 25px;
+    border-bottom: 1px solid rgba(191, 0, 0, 0.4); /* Red line accent */
+    border-radius: 10px 10px 0 0;
+    position: relative;
+}
+
+.card-header h2, .card-header h3 {
+    margin: 0;
+    color: #F3F4F5;
+    font-size: 1.6em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 18px;
+    text-align: left;
+    border-bottom: 1px solid #3d3d3d; /* Lighter border for distinction */
+    color: #F3F4F5;
+}
+
+.table th {
+    background-color: #3a3a3a;
+    font-weight: 600;
+    color: #BF0000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: #3d3d3d;
+    box-shadow: inset 0 0 8px rgba(191, 0, 0, 0.1); /* Subtle hover glow on rows */
+}
+
+/* Grids for cards */
+.venue-grid, .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.venue-card, .vendor-card {
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(191, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.venue-card:hover, .vendor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6), 0 0 15px #E30220;
+}
+
+/* Buttons */
+.btn {
+    padding: 14px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: 600;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: #BF0000;
+    color: white;
+    box-shadow: 0 0 10px rgba(191, 0, 0, 0.5);
+}
+
+.btn-primary:hover {
+    background-color: #E30220;
+    box-shadow: 0 0 20px #E30220; /* Enhanced glow on hover */
+    border-color: #E30220;
+}
+
+.btn-secondary {
+    background-color: #555;
+    color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: #666;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-sm {
+    padding: 10px 16px;
+    font-size: 0.9em;
+}
+
+/* Badges and Statuses */
+.service-badge {
+    display: inline-block;
+    background: #555;
+    color: #F3F4F5;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin: 3px;
+    font-size: 0.85em;
+    border: 1px solid #666;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.status-available {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-booked {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-pending {
+    color: #DDDDDD;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(221, 221, 221, 0.5);
+}
+
+.status-confirmed {
+    color: #BF0000;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(191, 0, 0, 0.8);
+}
+
+.service-status {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 10px;
+}
+
+.status-needed {
+    color: #BF0000;
+}
+
+.status-assigned {
+    color: #28a745;
+}
+
+.status-not-requested {
+    color: #6c757d;
+}
+
+/* Alerts */
+.alert {
+    padding: 18px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: rgba(56, 66, 61, 0.8);
+    color: #d4edda;
+    border-color: #5a665b;
+    box-shadow: 0 0 10px rgba(80, 100, 80, 0.4);
+}
+
+.alert-danger {
+    background-color: rgba(74, 52, 54, 0.8);
+    color: #f8d7da;
+    border-color: #6c4e51;
+    box-shadow: 0 0 10px rgba(100, 70, 70, 0.4);
+}
+
+.alert-info {
+    background-color: rgba(59, 69, 73, 0.8);
+    color: #d1ecf1;
+    border-color: #54646a;
+    box-shadow: 0 0 10px rgba(80, 100, 110, 0.4);
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+.col {
+    flex: 1;
+}
+
+.service-tabs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.service-tab {
+    padding: 10px 15px;
+    background-color: #333;
+    border-radius: 5px 5px 0 0;
+    text-decoration: none;
+    color: #DDDDDD;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.service-tab.active {
+    background-color: #2e2e2e;
+    color: #BF0000;
+    border-bottom: 2px solid #BF0000;
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">Create New Inquiry</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container">
+  <h1>Create New Inquiry</h1>
+
+  <!-- Error message -->
+  <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}">Error message</span>
+  </div>
+
+  <form th:action="@{/consultant/inquiries/save}" th:object="${inquiry}" method="post">
+    <!-- Customer Information -->
+    <div class="form-section">
+      <h2>Customer Information</h2>
+      <div class="form-group">
+        <label for="customerID">Select Customer</label>
+        <select id="customerID" name="customerID" th:field="*{customerID}" required>
+          <option value="">-- Select a Customer --</option>
+          <option th:each="customer : ${customers}"
+                  th:value="${customer.customerID}"
+                  th:text="${customer.customerName}"></option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Event Details -->
+    <div class="form-section">
+      <h2>Event Details</h2>
+      <div class="form-group">
+        <label for="eventType">Event Type</label>
+        <select id="eventType" name="eventType" th:field="*{eventType}" required>
+          <option value="">-- Select Event Type --</option>
+          <option value="Wedding">Wedding</option>
+          <option value="Birthday">Birthday</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="proposedDate">Proposed Date</label>
+        <input type="date" id="proposedDate" name="proposedDate" th:field="*{proposedDate}"
+               th:min="${today}" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="guestCount">Number of Guests</label>
+        <input type="number" id="guestCount" name="guestCount" th:field="*{guestCount}"
+               min="1" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="budget">Budget (LKR)</label>
+        <input type="number" id="budget" name="budget" th:field="*{budget}"
+               step="0.01" min="0" required/>
+      </div>
+    </div>
+
+    <!-- Services Required -->
+    <div class="form-section">
+      <h2>Services Required</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="photographer" th:checked="*{photographer}"/>
+          Photographer
+        </label>
+        <label>
+          <input type="checkbox" name="catering" th:checked="*{catering}"/>
+          Catering
+        </label>
+        <label>
+          <input type="checkbox" name="dj" th:checked="*{dj}"/>
+          DJ Services
+        </label>
+        <label>
+          <input type="checkbox" name="decorations" th:checked="*{decorations}"/>
+          Decorations
+        </label>
+      </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="form-section">
+      <h2>Additional Information</h2>
+      <div class="form-group">
+        <label for="specialRequests">Special Requests or Notes</label>
+        <textarea id="specialRequests" name="specialRequests"
+                  th:field="*{specialRequests}" rows="5"></textarea>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Create Inquiry</button>
+      <a th:href="@{/consultant/inquiries}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

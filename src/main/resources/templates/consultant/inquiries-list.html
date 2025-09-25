@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Manage Event Inquiries</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Manage Event Inquiries</h1>
+    <a th:href="@{/consultant/inquiries/new}" class="btn btn-primary">+ Create New Inquiry</a>
+
+    <!-- Success message -->
+    <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}">Success message</span>
+    </div>
+
+    <!-- Inquiry statistics -->
+    <div class="stats">
+        <div class="stat-box">
+            <h3 th:text="${totalInquiries}">0</h3>
+            <p>Total Inquiries</p>
+        </div>
+        <div class="stat-box">
+            <h3 th:text="${pendingInquiries}">0</h3>
+            <p>Pending Inquiries</p>
+        </div>
+    </div>
+
+    <!-- Inquiries table -->
+    <div th:if="${inquiries != null and !inquiries.empty}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Event Type</th>
+                <th>Proposed Date</th>
+                <th>Guests</th>
+                <th>Budget</th>
+                <th>Customer ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="inquiry : ${inquiries}">
+                <td th:text="${inquiry.inquiryID}"></td>
+                <td th:text="${inquiry.eventType}"></td>
+                <td th:text="${inquiry.proposedDate}"></td>
+                <td th:text="${inquiry.guestCount}"></td>
+                <td th:text="${inquiry.budget}"></td>
+                <td th:text="${inquiry.customerID}"></td>
+                <td th:text="${inquiry.status}"></td>
+                <td>
+                    <a th:href="@{/consultant/inquiries/view/{id}(id=${inquiry.inquiryID})}"
+                       class="btn btn-sm btn-info">View Details</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No inquiries message -->
+    <div th:if="${inquiries == null or inquiries.empty}" class="alert alert-info">
+        <p>No inquiries found</p>
+        <p>Start by creating your first event inquiry.</p>
+        <a th:href="@{/consultant/inquiries/new}" class="btn btn-primary">Create First Inquiry</a>
+    </div>
+
+    <!-- Back to dashboard -->
+    <a th:href="@{/consultant/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+</body>
+</html>

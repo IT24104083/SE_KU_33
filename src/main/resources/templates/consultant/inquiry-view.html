@@ -2,92 +2,720 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Inquiry Details</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Enhanced View Styles */
+        .view-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .view-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .view-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .view-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .highlight-btn-primary:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        .details-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .details-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+            flex: 1;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #667eea;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .services-section {
+            margin-top: 20px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .service-tag {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            text-align: center;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .service-tag.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .special-requests-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .requests-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-style: italic;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .no-requests {
+            text-align: center;
+            color: #718096;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .action-buttons-center {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+        }
+
+        .btn-action {
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid transparent;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-color: #bbdefb;
+        }
+
+        .btn-view:hover {
+            background: #bbdefb;
+            color: #0d47a1;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #fff3e0;
+            color: #f57c00;
+            border-color: #ffe0b2;
+        }
+
+        .btn-edit:hover {
+            background: #ffe0b2;
+            color: #e65100;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+            border-color: #ffcdd2;
+        }
+
+        .btn-delete:hover {
+            background: #ffcdd2;
+            color: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        .quick-stats-footer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .stat-item i {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .stat-text {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1 th:text="${pageTitle}">Inquiry Details</h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <!-- Error message -->
-    <div th:if="${error}" class="alert alert-danger">
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-calendar-alt logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1 th:text="${pageTitle}">Inquiry Details</h1>
+        <div class="header-actions">
+            <a th:href="@{/consultant/inquiries}" class="btn-cancel">
+                <i class="fas fa-arrow-left"></i> Back to Inquiries
+            </a>
+            <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-edit">
+                <i class="fas fa-edit"></i> Edit Inquiry
+            </a>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
         <span th:text="${error}">Error message</span>
     </div>
 
-    <!-- Inquiry Details -->
-    <div th:if="${inquiry != null}" class="card">
-        <h2>Inquiry Information</h2>
-        <table class="table">
-            <tr>
-                <th>Inquiry ID</th>
-                <td th:text="${inquiry.inquiryID}"></td>
-            </tr>
-            <tr>
-                <th>Event Type</th>
-                <td th:text="${inquiry.eventType}"></td>
-            </tr>
-            <tr>
-                <th>Proposed Date</th>
-                <td th:text="${inquiry.proposedDate}"></td>
-            </tr>
-            <tr>
-                <th>Number of Guests</th>
-                <td th:text="${inquiry.guestCount}"></td>
-            </tr>
-            <tr>
-                <th>Budget (LKR)</th>
-                <td th:text="${inquiry.budget}"></td>
-            </tr>
-            <tr>
-                <th>Services Required</th>
-                <td>
-                    <span th:if="${inquiry.photographer}">Photographer, </span>
-                    <span th:if="${inquiry.catering}">Catering, </span>
-                    <span th:if="${inquiry.dj}">DJ Services, </span>
-                    <span th:if="${inquiry.decorations}">Decorations</span>
-                    <span th:if="${!inquiry.photographer and !inquiry.catering and !inquiry.dj and !inquiry.decorations}">
-                        None
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th>Special Requests</th>
-                <td th:text="${inquiry.specialRequests} ?: 'None'"></td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td th:text="${inquiry.status}"></td>
-            </tr>
-        </table>
+    <!-- Inquiry Highlight Section -->
+    <div class="view-highlight-section">
+        <div class="view-header">
+            <h2 class="view-title">
+                <i class="fas fa-file-alt"></i> Inquiry Details
+            </h2>
+            <div class="view-actions">
+                <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="highlight-btn highlight-btn-primary">
+                    <i class="fas fa-edit"></i> Edit Inquiry
+                </a>
+                <a th:href="@{/consultant/inquiries}" class="highlight-btn">
+                    <i class="fas fa-list"></i> All Inquiries
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Complete details for inquiry #<span th:text="${inquiry.inquiryID}"></span>
+        </p>
     </div>
 
-    <!-- Customer Details -->
-    <div th:if="${customer != null}" class="card">
-        <h2>Customer Information</h2>
-        <table class="table">
-            <tr>
-                <th>Customer ID</th>
-                <td th:text="${customer.customerID}"></td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td th:text="${customer.customerName}"></td>
-            </tr>
-            <tr>
-                <th>Phone</th>
-                <td th:text="${customer.phone} ?: 'Not provided'"></td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td th:text="${customer.email} ?: 'Not provided'"></td>
-            </tr>
-        </table>
+    <!-- Main Details Container -->
+    <div class="details-container">
+        <!-- Inquiry Information Card -->
+        <div class="details-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="card-title">Inquiry Information</h3>
+                <div class="card-actions">
+                    <span class="inquiry-id" th:text="'ID: ' + ${inquiry.inquiryID}"></span>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-hashtag"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Inquiry ID</div>
+                        <div class="detail-value" th:text="${inquiry.inquiryID}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Event Type</div>
+                        <div class="detail-value event-type-badge" th:text="${inquiry.eventType}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Proposed Date</div>
+                        <div class="detail-value" th:text="${#temporals.format(inquiry.proposedDate, 'MMMM dd, yyyy')}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Number of Guests</div>
+                        <div class="detail-value guest-count" th:text="${inquiry.guestCount}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Budget</div>
+                        <div class="detail-value price" th:text="'LKR ' + ${#numbers.formatDecimal(inquiry.budget, 0, 'COMMA', 2, 'POINT')}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Status</div>
+                        <span th:classappend="'status-' + ${inquiry.status?.toLowerCase()}"
+                              class="status-badge" th:text="${inquiry.status}">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Required -->
+            <div class="services-section">
+                <h4 style="color: #4a5568; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-concierge-bell"></i> Services Required
+                </h4>
+                <div class="services-grid">
+                    <div th:classappend="${inquiry.photographer} ? 'active' : ''" class="service-tag">
+                        <i class="fas fa-camera"></i> Photographer
+                    </div>
+                    <div th:classappend="${inquiry.catering} ? 'active' : ''" class="service-tag">
+                        <i class="fas fa-utensils"></i> Catering
+                    </div>
+                    <div th:classappend="${inquiry.dj} ? 'active' : ''" class="service-tag">
+                        <i class="fas fa-music"></i> DJ Services
+                    </div>
+                    <div th:classappend="${inquiry.decorations} ? 'active' : ''" class="service-tag">
+                        <i class="fas fa-paint-brush"></i> Decorations
+                    </div>
+                </div>
+                <div th:if="${!inquiry.photographer and !inquiry.catering and !inquiry.dj and !inquiry.decorations}"
+                     class="no-requests">
+                    <i class="fas fa-times-circle"></i> No services selected
+                </div>
+            </div>
+
+            <!-- Special Requests -->
+            <div class="special-requests-section" th:if="${inquiry.specialRequests}">
+                <h4 style="color: #4a5568; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-comment-alt"></i> Special Requests
+                </h4>
+                <div class="requests-content">
+                    <p th:text="${inquiry.specialRequests}"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Information Card -->
+        <div class="details-card" th:if="${customer != null}">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3 class="card-title">Customer Information</h3>
+                <div class="card-actions">
+                    <a th:href="@{'/consultant/customers/view/' + ${customer.customerID}}" class="btn-edit">
+                        <i class="fas fa-external-link-alt"></i> View Customer
+                    </a>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Customer ID</div>
+                        <div class="detail-value" th:text="${customer.customerID}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Full Name</div>
+                        <div class="detail-value" th:text="${customer.customerName}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Phone Number</div>
+                        <div class="detail-value" th:text="${customer.phone} ?: 'Not provided'"></div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Email Address</div>
+                        <div class="detail-value" th:text="${customer.email}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Actions -->
-    <div class="form-actions">
-        <a th:href="@{/consultant/inquiries}" class="btn btn-secondary">Back to Inquiries</a>
+    <!-- Action Buttons -->
+    <div class="action-buttons-center">
+        <a th:href="@{/consultant/inquiries}" class="btn-action btn-view">
+            <i class="fas fa-arrow-left"></i> Back to Inquiries
+        </a>
+        <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-action btn-edit">
+            <i class="fas fa-edit"></i> Edit Inquiry
+        </a>
+        <a th:href="@{'/consultant/inquiries/delete/' + ${inquiry.inquiryID}}"
+           class="btn-action btn-delete"
+           onclick="return confirm('Are you sure you want to delete this inquiry?');">
+            <i class="fas fa-trash"></i> Delete Inquiry
+        </a>
+    </div>
+
+    <!-- Quick Stats Footer -->
+    <div class="quick-stats-footer">
+        <div class="stat-item">
+            <i class="fas fa-clock"></i>
+            <div class="stat-text">
+                <div class="stat-label">Created</div>
+                <div class="stat-value">Today</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-sync"></i>
+            <div class="stat-text">
+                <div class="stat-label">Last Updated</div>
+                <div class="stat-value">Just now</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-user-edit"></i>
+            <div class="stat-text">
+                <div class="stat-label">Managed By</div>
+                <div class="stat-value">You</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-calendar-check"></i>
+            <div class="stat-text">
+                <div class="stat-label">Event Status</div>
+                <div class="stat-value" th:text="${inquiry.status}">Pending</div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add confirmation for delete actions
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this inquiry?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Add hover effects to detail items
+        const detailItems = document.querySelectorAll('.detail-item, .stat-item');
+        detailItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Add status color coding
+        const statusBadge = document.querySelector('.status-badge');
+        if (statusBadge) {
+            const status = statusBadge.textContent.toLowerCase();
+            if (status.includes('pending')) {
+                statusBadge.classList.add('status-pending');
+            } else if (status.includes('confirmed')) {
+                statusBadge.classList.add('status-confirmed');
+            } else if (status.includes('completed')) {
+                statusBadge.classList.add('status-completed');
+            } else if (status.includes('cancelled')) {
+                statusBadge.classList.add('status-cancelled');
+            } else if (status.includes('draft')) {
+                statusBadge.classList.add('status-draft');
+            }
+        }
+
+        // Add animation to cards
+        const cards = document.querySelectorAll('.details-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
 </body>
 </html>

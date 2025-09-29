@@ -2,10 +2,320 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Manage Event Inquiries</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Enhanced Inquiries List Styles */
+        .inquiries-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .inquiries-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .inquiries-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .inquiries-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .inquiries-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .highlight-btn-primary:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        .enhanced-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .enhanced-table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 25px;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-count {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .enhanced-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .enhanced-table thead {
+            background: #f7fafc;
+        }
+
+        .enhanced-table th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .enhanced-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .enhanced-table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .enhanced-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .btn-view:hover {
+            background: #bbdefb;
+            color: #0d47a1;
+        }
+
+        .btn-edit {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        .btn-edit:hover {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #ffcdd2;
+        }
+
+        .btn-delete:hover {
+            background: #ffcdd2;
+            color: #b71c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .empty-description {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .navigation-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
 </head>
 <body>
 <!-- Animated background elements -->
@@ -14,14 +324,15 @@
 <div class="bg-element bg-element-3"></div>
 
 <div class="container">
+    <!-- Header Section -->
     <div class="header">
         <div class="logo">
             <i class="fas fa-calendar-alt logo-icon"></i>
             <span>EventSlate</span>
         </div>
         <h1>Manage Event Inquiries</h1>
-        <a th:href="@{/consultant/inquiries/new}" class="btn-primary">
-            <i class="fas fa-plus"></i> Create New Inquiry
+        <a th:href="@{/consultant/dashboard}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
     </div>
 
@@ -31,134 +342,147 @@
         <span th:text="${success}">Success message</span>
     </div>
 
-    <!-- Inquiry Statistics -->
-    <div class="stats">
-        <div class="stat-box">
+    <!-- Inquiry Management Highlight Section -->
+    <div class="inquiries-highlight-section">
+        <div class="inquiries-header">
+            <h2 class="inquiries-title">
+                <i class="fas fa-calendar-check"></i> Event Inquiries Management
+            </h2>
+            <div class="inquiries-actions">
+                <a th:href="@{/consultant/inquiries/new}" class="highlight-btn highlight-btn-primary">
+                    <i class="fas fa-plus-circle"></i> Create New Inquiry
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Manage all event inquiries, track their status, and handle customer requests efficiently.
+        </p>
+    </div>
+
+    <!-- Enhanced Statistics -->
+    <div class="enhanced-stats">
+        <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-clipboard-list"></i>
             </div>
-            <h3 th:text="${totalInquiries}">0</h3>
-            <p>Total Inquiries</p>
-            <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i>
-                <span>8%</span>
-            </div>
+            <div class="stat-number" th:text="${totalInquiries}">0</div>
+            <div class="stat-label">Total Inquiries</div>
         </div>
-
-        <div class="stat-box">
+        <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-clock"></i>
             </div>
-            <h3 th:text="${pendingInquiries}">0</h3>
-            <p>Pending Inquiries</p>
-            <div class="stat-trend down">
-                <i class="fas fa-arrow-down"></i>
-                <span>3%</span>
-            </div>
+            <div class="stat-number" th:text="${pendingInquiries}">0</div>
+            <div class="stat-label">Pending Inquiries</div>
         </div>
-
-        <div class="stat-box">
+        <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <h3 th:text="${confirmedInquiries != null ? confirmedInquiries : '0'}">0</h3>
-            <p>Confirmed Events</p>
-            <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i>
-                <span>12%</span>
-            </div>
+            <div class="stat-number" th:text="${confirmedInquiries != null ? confirmedInquiries : '0'}">0</div>
+            <div class="stat-label">Confirmed Events</div>
         </div>
-
-        <div class="stat-box">
+        <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-dollar-sign"></i>
             </div>
-            <h3 th:text="${totalBudget != null ? totalBudget : '0'}">0</h3>
-            <p>Total Budget</p>
-            <div class="stat-trend up">
-                <i class="fas fa-arrow-up"></i>
-                <span>15%</span>
-            </div>
+            <div class="stat-number" th:text="${totalBudget != null ? totalBudget : '0'}">0</div>
+            <div class="stat-label">Total Budget (LKR)</div>
         </div>
     </div>
 
     <!-- Inquiries List Section -->
-    <div class="vendor-section" th:if="${inquiries != null and !inquiries.empty}">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-list-alt section-icon"></i> Event Inquiries
-            </h2>
-            <span class="vendor-count" th:text="${inquiries.size()} + ' inquiries'"></span>
-        </div>
+    <div th:if="${inquiries != null and !inquiries.empty}">
+        <div class="enhanced-table-container">
+            <div class="table-header">
+                <h3 class="table-title">
+                    <i class="fas fa-list-alt"></i> Event Inquiries
+                    <span class="table-count" th:text="${inquiries.size()} + ' inquiries'"></span>
+                </h3>
+            </div>
 
-        <table class="vendor-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Event Type</th>
-                <th>Proposed Date</th>
-                <th>Guests</th>
-                <th>Budget</th>
-                <th>Customer</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="inquiry : ${inquiries}">
-                <td th:text="${inquiry.inquiryID}"></td>
-                <td>
-                    <span class="event-type" th:text="${inquiry.eventType}"></span>
-                </td>
-                <td th:text="${#temporals.format(inquiry.proposedDate, 'MMM dd, yyyy')}"></td>
-                <td>
-                    <span class="guest-count" th:text="${inquiry.guestCount}"></span>
-                </td>
-                <td class="price" th:text="'$' + ${inquiry.budget}"></td>
-                <td>
-                    <span class="customer-ref" th:text="'CUST-' + ${inquiry.customerID}"></span>
-                </td>
-                <td>
-                            <span th:classappend="'status-' + ${inquiry.status?.toLowerCase()}"
-                                  class="status-badge" th:text="${inquiry.status}">
-                            </span>
-                </td>
-                <td>
-                    <div class="action-buttons">
-                        <a th:href="@{'/consultant/inquiries/view/' + ${inquiry.inquiryID}}" class="btn-edit">
-                            <i class="fas fa-eye"></i> View
-                        </a>
-                        <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-edit">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a th:href="@{'/consultant/inquiries/delete/' + ${inquiry.inquiryID}}"
-                           class="btn-delete"
-                           onclick="return confirm('Are you sure you want to delete this inquiry?');">
-                            <i class="fas fa-trash"></i> Delete
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <table class="enhanced-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Event Type</th>
+                    <th>Proposed Date</th>
+                    <th>Guests</th>
+                    <th>Budget</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="inquiry : ${inquiries}">
+                    <td>
+                        <strong th:text="${inquiry.inquiryID}"></strong>
+                    </td>
+                    <td>
+                        <span class="event-type" th:text="${inquiry.eventType}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(inquiry.proposedDate, 'MMM dd, yyyy')}"></td>
+                    <td>
+                        <span class="guest-count" th:text="${inquiry.guestCount}"></span>
+                    </td>
+                    <td>
+                        <strong class="price" th:text="'LKR ' + ${#numbers.formatDecimal(inquiry.budget, 0, 'COMMA', 2, 'POINT')}"></strong>
+                    </td>
+                    <td>
+                        <span class="customer-ref" th:text="'CUST-' + ${inquiry.customerID}"></span>
+                    </td>
+                    <td>
+                        <span th:classappend="'status-' + ${inquiry.status?.toLowerCase()}"
+                              class="status-badge" th:text="${inquiry.status}">
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{'/consultant/inquiries/view/' + ${inquiry.inquiryID}}"
+                               class="btn-action btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}"
+                               class="btn-action btn-edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a th:href="@{'/consultant/inquiries/delete/' + ${inquiry.inquiryID}}"
+                               class="btn-action btn-delete"
+                               onclick="return confirm('Are you sure you want to delete this inquiry?');">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Empty State -->
-    <div class="vendor-section" th:if="${inquiries == null or inquiries.empty}">
+    <div th:if="${inquiries == null or inquiries.empty}">
         <div class="empty-state">
-            <i class="fas fa-calendar-times"></i>
-            <h3>No Event Inquiries Found</h3>
-            <p>Start by creating your first event inquiry to get started.</p>
-            <a th:href="@{/consultant/inquiries/new}" class="btn-primary">
-                <i class="fas fa-plus"></i> Create First Inquiry
+            <div class="empty-icon">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h3 class="empty-title">No Event Inquiries Found</h3>
+            <p class="empty-description">
+                Start by creating your first event inquiry to get started with managing customer event requests.
+            </p>
+            <a th:href="@{/consultant/inquiries/new}" class="highlight-btn highlight-btn-primary">
+                <i class="fas fa-plus-circle"></i> Create First Inquiry
             </a>
         </div>
     </div>
 
-    <!-- Back to Dashboard -->
+    <!-- Navigation Actions -->
     <div class="navigation-actions">
         <a th:href="@{/consultant/dashboard}" class="btn-cancel">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a th:href="@{/consultant/inquiries/new}" class="btn-primary">
+            <i class="fas fa-plus"></i> Create New Inquiry
         </a>
     </div>
 </div>
@@ -176,34 +500,27 @@
             });
         });
 
-        // Add status color coding
-        const statusBadges = document.querySelectorAll('.status-badge');
-        statusBadges.forEach(badge => {
-            const status = badge.textContent.toLowerCase();
-            if (status.includes('pending')) {
-                badge.style.background = '#fff3cd';
-                badge.style.color = '#856404';
-                badge.style.border = '1px solid #ffeaa7';
-            } else if (status.includes('confirmed')) {
-                badge.style.background = '#d1ecf1';
-                badge.style.color = '#0c5460';
-                badge.style.border = '1px solid #bee5eb';
-            } else if (status.includes('completed')) {
-                badge.style.background = '#d4edda';
-                badge.style.color = '#155724';
-                badge.style.border = '1px solid #c3e6cb';
-            } else if (status.includes('cancelled')) {
-                badge.style.background = '#f8d7da';
-                badge.style.color = '#721c24';
-                badge.style.border = '1px solid #f5c6cb';
-            }
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll('.enhanced-table tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
         });
 
-        // Add staggered animation to table rows
-        const tableRows = document.querySelectorAll('.vendor-table tbody tr');
-        tableRows.forEach((row, index) => {
-            row.style.animationDelay = `${index * 0.1}s`;
+        // Add animation to stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
         });
+
+        // Auto-refresh statistics (optional)
+        setInterval(() => {
+            // You can add auto-refresh logic here if needed
+        }, 30000);
     });
 </script>
 </body>

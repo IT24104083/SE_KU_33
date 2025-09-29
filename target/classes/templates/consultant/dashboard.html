@@ -7,6 +7,276 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Enhanced Dashboard Styles */
+        .dashboard-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .highlight-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .highlight-btn-primary:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .feature-description {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .feature-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .stat-badge {
+            background: #f7fafc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-badge.high {
+            background: #c6f6d5;
+            color: #276749;
+            border-color: #9ae6b4;
+        }
+
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .quick-access-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .quick-access-item:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            color: #4a5568;
+        }
+
+        .quick-access-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .quick-access-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .quick-access-desc {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: #f7fafc;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #667eea;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-pending { background: #ed8936; }
+        .status-completed { background: #38a169; }
+        .status-in-progress { background: #3182ce; }
+    </style>
 </head>
 <body>
 <!-- Animated background elements -->
@@ -31,6 +301,26 @@
     <div th:if="${loginSuccess}" class="alert alert-success">
         <i class="fas fa-check-circle"></i>
         Login successful! Welcome to the dashboard.
+    </div>
+
+    <!-- Inquiry Management Highlight Section -->
+    <div class="dashboard-highlight-section">
+        <div class="highlight-header">
+            <h2 class="highlight-title">
+                <i class="fas fa-calendar-check"></i> Event Inquiry Management
+            </h2>
+            <div class="highlight-actions">
+                <a th:href="@{/consultant/inquiries/new}" class="highlight-btn highlight-btn-primary">
+                    <i class="fas fa-plus-circle"></i> Create New Inquiry
+                </a>
+                <a th:href="@{/consultant/inquiries}" class="highlight-btn">
+                    <i class="fas fa-eye"></i> View All Inquiries
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Manage event inquiries, track customer requests, and create new event proposals with ease.
+        </p>
     </div>
 
     <!-- User Info Card -->
@@ -72,123 +362,162 @@
         </div>
     </div>
 
-    <!-- Dashboard Cards Grid -->
-    <div class="dashboard-grid">
-        <!-- Customer Management Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2 class="section-title">
-                    <i class="fas fa-users section-icon"></i> Customer Management
-                </h2>
+    <!-- Quick Access Grid -->
+    <div class="quick-access-grid">
+        <a th:href="@{/consultant/inquiries/new}" class="quick-access-item">
+            <div class="quick-access-icon">
+                <i class="fas fa-plus-circle"></i>
             </div>
-            <div class="card-body">
-                <p>Manage customer accounts, view details, and create new customer profiles.</p>
-                <div class="card-actions">
-                    <a th:href="@{/consultant/customers}" class="btn-primary">
-                        <i class="fas fa-list"></i> Manage Customers
-                    </a>
-                    <a th:href="@{/consultant/customers/new}" class="btn-secondary">
-                        <i class="fas fa-plus"></i> Add New Customer
-                    </a>
-                </div>
+            <div class="quick-access-title">Create Inquiry</div>
+            <div class="quick-access-desc">Start new event inquiry</div>
+        </a>
+        <a th:href="@{/consultant/inquiries}" class="quick-access-item">
+            <div class="quick-access-icon">
+                <i class="fas fa-list-alt"></i>
             </div>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-number">24</span>
-                    <span class="stat-label">Total Customers</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">New This Week</span>
-                </div>
+            <div class="quick-access-title">View Inquiries</div>
+            <div class="quick-access-desc">Manage all inquiries</div>
+        </a>
+        <a th:href="@{/consultant/customers/new}" class="quick-access-item">
+            <div class="quick-access-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="quick-access-title">Add Customer</div>
+            <div class="quick-access-desc">Create customer profile</div>
+        </a>
+        <a th:href="@{/consultant/customers}" class="quick-access-item">
+            <div class="quick-access-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="quick-access-title">Manage Customers</div>
+            <div class="quick-access-desc">View all customers</div>
+        </a>
+    </div>
+
+    <!-- Feature Cards Grid -->
+    <div class="feature-grid">
+        <!-- Event Inquiries Feature Card -->
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3 class="feature-title">Event Inquiries</h3>
+            <p class="feature-description">
+                Create, manage, and track all event inquiries. Handle customer requests efficiently with our comprehensive inquiry management system.
+            </p>
+            <div class="feature-actions">
+                <a th:href="@{/consultant/inquiries/new}" class="btn-primary" style="margin-right: 10px;">
+                    <i class="fas fa-plus"></i> New Inquiry
+                </a>
+                <a th:href="@{/consultant/inquiries}" class="btn-secondary">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+            <div class="feature-stats">
+                <span class="stat-badge high">12 Active</span>
+                <span class="stat-badge">5 Pending</span>
             </div>
         </div>
 
-        <!-- Event Inquiries Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2 class="section-title">
-                    <i class="fas fa-calendar-check section-icon"></i> Event Inquiries
-                </h2>
+        <!-- Customer Management Feature Card -->
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
             </div>
-            <div class="card-body">
-                <p>Handle event inquiries, create new inquiries, and track customer requests.</p>
-                <div class="card-actions">
-                    <a th:href="@{/consultant/inquiries}" class="btn-primary">
-                        <i class="fas fa-eye"></i> View Inquiries
-                    </a>
-                    <a th:href="@{/consultant/inquiries/new}" class="btn-secondary">
-                        <i class="fas fa-plus"></i> Create Inquiry
-                    </a>
-                </div>
+            <h3 class="feature-title">Customer Management</h3>
+            <p class="feature-description">
+                Manage customer profiles, track interactions, and maintain comprehensive customer records for better service delivery.
+            </p>
+            <div class="feature-actions">
+                <a th:href="@{/consultant/customers/new}" class="btn-primary" style="margin-right: 10px;">
+                    <i class="fas fa-user-plus"></i> Add Customer
+                </a>
+                <a th:href="@{/consultant/customers}" class="btn-secondary">
+                    <i class="fas fa-list"></i> Manage
+                </a>
             </div>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-number">12</span>
-                    <span class="stat-label">Active Inquiries</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">Pending Review</span>
-                </div>
+            <div class="feature-stats">
+                <span class="stat-badge high">24 Total</span>
+                <span class="stat-badge">3 New</span>
             </div>
         </div>
 
-        <!-- Reports Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2 class="section-title">
-                    <i class="fas fa-chart-bar section-icon"></i> Reports & Analytics
-                </h2>
+        <!-- Reports & Analytics Feature Card -->
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-bar"></i>
             </div>
-            <div class="card-body">
-                <p>Access detailed reports, analytics, and performance metrics for your consultancy.</p>
-                <div class="card-actions">
-                    <a th:href="@{/consultant/reports}" class="btn-primary">
-                        <i class="fas fa-chart-line"></i> View Reports
-                    </a>
-                </div>
+            <h3 class="feature-title">Reports & Analytics</h3>
+            <p class="feature-description">
+                Access detailed performance reports, analytics, and insights to optimize your consultancy operations and customer service.
+            </p>
+            <div class="feature-actions">
+                <a th:href="@{/consultant/reports}" class="btn-primary">
+                    <i class="fas fa-chart-line"></i> View Reports
+                </a>
             </div>
-            <div class="card-stats">
-                <div class="stat">
-                    <span class="stat-number">8</span>
-                    <span class="stat-label">Reports Available</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">95%</span>
-                    <span class="stat-label">Satisfaction Rate</span>
-                </div>
+            <div class="feature-stats">
+                <span class="stat-badge">8 Reports</span>
+                <span class="stat-badge high">95% Satisfaction</span>
             </div>
         </div>
+    </div>
 
-        <!-- Quick Actions Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h2 class="section-title">
-                    <i class="fas fa-bolt section-icon"></i> Quick Actions
-                </h2>
+    <!-- Recent Activity Section -->
+    <div class="recent-activity">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-history section-icon"></i> Recent Activity
+            </h2>
+            <span class="vendor-count">Last 24 hours</span>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fas fa-calendar-plus"></i>
             </div>
-            <div class="card-body">
-                <p>Frequently used actions and shortcuts for efficient workflow.</p>
-                <div class="quick-actions-grid">
-                    <a th:href="@{/consultant/customers/new}" class="quick-action">
-                        <i class="fas fa-user-plus"></i>
-                        <span>New Customer</span>
-                    </a>
-                    <a th:href="@{/consultant/inquiries/new}" class="quick-action">
-                        <i class="fas fa-calendar-plus"></i>
-                        <span>New Inquiry</span>
-                    </a>
-                    <a th:href="@{/consultant/reports}" class="quick-action">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Generate Report</span>
-                    </a>
-                    <a th:href="@{/consultant/settings}" class="quick-action">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
+            <div class="activity-content">
+                <div class="activity-title">New Inquiry Created</div>
+                <div class="activity-time">
+                    <span class="status-indicator status-pending"></span>
+                    Wedding Event - 150 guests • 5 minutes ago
                 </div>
             </div>
+            <a th:href="@{/consultant/inquiries}" class="btn-edit btn-sm">
+                <i class="fas fa-eye"></i> View
+            </a>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title">Customer Profile Updated</div>
+                <div class="activity-time">
+                    <span class="status-indicator status-completed"></span>
+                    John Smith • 1 hour ago
+                </div>
+            </div>
+            <a th:href="@{/consultant/customers}" class="btn-edit btn-sm">
+                <i class="fas fa-eye"></i> View
+            </a>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title">Inquiry Status Updated</div>
+                <div class="activity-time">
+                    <span class="status-indicator status-in-progress"></span>
+                    Corporate Event - Confirmed • 2 hours ago
+                </div>
+            </div>
+            <a th:href="@{/consultant/inquiries}" class="btn-edit btn-sm">
+                <i class="fas fa-eye"></i> View
+            </a>
         </div>
     </div>
 
@@ -206,25 +535,29 @@
             <i class="fas fa-shield-alt"></i>
             <span>Security: <strong>Active</strong></span>
         </div>
+        <div class="status-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Inquiries: <strong th:text="${totalInquiries != null ? totalInquiries : '0'}">0</strong> Active</span>
+        </div>
     </div>
 </div>
 
 <script>
     // Add interactive effects
     document.addEventListener('DOMContentLoaded', function() {
-        // Add hover effects to dashboard cards
-        const cards = document.querySelectorAll('.dashboard-card');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
+        // Add hover effects to all interactive elements
+        const interactiveElements = document.querySelectorAll('.dashboard-card, .feature-card, .quick-access-item');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-5px)';
             });
-            card.addEventListener('mouseleave', function() {
+            element.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
             });
         });
 
         // Add click effects to quick actions
-        const quickActions = document.querySelectorAll('.quick-action');
+        const quickActions = document.querySelectorAll('.quick-access-item, .highlight-btn');
         quickActions.forEach(action => {
             action.addEventListener('click', function(e) {
                 this.style.transform = 'scale(0.95)';
@@ -234,21 +567,32 @@
             });
         });
 
-        // Simulate real-time updates
-        setInterval(() => {
-            const stats = document.querySelectorAll('.stat-number');
+        // Animate statistics counters
+        function animateCounter(element, target, duration) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+
+        // Animate main statistics
+        setTimeout(() => {
+            const stats = document.querySelectorAll('.stat-badge:first-child');
             stats.forEach(stat => {
-                if (Math.random() > 0.8) {
-                    const current = parseInt(stat.textContent);
-                    const change = Math.floor(Math.random() * 3) + 1;
-                    stat.textContent = current + change;
-                    stat.style.color = '#38a169';
-                    setTimeout(() => {
-                        stat.style.color = '';
-                    }, 1000);
+                const text = stat.textContent;
+                const number = parseInt(text);
+                if (!isNaN(number)) {
+                    animateCounter(stat, number, 1000);
                 }
             });
-        }, 5000);
+        }, 500);
     });
 </script>
 </body>

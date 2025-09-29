@@ -69,7 +69,7 @@
           </div>
           <div class="event-detail-content">
             <label>Event Date</label>
-            <span class="event-detail-value" th:text="${#temporals.format(event.EventDate, 'MMMM dd, yyyy')}"></span>
+            <span class="event-detail-value" th:text="${#dates.format(event.EventDate, 'MMMM dd, yyyy')}"></span>
           </div>
         </div>
         <div class="event-detail-item">
@@ -274,7 +274,7 @@
     </div>
     <div class="status-item">
       <i class="fas fa-calendar-alt"></i>
-      <span>Event Date: <strong th:text="${#temporals.format(event.EventDate, 'MMM dd, yyyy')}"></strong></span>
+      <span>Event Date: <strong th:text="${#dates.format(event.EventDate, 'MMM dd, yyyy')}"></strong></span>
     </div>
     <div class="status-item">
       <i class="fas fa-user-cog"></i>

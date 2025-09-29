@@ -4,118 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Add New Customer</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn-group {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin: 0 5px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .alert {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-error {
-            background-color: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<div class="form-container">
-    <h1 th:text="${pageTitle}">Add New Customer</h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div th:if="${error}" class="alert alert-error" th:text="${error}">
-        Error message
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-user-friends logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1 th:text="${pageTitle}">Add New Customer</h1>
+        <a th:href="@{/consultant/customers}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Customers
+        </a>
     </div>
 
-    <form th:action="@{/consultant/customers/save}" th:object="${customer}" method="post">
-        <div class="form-group">
-            <label for="customerName">Full Name *</label>
-            <input type="text" id="customerName" th:field="*{customerName}"
-                   required placeholder="Enter customer's full name">
+    <div class="form-container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-user-plus section-icon"></i> Customer Information
+            </h2>
         </div>
 
-        <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" th:field="*{phone}"
-                   placeholder="Enter phone number">
+        <div th:if="${error}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}">Error message</span>
         </div>
 
-        <div class="form-group">
-            <label for="email">Email Address *</label>
-            <input type="email" id="email" th:field="*{email}"
-                   required placeholder="Enter email address">
-        </div>
+        <form th:action="@{/consultant/customers/save}" th:object="${customer}" method="post" class="customer-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="customerName">Full Name *</label>
+                    <input type="text" id="customerName" th:field="*{customerName}"
+                           required placeholder="Enter customer's full name">
+                    <div class="form-hint">Enter the customer's complete name</div>
+                </div>
 
-        <div class="form-group">
-            <label for="password">Password *</label>
-            <input type="password" id="password" th:field="*{password}"
-                   required placeholder="Enter password (min 6 characters)" minlength="6">
-            <small style="color: #666;">Password will be stored as plain text for demo purposes</small>
-        </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" th:field="*{phone}"
+                           placeholder="Enter phone number">
+                    <div class="form-hint">Optional contact number</div>
+                </div>
+            </div>
 
-        <div class="btn-group">
-            <button type="submit" class="btn btn-primary">Create Customer</button>
-            <a th:href="@{/consultant/customers}" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" th:field="*{email}"
+                           required placeholder="Enter email address">
+                    <div class="form-hint">Primary contact email</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" th:field="*{password}"
+                           required placeholder="Enter password (min 6 characters)" minlength="6">
+                    <div class="form-hint">Minimum 6 characters required</div>
+                </div>
+            </div>
+
+            <div class="password-note">
+                <i class="fas fa-info-circle"></i>
+                <small>Password will be stored as plain text for demo purposes</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus"></i> Create Customer
+                </button>
+                <a th:href="@{/consultant/customers}" class="btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    // Add form validation and interactivity
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.customer-form');
+        const inputs = form.querySelectorAll('input');
+
+        // Add focus effects
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+
+        // Real-time password strength indicator
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const strengthIndicator = this.parentElement.querySelector('.password-strength');
+                if (!strengthIndicator) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'password-strength';
+                    this.parentElement.appendChild(indicator);
+                }
+
+                const strength = calculatePasswordStrength(this.value);
+                updatePasswordStrength(strength);
+            });
+        }
+
+        // Form submission feedback
+        form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            submitBtn.disabled = true;
+        });
+
+        function calculatePasswordStrength(password) {
+            if (password.length === 0) return 0;
+            if (password.length < 6) return 1;
+            if (password.length < 8) return 2;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                return 4;
+            }
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+                return 3;
+            }
+            return 2;
+        }
+
+        function updatePasswordStrength(strength) {
+            const indicator = document.querySelector('.password-strength');
+            if (!indicator) return;
+
+            const levels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+            const colors = ['#e53e3e', '#ed8936', '#ecc94b', '#68d391', '#38a169'];
+
+            indicator.textContent = `Password Strength: ${levels[strength]}`;
+            indicator.style.color = colors[strength];
+        }
+    });
+</script>
 </body>
 </html>

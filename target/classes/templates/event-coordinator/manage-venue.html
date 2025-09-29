@@ -2,45 +2,161 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Venue - Event Coordinator</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <style>
+        .filter-section .card-body {
+            padding: var(--card-padding);
+        }
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-group label i {
+            color: var(--primary);
+            width: 16px;
+        }
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        .price-inputs input {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius);
+            border: 1px solid var(--light-gray);
+            font-size: 14px;
+        }
+        .venue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .status-available {
+            background: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
+        .status-booked {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-label i {
+            color: var(--primary);
+            width: 16px;
+        }
+        .info-value {
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            border: 1px solid var(--light-gray);
+            font-size: 14px;
+            color: var(--dark);
+        }
+        .badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        @media (max-width: 768px) {
+            .filter-row { flex-direction: column; align-items: stretch; }
+            .price-inputs { flex-direction: column; }
+            .venue-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<div class="container venue-container">
-    <h1>Manage Venue for Event #<span th:text="${event.EventID}"></span></h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div class="dashboard-nav">
-        <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="nav-item btn-secondary">← Back to Overview</a>
-        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="nav-item btn-primary">Manage Vendors</a>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-glass-cheers logo-icon"></i>
+            <span>PartySlate</span>
+        </div>
+        <h1>Manage Venue for Event #<span th:text="${event.EventID}"></span></h1>
+        <div class="header-actions">
+            <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Overview
+            </a>
+            <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="btn btn-primary">
+                <i class="fas fa-users-cog"></i> Manage Vendors
+            </a>
+        </div>
     </div>
 
+    <!-- Flash Messages -->
     <div th:if="${success}" class="alert alert-success">
-        <span th:text="${success}"></span>
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
     </div>
-    <div th:if="${error}" class="alert alert-danger">
-        <span th:text="${error}"></span>
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
     </div>
 
+    <!-- Filter Venues Section -->
     <div class="card filter-section">
         <div class="card-header">
-            <h3>Filter Venues</h3>
+            <h3 class="section-title"><i class="fas fa-filter section-icon"></i> Filter Venues</h3>
         </div>
         <div class="card-body">
-            <form th:action="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" method="get">
+            <form th:action="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" method="get" class="form-actions">
                 <input type="hidden" name="id" th:value="${event.EventID}">
-
                 <div class="filter-row">
                     <div class="filter-group">
-                        <label>Sort by Price:</label>
-                        <div>
+                        <label><i class="fas fa-sort-amount-down"></i> Sort by Price</label>
+                        <div class="form-actions">
                             <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID}, sort='min-max')}"
                                class="btn btn-sm"
-                               th:class="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
+                               th:classappend="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
                                 Min to Max
                             </a>
                             <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID}, sort='max-min')}"
                                class="btn btn-sm"
-                               th:class="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
+                               th:classappend="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
                                 Max to Min
                             </a>
                             <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}"
@@ -49,74 +165,126 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="filter-group">
-                        <label>Price Range:</label>
+                        <label><i class="fas fa-money-bill"></i> Price Range</label>
                         <div class="price-inputs">
                             <input type="number" name="minPrice" th:value="${currentMinPrice}" placeholder="Min price" class="form-control price-input" step="0.01" min="0">
                             <input type="number" name="maxPrice" th:value="${currentMaxPrice}" placeholder="Max price" class="form-control price-input" step="0.01" min="0">
                         </div>
                     </div>
-
                     <div class="filter-group">
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="btn btn-secondary">Clear All</a>
+                        <button type="submit" class="btn btn-submit">
+                            <i class="fas fa-check"></i> Apply Filters
+                        </button>
+                        <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Clear All
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Currently Assigned Venue -->
     <div th:if="${venueAssigned}" class="card assigned-item">
         <div class="card-header">
-            <h2>Currently Assigned Venue</h2>
+            <h2 class="section-title"><i class="fas fa-building section-icon"></i> Currently Assigned Venue</h2>
         </div>
         <div class="card-body">
             <div class="venue-details">
-                <p><strong>Name:</strong> <span th:text="${currentVenue.Name}"></span></p>
-                <p><strong>Location:</strong> <span th:text="${currentVenue.Location}"></span></p>
-                <p><strong>Capacity:</strong> <span th:text="${currentVenue.Capacity}"></span> guests</p>
-                <p><strong>Cost:</strong> LKR <span th:text="${#numbers.formatDecimal(currentVenue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></p>
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-building"></i> Name</div>
+                    <div class="info-value" th:text="${currentVenue.Name}"></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                    <div class="info-value" th:text="${currentVenue.Location}"></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-users"></i> Capacity</div>
+                    <div class="info-value"><span th:text="${currentVenue.Capacity}"></span> guests</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-money-bill"></i> Cost</div>
+                    <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(currentVenue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                </div>
             </div>
-            <form th:action="@{/event-coordinator/events/remove-venue}" method="post" style="margin-top: 15px;">
+            <form th:action="@{/event-coordinator/events/remove-venue}" method="post" class="form-actions">
                 <input type="hidden" name="eventId" th:value="${event.EventID}">
-                <button type="submit" class="btn btn-danger"
+                <button type="submit" class="btn btn-delete"
                         onclick="return confirm('Are you sure you want to remove this venue?')">
-                    Remove Venue
+                    <i class="fas fa-trash"></i> Remove Venue
                 </button>
             </form>
         </div>
     </div>
 
-    <div th:unless="${venueAssigned}" class="alert alert-info">
+    <!-- No Venue Assigned -->
+    <div th:unless="${venueAssigned}" class="empty-state">
+        <i class="fas fa-building"></i>
         <h3>No Venue Assigned</h3>
         <p>Please select a venue from the available options below.</p>
     </div>
 
+    <!-- Available Venues -->
     <div class="card">
         <div class="card-header">
-            <h2>Available Venues <span th:if="${availableVenues != null}" class="badge bg-secondary" th:text="${availableVenues.size()}"></span></h2>
+            <h2 class="section-title"><i class="fas fa-building section-icon"></i> Available Venues
+                <span th:if="${availableVenues != null}" class="badge" th:text="${availableVenues.size()}"></span>
+            </h2>
         </div>
         <div class="card-body">
             <div class="venue-grid">
-                <div th:each="venue : ${availableVenues}" class="venue-card">
-                    <h3 th:text="${venue.Name}"></h3>
-                    <p><strong>Location:</strong> <span th:text="${venue.Location}"></span></p>
-                    <p><strong>Capacity:</strong> <span th:text="${venue.Capacity}"></span> guests</p>
-                    <p><strong>Cost:</strong> LKR <span th:text="${#numbers.formatDecimal(venue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                    <p><strong>Status:</strong> <span class="status-badge status-available" th:text="${venue.Availability}"></span></p>
-                    <form th:action="@{/event-coordinator/events/assign-venue}" method="post">
-                        <input type="hidden" name="eventId" th:value="${event.EventID}">
-                        <input type="hidden" name="venueId" th:value="${venue.VenueID}">
-                        <button type="submit" class="btn btn-success">Assign This Venue</button>
-                    </form>
+                <div th:each="venue : ${availableVenues}" class="venue-card card">
+                    <h3 class="card-header" th:text="${venue.Name}"></h3>
+                    <div class="card-body">
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                            <div class="info-value" th:text="${venue.Location}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-users"></i> Capacity</div>
+                            <div class="info-value"><span th:text="${venue.Capacity}"></span> guests</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-money-bill"></i> Cost</div>
+                            <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(venue.VenueCost, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                            <div class="info-value">
+                                <span class="status-badge status-available" th:text="${venue.Availability}"></span>
+                            </div>
+                        </div>
+                        <form th:action="@{/event-coordinator/events/assign-venue}" method="post" class="form-actions">
+                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                            <input type="hidden" name="venueId" th:value="${venue.VenueID}">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-check-circle"></i> Assign This Venue
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div th:if="${availableVenues != null and availableVenues.empty}" class="alert alert-warning">
-        <p>No available venues match your filters. Please try different filter criteria.</p>
+
+    <!-- No Venues Available -->
+    <div th:if="${availableVenues != null and availableVenues.empty}" class="empty-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>No Available Venues</h3>
+        <p>No venues match your filters. Please try different filter criteria.</p>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add staggered animation to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
 </body>
 </html>

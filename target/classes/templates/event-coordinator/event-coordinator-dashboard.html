@@ -2,65 +2,268 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Coordinator Dashboard</title>
-  <link rel="stylesheet" th:href="@{/style.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/style.css}" />
+  <style>
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .stat-box:hover {
+      transform: translateY(-2px);
+    }
+    .stat-box i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .stat-box h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0.5rem 0;
+    }
+    .stat-box p {
+      font-size: 1rem;
+      color: var(--gray);
+      margin: 0;
+    }
+    .quick-actions-card .card-body {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .table th, .table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    .table th {
+      background: var(--light);
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .table tr {
+      transition: background 0.3s ease;
+    }
+    .table tr:hover {
+      background: var(--light-gray);
+    }
+    .service-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      font-weight: 500;
+      background: #f0f9ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      margin-right: 5px;
+    }
+    .status-pending, .status-confirmed {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      font-weight: 500;
+    }
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+    .status-confirmed {
+      background: #f0fff4;
+      color: #38a169;
+      border: 1px solid #c6f6d5;
+    }
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: color 0.3s ease;
+    }
+    .copy-btn:hover {
+      color: var(--primary-dark);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .empty-state i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .empty-state h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    .empty-state p {
+      font-size: 1rem;
+      color: var(--gray);
+    }
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
 </head>
 <body>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
 <div class="container">
-  <h1>Event Coordinator Dashboard</h1>
-
-  <div class="dashboard-nav">
-    <a th:href="@{/event-coordinator/dashboard}" class="nav-item active">Dashboard Home</a>
-    <a th:href="@{/event-coordinator/events/needing-assignments}" class="nav-item">Events Needing Assignments</a>
-    <a th:href="@{/logout}" class="nav-item logout-btn">Logout</a>
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-glass-cheers logo-icon"></i>
+      <span>EventSlate</span>
+    </div>
+    <h1>Event Coordinator Dashboard</h1>
+    <div class="header-actions">
+      <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">
+        <i class="fas fa-home"></i> Dashboard Home
+      </a>
+      <a th:href="@{/event-coordinator/events-needing-assignments}" class="btn btn-secondary">
+        <i class="fas fa-tasks"></i> Events Needing Assignments
+      </a>
+      <a th:href="@{/logout}" class="btn btn-delete">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
   </div>
 
-  <div th:if="${success}" class="alert alert-success">
-    <span th:text="${success}"></span>
+  <!-- Flash Messages -->
+  <div th:if="${success}" class="alert alert-success" role="alert" aria-describedby="success-message">
+    <i class="fas fa-check-circle"></i> <span id="success-message" th:text="${success}"></span>
   </div>
-  <div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}"></span>
+  <div th:if="${error}" class="alert alert-error" role="alert" aria-describedby="error-message">
+    <i class="fas fa-exclamation-circle"></i> <span id="error-message" th:text="${error}"></span>
   </div>
 
+  <!-- Stats Section -->
   <div class="stats">
     <div class="stat-box">
+      <i class="fas fa-question-circle"></i>
       <h3 th:text="${pendingInquiriesCount != null ? pendingInquiriesCount : 0}">0</h3>
       <p>Pending Inquiries</p>
     </div>
     <div class="stat-box">
+      <i class="fas fa-calendar-check"></i>
       <h3 th:text="${pendingEventsCount != null ? pendingEventsCount : 0}">0</h3>
       <p>Pending Events</p>
     </div>
     <div class="stat-box">
+      <i class="fas fa-check-circle"></i>
       <h3 th:text="${confirmedEventsCount != null ? confirmedEventsCount : 0}">0</h3>
       <p>Confirmed Events</p>
     </div>
     <div class="stat-box">
+      <i class="fas fa-times-circle"></i>
       <h3 th:text="${rejectedCount != null ? rejectedCount : 0}">0</h3>
       <p>Rejected Inquiries</p>
     </div>
   </div>
 
+  <!-- Quick Actions -->
   <div class="card quick-actions-card">
     <div class="card-header">
-      <h3>Quick Actions</h3>
+      <h3 class="section-title"><i class="fas fa-bolt section-icon"></i> Quick Actions</h3>
     </div>
     <div class="card-body">
       <a th:href="@{/event-coordinator/events/needing-assignments}" class="btn btn-primary">
-        Manage Vendor Assignments
+        <i class="fas fa-users-cog"></i> Manage Vendor Assignments
       </a>
       <a th:href="@{#pending-inquiries}" class="btn btn-secondary">
-        View Pending Inquiries
+        <i class="fas fa-question-circle"></i> View Pending Inquiries
       </a>
     </div>
   </div>
 
+  <!-- Pending Inquiries -->
   <div id="pending-inquiries" th:if="${pendingInquiries != null and !pendingInquiries.empty}" class="card">
     <div class="card-header">
-      <h2>Pending Inquiries</h2>
+      <h2 class="section-title"><i class="fas fa-question-circle section-icon"></i> Pending Inquiries</h2>
     </div>
     <div class="card-body">
-      <table class="table">
+      <table class="table" role="grid" aria-label="Pending Inquiries Table">
         <thead>
         <tr>
           <th>ID</th>
@@ -75,7 +278,12 @@
         </thead>
         <tbody>
         <tr th:each="inquiry : ${pendingInquiries}">
-          <td th:text="${inquiry.inquiryID}"></td>
+          <td>
+            <span th:text="${inquiry.inquiryID}"></span>
+            <button class="copy-btn" onclick="copyToClipboard('${inquiry.inquiryID}', event)">
+              <i class="fas fa-copy"></i>
+            </button>
+          </td>
           <td th:text="${inquiry.eventType}"></td>
           <td th:text="${inquiry.proposedDate}"></td>
           <td th:text="${inquiry.guestCount}"></td>
@@ -87,12 +295,14 @@
             <span th:if="${inquiry.dj}" class="service-badge">DJ</span>
             <span th:if="${inquiry.decorations}" class="service-badge">Decorations</span>
             <span th:if="${!(inquiry.photographer or inquiry.catering or inquiry.dj or inquiry.decorations)}">
-              None
-            </span>
+                            None
+                        </span>
           </td>
           <td>
             <a th:href="@{/event-coordinator/inquiries/view/{id}(id=${inquiry.inquiryID})}"
-               class="btn btn-sm btn-info">View & Process</a>
+               class="btn btn-info btn-sm">
+              <i class="fas fa-eye"></i> View & Process
+            </a>
           </td>
         </tr>
         </tbody>
@@ -100,12 +310,13 @@
     </div>
   </div>
 
+  <!-- Pending Events -->
   <div id="pending-events" th:if="${pendingEvents != null and !pendingEvents.empty}" class="card">
     <div class="card-header">
-      <h2>Created Events With Pending Status</h2>
+      <h2 class="section-title"><i class="fas fa-calendar-check section-icon"></i> Created Events With Pending Status</h2>
     </div>
     <div class="card-body">
-      <table class="table">
+      <table class="table" role="grid" aria-label="Pending Events Table">
         <thead>
         <tr>
           <th>Event ID</th>
@@ -119,7 +330,12 @@
         </thead>
         <tbody>
         <tr th:each="event : ${pendingEvents}">
-          <td th:text="${event.EventID}"></td>
+          <td>
+            <span th:text="${event.EventID}"></span>
+            <button class="copy-btn" onclick="copyToClipboard('${event.EventID}', event)">
+              <i class="fas fa-copy"></i>
+            </button>
+          </td>
           <td th:text="${event.EventType}"></td>
           <td th:text="${event.EventDate}"></td>
           <td th:text="${event.Customer_Name}"></td>
@@ -129,7 +345,9 @@
           <td th:text="${event.InquiryID}"></td>
           <td>
             <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
-               class="btn btn-sm btn-primary">Manage</a>
+               class="btn btn-primary btn-sm">
+              <i class="fas fa-cog"></i> Manage
+            </a>
           </td>
         </tr>
         </tbody>
@@ -137,17 +355,17 @@
     </div>
   </div>
 
+  <!-- Confirmed Events -->
   <div id="confirmed-events" th:if="${confirmedEvents != null and !confirmedEvents.empty}" class="card">
     <div class="card-header">
-      <h2>Created Events With Confirmed Status</h2>
+      <h2 class="section-title"><i class="fas fa-check-circle section-icon"></i> Created Events With Confirmed Status</h2>
     </div>
     <div class="card-body">
-      <table class="table">
+      <table class="table" role="grid" aria-label="Confirmed Events Table">
         <thead>
         <tr>
           <th>Event ID</th>
           <th>Event Type</th>
-          <th>Event Date</th>
           <th>Customer Name</th>
           <th>Status</th>
           <th>Inquiry ID</th>
@@ -156,7 +374,12 @@
         </thead>
         <tbody>
         <tr th:each="event : ${confirmedEvents}">
-          <td th:text="${event.EventID}"></td>
+          <td>
+            <span th:text="${event.EventID}"></span>
+            <button class="copy-btn" onclick="copyToClipboard('${event.EventID}', event)">
+              <i class="fas fa-copy"></i>
+            </button>
+          </td>
           <td th:text="${event.EventType}"></td>
           <td th:text="${event.Customer_Name}"></td>
           <td>
@@ -165,7 +388,9 @@
           <td th:text="${event.InquiryID}"></td>
           <td>
             <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
-               class="btn btn-sm btn-primary">View</a>
+               class="btn btn-primary btn-sm">
+              <i class="fas fa-eye"></i> View
+            </a>
           </td>
         </tr>
         </tbody>
@@ -173,12 +398,13 @@
     </div>
   </div>
 
+  <!-- Rejected Inquiries -->
   <div th:if="${rejectedInquiries != null and !rejectedInquiries.empty}" class="card">
     <div class="card-header">
-      <h2>Rejected Inquiries</h2>
+      <h2 class="section-title"><i class="fas fa-times-circle section-icon"></i> Rejected Inquiries</h2>
     </div>
     <div class="card-body">
-      <table class="table">
+      <table class="table" role="grid" aria-label="Rejected Inquiries Table">
         <thead>
         <tr>
           <th>Inquiry ID</th>
@@ -191,7 +417,12 @@
         </thead>
         <tbody>
         <tr th:each="inquiry : ${rejectedInquiries}">
-          <td th:text="${inquiry.InquiryID}"></td>
+          <td>
+            <span th:text="${inquiry.InquiryID}"></span>
+            <button class="copy-btn" onclick="copyToClipboard('${inquiry.InquiryID}', event)">
+              <i class="fas fa-copy"></i>
+            </button>
+          </td>
           <td th:text="${inquiry.EventType}"></td>
           <td th:text="${inquiry.ProposedDate}"></td>
           <td th:text="${inquiry.Customer_Name}"></td>
@@ -203,13 +434,35 @@
     </div>
   </div>
 
+  <!-- No Data Available -->
   <div th:if="${(pendingInquiries == null or pendingInquiries.empty) and
-                 (pendingEvents == null or pendingEvents.empty) and
-                 (confirmedEvents == null or confirmedEvents.empty) and
-                 (rejectedInquiries == null or rejectedInquiries.empty)}"
-       class="alert alert-info">
-    <p>No data available. Check back later for new inquiries.</p>
+                  (pendingEvents == null or pendingEvents.empty) and
+                  (confirmedEvents == null or confirmedEvents.empty) and
+                  (rejectedInquiries == null or rejectedInquiries.empty)}"
+       class="empty-state">
+    <i class="fas fa-exclamation-circle"></i>
+    <h3>No Data Available</h3>
+    <p>Check back later for new inquiries or events.</p>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add staggered animation to cards and stat boxes
+    const cards = document.querySelectorAll('.card, .stat-box');
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+    });
+  });
+
+  function copyToClipboard(text, event) {
+    event.stopPropagation();
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied to clipboard: ' + text);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  }
+</script>
 </body>
 </html>

@@ -3,33 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle}">Manage Event Inquiries</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<div class="container">
-    <h1>Manage Event Inquiries</h1>
-    <a th:href="@{/consultant/inquiries/new}" class="btn btn-primary">+ Create New Inquiry</a>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <!-- Success message -->
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-calendar-alt logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1>Manage Event Inquiries</h1>
+        <a th:href="@{/consultant/inquiries/new}" class="btn-primary">
+            <i class="fas fa-plus"></i> Create New Inquiry
+        </a>
+    </div>
+
+    <!-- Success Message -->
     <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
         <span th:text="${success}">Success message</span>
     </div>
 
-    <!-- Inquiry statistics -->
+    <!-- Inquiry Statistics -->
     <div class="stats">
         <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
             <h3 th:text="${totalInquiries}">0</h3>
             <p>Total Inquiries</p>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>8%</span>
+            </div>
         </div>
+
         <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
             <h3 th:text="${pendingInquiries}">0</h3>
             <p>Pending Inquiries</p>
+            <div class="stat-trend down">
+                <i class="fas fa-arrow-down"></i>
+                <span>3%</span>
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 th:text="${confirmedInquiries != null ? confirmedInquiries : '0'}">0</h3>
+            <p>Confirmed Events</p>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>12%</span>
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h3 th:text="${totalBudget != null ? totalBudget : '0'}">0</h3>
+            <p>Total Budget</p>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>15%</span>
+            </div>
         </div>
     </div>
 
-    <!-- Inquiries table -->
-    <div th:if="${inquiries != null and !inquiries.empty}">
-        <table class="table">
+    <!-- Inquiries List Section -->
+    <div class="vendor-section" th:if="${inquiries != null and !inquiries.empty}">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-list-alt section-icon"></i> Event Inquiries
+            </h2>
+            <span class="vendor-count" th:text="${inquiries.size()} + ' inquiries'"></span>
+        </div>
+
+        <table class="vendor-table">
             <thead>
             <tr>
                 <th>ID</th>
@@ -37,7 +99,7 @@
                 <th>Proposed Date</th>
                 <th>Guests</th>
                 <th>Budget</th>
-                <th>Customer ID</th>
+                <th>Customer</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -45,30 +107,104 @@
             <tbody>
             <tr th:each="inquiry : ${inquiries}">
                 <td th:text="${inquiry.inquiryID}"></td>
-                <td th:text="${inquiry.eventType}"></td>
-                <td th:text="${inquiry.proposedDate}"></td>
-                <td th:text="${inquiry.guestCount}"></td>
-                <td th:text="${inquiry.budget}"></td>
-                <td th:text="${inquiry.customerID}"></td>
-                <td th:text="${inquiry.status}"></td>
                 <td>
-                    <a th:href="@{/consultant/inquiries/view/{id}(id=${inquiry.inquiryID})}"
-                       class="btn btn-sm btn-info">View Details</a>
+                    <span class="event-type" th:text="${inquiry.eventType}"></span>
+                </td>
+                <td th:text="${#temporals.format(inquiry.proposedDate, 'MMM dd, yyyy')}"></td>
+                <td>
+                    <span class="guest-count" th:text="${inquiry.guestCount}"></span>
+                </td>
+                <td class="price" th:text="'$' + ${inquiry.budget}"></td>
+                <td>
+                    <span class="customer-ref" th:text="'CUST-' + ${inquiry.customerID}"></span>
+                </td>
+                <td>
+                            <span th:classappend="'status-' + ${inquiry.status?.toLowerCase()}"
+                                  class="status-badge" th:text="${inquiry.status}">
+                            </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{'/consultant/inquiries/view/' + ${inquiry.inquiryID}}" class="btn-edit">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a th:href="@{'/consultant/inquiries/delete/' + ${inquiry.inquiryID}}"
+                           class="btn-delete"
+                           onclick="return confirm('Are you sure you want to delete this inquiry?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- No inquiries message -->
-    <div th:if="${inquiries == null or inquiries.empty}" class="alert alert-info">
-        <p>No inquiries found</p>
-        <p>Start by creating your first event inquiry.</p>
-        <a th:href="@{/consultant/inquiries/new}" class="btn btn-primary">Create First Inquiry</a>
+    <!-- Empty State -->
+    <div class="vendor-section" th:if="${inquiries == null or inquiries.empty}">
+        <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Event Inquiries Found</h3>
+            <p>Start by creating your first event inquiry to get started.</p>
+            <a th:href="@{/consultant/inquiries/new}" class="btn-primary">
+                <i class="fas fa-plus"></i> Create First Inquiry
+            </a>
+        </div>
     </div>
 
-    <!-- Back to dashboard -->
-    <a th:href="@{/consultant/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+    <!-- Back to Dashboard -->
+    <div class="navigation-actions">
+        <a th:href="@{/consultant/dashboard}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
 </div>
+
+<script>
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add confirmation for delete actions
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this inquiry?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Add status color coding
+        const statusBadges = document.querySelectorAll('.status-badge');
+        statusBadges.forEach(badge => {
+            const status = badge.textContent.toLowerCase();
+            if (status.includes('pending')) {
+                badge.style.background = '#fff3cd';
+                badge.style.color = '#856404';
+                badge.style.border = '1px solid #ffeaa7';
+            } else if (status.includes('confirmed')) {
+                badge.style.background = '#d1ecf1';
+                badge.style.color = '#0c5460';
+                badge.style.border = '1px solid #bee5eb';
+            } else if (status.includes('completed')) {
+                badge.style.background = '#d4edda';
+                badge.style.color = '#155724';
+                badge.style.border = '1px solid #c3e6cb';
+            } else if (status.includes('cancelled')) {
+                badge.style.background = '#f8d7da';
+                badge.style.color = '#721c24';
+                badge.style.border = '1px solid #f5c6cb';
+            }
+        });
+
+        // Add staggered animation to table rows
+        const tableRows = document.querySelectorAll('.vendor-table tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
 </body>
 </html>

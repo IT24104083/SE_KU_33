@@ -3,102 +3,293 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="${pageTitle}">Create New Inquiry</title>
-  <link rel="stylesheet" th:href="@{/style.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<div class="container">
-  <h1>Create New Inquiry</h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-  <!-- Error message -->
-  <div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}">Error message</span>
+<div class="container">
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-calendar-plus logo-icon"></i>
+      <span>EventSlate</span>
+    </div>
+    <h1>Create New Inquiry</h1>
+    <a th:href="@{/consultant/inquiries}" class="btn-cancel">
+      <i class="fas fa-arrow-left"></i> Back to Inquiries
+    </a>
   </div>
 
-  <form th:action="@{/consultant/inquiries/save}" th:object="${inquiry}" method="post">
-    <!-- Customer Information -->
-    <div class="form-section">
-      <h2>Customer Information</h2>
-      <div class="form-group">
-        <label for="customerID">Select Customer</label>
-        <select id="customerID" name="customerID" th:field="*{customerID}" required>
-          <option value="">-- Select a Customer --</option>
-          <option th:each="customer : ${customers}"
-                  th:value="${customer.customerID}"
-                  th:text="${customer.customerName}"></option>
-        </select>
-      </div>
+  <div class="form-container">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-file-alt section-icon"></i> New Event Inquiry
+      </h2>
     </div>
 
-    <!-- Event Details -->
-    <div class="form-section">
-      <h2>Event Details</h2>
-      <div class="form-group">
-        <label for="eventType">Event Type</label>
-        <select id="eventType" name="eventType" th:field="*{eventType}" required>
-          <option value="">-- Select Event Type --</option>
-          <option value="Wedding">Wedding</option>
-          <option value="Birthday">Birthday</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="proposedDate">Proposed Date</label>
-        <input type="date" id="proposedDate" name="proposedDate" th:field="*{proposedDate}"
-               th:min="${today}" required/>
-      </div>
-
-      <div class="form-group">
-        <label for="guestCount">Number of Guests</label>
-        <input type="number" id="guestCount" name="guestCount" th:field="*{guestCount}"
-               min="1" required/>
-      </div>
-
-      <div class="form-group">
-        <label for="budget">Budget (LKR)</label>
-        <input type="number" id="budget" name="budget" th:field="*{budget}"
-               step="0.01" min="0" required/>
-      </div>
+    <!-- Error message -->
+    <div th:if="${error}" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span th:text="${error}">Error message</span>
     </div>
 
-    <!-- Services Required -->
-    <div class="form-section">
-      <h2>Services Required</h2>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" name="photographer" th:checked="*{photographer}"/>
-          Photographer
-        </label>
-        <label>
-          <input type="checkbox" name="catering" th:checked="*{catering}"/>
-          Catering
-        </label>
-        <label>
-          <input type="checkbox" name="dj" th:checked="*{dj}"/>
-          DJ Services
-        </label>
-        <label>
-          <input type="checkbox" name="decorations" th:checked="*{decorations}"/>
-          Decorations
-        </label>
-      </div>
-    </div>
+    <form th:action="@{/consultant/inquiries/save}" th:object="${inquiry}" method="post" class="inquiry-form">
 
-    <!-- Additional Information -->
-    <div class="form-section">
-      <h2>Additional Information</h2>
-      <div class="form-group">
-        <label for="specialRequests">Special Requests or Notes</label>
-        <textarea id="specialRequests" name="specialRequests"
-                  th:field="*{specialRequests}" rows="5"></textarea>
+      <!-- Customer Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-user-friends section-icon"></i> Customer Information
+          </h3>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="customerID">
+              <i class="fas fa-user"></i>
+              Select Customer
+            </label>
+            <select id="customerID" name="customerID" th:field="*{customerID}" required>
+              <option value="">-- Select a Customer --</option>
+              <option th:each="customer : ${customers}"
+                      th:value="${customer.customerID}"
+                      th:text="${customer.customerName + ' (' + customer.email + ')'}"></option>
+            </select>
+            <div class="form-hint">Choose the customer for this event inquiry</div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Form Actions -->
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Create Inquiry</button>
-      <a th:href="@{/consultant/inquiries}" class="btn btn-secondary">Cancel</a>
-    </div>
-  </form>
+      <!-- Event Details -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-calendar-alt section-icon"></i> Event Details
+          </h3>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eventType">
+              <i class="fas fa-star"></i>
+              Event Type
+            </label>
+            <select id="eventType" name="eventType" th:field="*{eventType}" required>
+              <option value="">-- Select Event Type --</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Corporate">Corporate Event</option>
+              <option value="Anniversary">Anniversary</option>
+              <option value="Graduation">Graduation</option>
+              <option value="Baby Shower">Baby Shower</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="form-hint">Select the type of event</div>
+          </div>
+
+          <div class="form-group">
+            <label for="proposedDate">
+              <i class="fas fa-calendar-day"></i>
+              Proposed Date
+            </label>
+            <input type="date" id="proposedDate" name="proposedDate" th:field="*{proposedDate}"
+                   th:min="${today}" required/>
+            <div class="form-hint">Select the proposed event date</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guestCount">
+              <i class="fas fa-users"></i>
+              Number of Guests
+            </label>
+            <input type="number" id="guestCount" name="guestCount" th:field="*{guestCount}"
+                   min="1" max="1000" required placeholder="Enter number of guests"/>
+            <div class="form-hint">Estimated number of attendees</div>
+          </div>
+
+          <div class="form-group">
+            <label for="budget">
+              <i class="fas fa-dollar-sign"></i>
+              Budget (LKR)
+            </label>
+            <input type="number" id="budget" name="budget" th:field="*{budget}"
+                   step="0.01" min="0" required placeholder="Enter budget amount"/>
+            <div class="form-hint">Total budget for the event</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Required -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-concierge-bell section-icon"></i> Services Required
+          </h3>
+        </div>
+        <div class="services-grid">
+          <div class="service-option">
+            <input type="checkbox" id="photographer" name="photographer" th:checked="*{photographer}"/>
+            <label for="photographer" class="service-label">
+              <i class="fas fa-camera"></i>
+              <span>Photographer</span>
+            </label>
+          </div>
+
+          <div class="service-option">
+            <input type="checkbox" id="catering" name="catering" th:checked="*{catering}"/>
+            <label for="catering" class="service-label">
+              <i class="fas fa-utensils"></i>
+              <span>Catering</span>
+            </label>
+          </div>
+
+          <div class="service-option">
+            <input type="checkbox" id="dj" name="dj" th:checked="*{dj}"/>
+            <label for="dj" class="service-label">
+              <i class="fas fa-music"></i>
+              <span>DJ Services</span>
+            </label>
+          </div>
+
+          <div class="service-option">
+            <input type="checkbox" id="decorations" name="decorations" th:checked="*{decorations}"/>
+            <label for="decorations" class="service-label">
+              <i class="fas fa-paint-brush"></i>
+              <span>Decorations</span>
+            </label>
+          </div>
+
+          <div class="service-option">
+            <input type="checkbox" id="venue" name="venue" th:checked="*{venue}"/>
+            <label for="venue" class="service-label">
+              <i class="fas fa-building"></i>
+              <span>Venue</span>
+            </label>
+          </div>
+
+          <div class="service-option">
+            <input type="checkbox" id="transportation" name="transportation" th:checked="*{transportation}"/>
+            <label for="transportation" class="service-label">
+              <i class="fas fa-car"></i>
+              <span>Transportation</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i class="fas fa-sticky-note section-icon"></i> Additional Information
+          </h3>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="specialRequests">
+              <i class="fas fa-comment-alt"></i>
+              Special Requests or Notes
+            </label>
+            <textarea id="specialRequests" name="specialRequests"
+                      th:field="*{specialRequests}" rows="5"
+                      placeholder="Enter any special requirements, preferences, or additional notes for the event..."></textarea>
+            <div class="form-hint">Any specific requirements or special notes for the event</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-save"></i> Create Inquiry
+        </button>
+        <a th:href="@{/consultant/inquiries}" class="btn-cancel">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
 </div>
+
+<script>
+  // Add interactive effects
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.inquiry-form');
+    const inputs = form.querySelectorAll('input, select, textarea');
+
+    // Add focus effects
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+      });
+
+      input.addEventListener('blur', function() {
+        if (this.value === '') {
+          this.parentElement.classList.remove('focused');
+        }
+      });
+    });
+
+    // Add service selection effects
+    const serviceOptions = document.querySelectorAll('.service-option input[type="checkbox"]');
+    serviceOptions.forEach(option => {
+      option.addEventListener('change', function() {
+        const label = this.nextElementSibling;
+        if (this.checked) {
+          label.classList.add('selected');
+        } else {
+          label.classList.remove('selected');
+        }
+      });
+
+      // Initialize selected state
+      if (option.checked) {
+        option.nextElementSibling.classList.add('selected');
+      }
+    });
+
+    // Date validation
+    const dateInput = document.getElementById('proposedDate');
+    if (dateInput) {
+      dateInput.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+          this.setCustomValidity('Please select a future date');
+        } else {
+          this.setCustomValidity('');
+        }
+      });
+    }
+
+    // Budget formatting
+    const budgetInput = document.getElementById('budget');
+    if (budgetInput) {
+      budgetInput.addEventListener('blur', function() {
+        if (this.value) {
+          const formatted = new Intl.NumberFormat('en-LK', {
+            style: 'currency',
+            currency: 'LKR'
+          }).format(this.value);
+          this.parentElement.querySelector('.form-hint').textContent = `Budget: ${formatted}`;
+        }
+      });
+    }
+
+    // Form submission feedback
+    form.addEventListener('submit', function(e) {
+      const submitBtn = this.querySelector('.btn-submit');
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Inquiry...';
+      submitBtn.disabled = true;
+    });
+  });
+</script>
 </body>
 </html>

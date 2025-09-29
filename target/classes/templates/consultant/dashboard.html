@@ -4,108 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Customer Consultant Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .dashboard-header {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .user-info {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .card h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 5px;
-        }
-
-        .btn:hover {
-            background: #5a6fd8;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<div class="dashboard-container">
-    <div class="dashboard-header">
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-user-tie logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
         <h1>Customer Consultant Dashboard</h1>
-
-        <div th:if="${loginSuccess}" class="success-message">
-            ✅ Login successful! Welcome to the dashboard.
-        </div>
-
-        <div class="user-info">
-            <p><strong>Email:</strong> <span th:text="${userEmail}">N/A</span></p>
-            <p><strong>Role:</strong> <span th:text="${userRole}">N/A</span></p>
-        </div>
-
-        <a th:href="@{/logout}" class="btn">Logout</a>
+        <a th:href="@{/logout}" class="btn-cancel">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
     </div>
 
-    <div class="dashboard-cards">
-        <!-- In consultant/dashboard.html -->
-        <div class="card">
-            <h3>Customer Management</h3>
-            <a th:href="@{/consultant/customers}" class="btn">Manage Customers</a>
-            <a th:href="@{/consultant/customers/new}" class="btn">Add New Customer</a>
+    <!-- Success Message -->
+    <div th:if="${loginSuccess}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        Login successful! Welcome to the dashboard.
+    </div>
+
+    <!-- User Info Card -->
+    <div class="vendor-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-user-circle section-icon"></i> User Information
+            </h2>
+            <span class="vendor-count">Active Session</span>
+        </div>
+        <div class="user-info-grid">
+            <div class="user-info-item">
+                <div class="user-info-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="user-info-content">
+                    <label>Email Address</label>
+                    <span class="user-info-value" th:text="${userEmail}">N/A</span>
+                </div>
+            </div>
+            <div class="user-info-item">
+                <div class="user-info-icon">
+                    <i class="fas fa-user-tag"></i>
+                </div>
+                <div class="user-info-content">
+                    <label>Role</label>
+                    <span class="user-info-value user-role" th:text="${userRole}">N/A</span>
+                </div>
+            </div>
+            <div class="user-info-item">
+                <div class="user-info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="user-info-content">
+                    <label>Last Login</label>
+                    <span class="user-info-value">Just now</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Cards Grid -->
+    <div class="dashboard-grid">
+        <!-- Customer Management Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users section-icon"></i> Customer Management
+                </h2>
+            </div>
+            <div class="card-body">
+                <p>Manage customer accounts, view details, and create new customer profiles.</p>
+                <div class="card-actions">
+                    <a th:href="@{/consultant/customers}" class="btn-primary">
+                        <i class="fas fa-list"></i> Manage Customers
+                    </a>
+                    <a th:href="@{/consultant/customers/new}" class="btn-secondary">
+                        <i class="fas fa-plus"></i> Add New Customer
+                    </a>
+                </div>
+            </div>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-number">24</span>
+                    <span class="stat-label">Total Customers</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">New This Week</span>
+                </div>
+            </div>
         </div>
 
-        <!-- In consultant/dashboard.html -->
-        <div class="card">
-            <h3>Event Inquiries</h3>
-            <a th:href="@{/consultant/inquiries}" class="btn">View Inquiries</a>
-            <a th:href="@{/consultant/inquiries/new}" class="btn">Create Inquiry</a>
+        <!-- Event Inquiries Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-check section-icon"></i> Event Inquiries
+                </h2>
+            </div>
+            <div class="card-body">
+                <p>Handle event inquiries, create new inquiries, and track customer requests.</p>
+                <div class="card-actions">
+                    <a th:href="@{/consultant/inquiries}" class="btn-primary">
+                        <i class="fas fa-eye"></i> View Inquiries
+                    </a>
+                    <a th:href="@{/consultant/inquiries/new}" class="btn-secondary">
+                        <i class="fas fa-plus"></i> Create Inquiry
+                    </a>
+                </div>
+            </div>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">Active Inquiries</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Pending Review</span>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>Reports</h3>
-            <a th:href="@{/consultant/reports}" class="btn">View Reports</a>
+        <!-- Reports Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-bar section-icon"></i> Reports & Analytics
+                </h2>
+            </div>
+            <div class="card-body">
+                <p>Access detailed reports, analytics, and performance metrics for your consultancy.</p>
+                <div class="card-actions">
+                    <a th:href="@{/consultant/reports}" class="btn-primary">
+                        <i class="fas fa-chart-line"></i> View Reports
+                    </a>
+                </div>
+            </div>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Reports Available</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Satisfaction Rate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt section-icon"></i> Quick Actions
+                </h2>
+            </div>
+            <div class="card-body">
+                <p>Frequently used actions and shortcuts for efficient workflow.</p>
+                <div class="quick-actions-grid">
+                    <a th:href="@{/consultant/customers/new}" class="quick-action">
+                        <i class="fas fa-user-plus"></i>
+                        <span>New Customer</span>
+                    </a>
+                    <a th:href="@{/consultant/inquiries/new}" class="quick-action">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>New Inquiry</span>
+                    </a>
+                    <a th:href="@{/consultant/reports}" class="quick-action">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Generate Report</span>
+                    </a>
+                    <a th:href="@{/consultant/settings}" class="quick-action">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status Footer -->
+    <div class="system-status-footer">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database"></i>
+            <span>Database: <strong>Connected</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security: <strong>Active</strong></span>
         </div>
     </div>
 </div>
+
+<script>
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to dashboard cards
+        const cards = document.querySelectorAll('.dashboard-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to quick actions
+        const quickActions = document.querySelectorAll('.quick-action');
+        quickActions.forEach(action => {
+            action.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                if (Math.random() > 0.8) {
+                    const current = parseInt(stat.textContent);
+                    const change = Math.floor(Math.random() * 3) + 1;
+                    stat.textContent = current + change;
+                    stat.style.color = '#38a169';
+                    setTimeout(() => {
+                        stat.style.color = '';
+                    }, 1000);
+                }
+            });
+        }, 5000);
+    });
+</script>
 </body>
 </html>

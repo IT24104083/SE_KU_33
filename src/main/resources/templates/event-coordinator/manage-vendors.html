@@ -2,45 +2,204 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Vendors - Event Coordinator</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <style>
+        .filter-section .card-body {
+            padding: var(--card-padding);
+        }
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        .price-inputs input {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius);
+            border: 1px solid var(--light-gray);
+            font-size: 14px;
+        }
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .service-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .service-tab {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .service-tab:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+        .service-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        .service-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .status-assigned {
+            background: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
+        .status-needed {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .status-not-requested {
+            background: var(--light);
+            color: var(--gray);
+            border: 1px solid var(--light-gray);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .status-available {
+            background: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
+        .status-booked {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-label i {
+            color: var(--primary);
+            width: 16px;
+        }
+        .info-value {
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            border: 1px solid var(--light-gray);
+            font-size: 14px;
+            color: var(--dark);
+        }
+        .badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        @media (max-width: 768px) {
+            .filter-row { flex-direction: column; align-items: stretch; }
+            .price-inputs { flex-direction: column; }
+            .vendor-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<div class="container vendors-container">
-    <h1>Manage Vendors for Event #<span th:text="${event.EventID}"></span></h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div class="dashboard-nav">
-        <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="nav-item btn-secondary">← Back to Overview</a>
-        <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="nav-item btn-primary">Manage Venue</a>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-glass-cheers logo-icon"></i>
+            <span>PartySlate</span>
+        </div>
+        <h1>Manage Vendors for Event #<span th:text="${event.EventID}"></span></h1>
+        <div class="header-actions">
+            <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Overview
+            </a>
+            <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="btn btn-primary">
+                <i class="fas fa-building"></i> Manage Venue
+            </a>
+        </div>
     </div>
 
+    <!-- Flash Messages -->
     <div th:if="${success}" class="alert alert-success">
-        <span th:text="${success}"></span>
+        <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
     </div>
-    <div th:if="${error}" class="alert alert-danger">
-        <span th:text="${error}"></span>
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
     </div>
 
+    <!-- Filter Vendors Section -->
     <div class="card filter-section">
         <div class="card-header">
-            <h3>Filter Vendors</h3>
+            <h3 class="section-title"><i class="fas fa-filter section-icon"></i> Filter Vendors</h3>
         </div>
         <div class="card-body">
-            <form th:action="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" method="get">
+            <form th:action="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" method="get" class="form-actions">
                 <input type="hidden" name="id" th:value="${event.EventID}">
-
                 <div class="filter-row">
                     <div class="filter-group">
-                        <label>Sort by Price:</label>
-                        <div>
+                        <label><i class="fas fa-sort-amount-down"></i> Sort by Price</label>
+                        <div class="form-actions">
                             <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='min-max')}"
                                class="btn btn-sm"
-                               th:class="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
+                               th:classappend="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
                                 Min to Max
                             </a>
                             <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='max-min')}"
                                class="btn btn-sm"
-                               th:class="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
+                               th:classappend="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
                                 Max to Min
                             </a>
                             <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
@@ -49,366 +208,504 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="filter-group">
-                        <label>Price Range:</label>
+                        <label><i class="fas fa-money-bill"></i> Price Range</label>
                         <div class="price-inputs">
                             <input type="number" name="minPrice" th:value="${currentMinPrice}" placeholder="Min price" class="form-control price-input" step="0.01" min="0">
                             <input type="number" name="maxPrice" th:value="${currentMaxPrice}" placeholder="Max price" class="form-control price-input" step="0.01" min="0">
                         </div>
                     </div>
-
                     <div class="filter-group">
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="btn btn-secondary">Clear All</a>
+                        <button type="submit" class="btn btn-submit">
+                            <i class="fas fa-check"></i> Apply Filters
+                        </button>
+                        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Clear All
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Currently Assigned Vendors -->
     <div th:if="${assignedVendors != null and !assignedVendors.empty}" class="card">
         <div class="card-header">
-            <h2>Currently Assigned Vendors</h2>
+            <h2 class="section-title"><i class="fas fa-users-cog section-icon"></i> Currently Assigned Vendors</h2>
         </div>
         <div class="card-body">
             <div class="vendor-grid">
                 <div th:each="vendor : ${assignedVendors}" class="card assigned-vendor">
-                    <h3 th:text="${vendor.ServiceType}"></h3>
-                    <p><strong>Vendor:</strong> <span th:text="${vendor.VendorName}"></span></p>
-                    <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                    <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                    <p><strong>Status:</strong>
-                        <span class="status-badge" th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                              th:text="${vendor.Availability}"></span>
-                    </p>
-                    <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post" style="margin-top: 10px;">
-                        <input type="hidden" name="eventId" th:value="${event.EventID}">
-                        <input type="hidden" name="serviceType" th:value="${vendor.ServiceType}">
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure you want to remove this ' + '${vendor.ServiceType}' + '?')">
-                            Remove <span th:text="${vendor.ServiceType}"></span>
-                        </button>
-                    </form>
+                    <h3 class="card-header" th:text="${vendor.ServiceType}"></h3>
+                    <div class="card-body">
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-user"></i> Vendor</div>
+                            <div class="info-value" th:text="${vendor.VendorName}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                            <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                            <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                            <div class="info-value">
+                                <span class="status-badge"
+                                      th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                      th:text="${vendor.Availability}"></span>
+                            </div>
+                        </div>
+                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post" class="form-actions">
+                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                            <input type="hidden" name="serviceType" th:value="${vendor.ServiceType}">
+                            <button type="submit" class="btn btn-delete"
+                                    onclick="return confirm('Are you sure you want to remove this ' + '${vendor.ServiceType}' + '?')">
+                                <i class="fas fa-trash"></i> Remove <span th:text="${vendor.ServiceType}"></span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:if="${assignedVendors == null or assignedVendors.empty}" class="alert alert-info">
+    <!-- Empty State for Assigned Vendors -->
+    <div th:if="${assignedVendors == null or assignedVendors.empty}" class="empty-state">
+        <i class="fas fa-users-cog"></i>
         <h3>No Vendors Assigned Yet</h3>
         <p>Start by assigning vendors for the requested services below.</p>
     </div>
 
+    <!-- Service Tabs -->
     <div class="service-tabs">
-        <a class="service-tab active" onclick="showService('photographer')">📸 Photographers</a>
-        <a class="service-tab" onclick="showService('caterer')">🍽️ Caterers</a>
-        <a class="service-tab" onclick="showService('dj')">🎵 DJs</a>
-        <a class="service-tab" onclick="showService('decorator')">🎨 Decorators</a>
+        <a class="service-tab active" onclick="showService('photographer')"><i class="fas fa-camera"></i> Photographers</a>
+        <a class="service-tab" onclick="showService('caterer')"><i class="fas fa-utensils"></i> Caterers</a>
+        <a class="service-tab" onclick="showService('dj')"><i class="fas fa-music"></i> DJs</a>
+        <a class="service-tab" onclick="showService('decorator')"><i class="fas fa-paint-brush"></i> Decorators</a>
     </div>
 
+    <!-- Photographer Section -->
     <div id="photographer-section" class="card service-section">
         <div class="card-header">
-            <h2>📸 Photographers <span th:if="${photographers != null}" class="badge bg-secondary" th:text="${photographers.size()}"></span></h2>
+            <h2 class="section-title"><i class="fas fa-camera section-icon"></i> Photographers
+                <span th:if="${photographers != null}" class="badge" th:text="${photographers.size()}"></span>
+            </h2>
             <span th:if="${inquiry.Photographer}"
                   th:class="${photographerAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${photographerAssigned ? '✓ Assigned' : '⚡ Needed'}">
-            </span>
-            <span th:unless="${inquiry.Photographer}" class="service-status status-not-requested">
-                Not Requested
-            </span>
+                  th:text="${photographerAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
+            <span th:unless="${inquiry.Photographer}" class="service-status status-not-requested">Not Requested</span>
         </div>
         <div class="card-body">
             <div th:if="${inquiry.Photographer}">
                 <div th:if="${photographerAssigned}" class="alert alert-info">
-                    <p>✓ Photographer already assigned. You can remove and assign a different one if needed.</p>
+                    <i class="fas fa-info-circle"></i> Photographer already assigned. You can remove and assign a different one if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${photographers}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Photographer">
-                            <button type="submit" class="btn btn-success"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                <span th:if="${photographerAssigned}">Reassign Photographer</span>
-                                <span th:unless="${photographerAssigned}">Assign Photographer</span>
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Photographer">
+                                <button type="submit" class="btn btn-submit"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span th:if="${photographerAssigned}">Reassign Photographer</span>
+                                    <span th:unless="${photographerAssigned}">Assign Photographer</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div th:unless="${inquiry.Photographer}">
                 <div class="alert alert-info">
-                    <p>Photographer service was not requested by the customer, but you can still add it if needed.</p>
+                    <i class="fas fa-info-circle"></i> Photographer service was not requested by the customer, but you can still add it if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${photographers}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Photographer">
-                            <button type="submit" class="btn btn-info"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                Add Photographer Service
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Photographer">
+                                <button type="submit" class="btn btn-primary"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-plus-circle"></i> Add Photographer Service
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Caterer Section -->
     <div id="caterer-section" class="card service-section" style="display: none;">
         <div class="card-header">
-            <h2>🍽️ Caterers <span th:if="${caterers != null}" class="badge bg-secondary" th:text="${caterers.size()}"></span></h2>
+            <h2 class="section-title"><i class="fas fa-utensils section-icon"></i> Caterers
+                <span th:if="${caterers != null}" class="badge" th:text="${caterers.size()}"></span>
+            </h2>
             <span th:if="${inquiry.Catering}"
                   th:class="${catererAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${catererAssigned ? '✓ Assigned' : '⚡ Needed'}">
-            </span>
-            <span th:unless="${inquiry.Catering}" class="service-status status-not-requested">
-                Not Requested
-            </span>
+                  th:text="${catererAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
+            <span th:unless="${inquiry.Catering}" class="service-status status-not-requested">Not Requested</span>
         </div>
         <div class="card-body">
             <div th:if="${inquiry.Catering}">
                 <div th:if="${catererAssigned}" class="alert alert-info">
-                    <p>✓ Caterer already assigned. You can remove and assign a different one if needed.</p>
+                    <i class="fas fa-info-circle"></i> Caterer already assigned. You can remove and assign a different one if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${caterers}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Caterer">
-                            <button type="submit" class="btn btn-success"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                <span th:if="${catererAssigned}">Reassign Caterer</span>
-                                <span th:unless="${catererAssigned}">Assign Caterer</span>
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Caterer">
+                                <button type="submit" class="btn btn-submit"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span th:if="${catererAssigned}">Reassign Caterer</span>
+                                    <span th:unless="${catererAssigned}">Assign Caterer</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div th:unless="${inquiry.Catering}">
                 <div class="alert alert-info">
-                    <p>Catering service was not requested by the customer, but you can still add it if needed.</p>
+                    <i class="fas fa-info-circle"></i> Catering service was not requested by the customer, but you can still add it if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${caterers}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Caterer">
-                            <button type="submit" class="btn btn-info"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                Add Catering Service
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Caterer">
+                                <button type="submit" class="btn btn-primary"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-plus-circle"></i> Add Catering Service
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- DJ Section -->
     <div id="dj-section" class="card service-section" style="display: none;">
         <div class="card-header">
-            <h2>🎵 DJs <span th:if="${djs != null}" class="badge bg-secondary" th:text="${djs.size()}"></span></h2>
+            <h2 class="section-title"><i class="fas fa-music section-icon"></i> DJs
+                <span th:if="${djs != null}" class="badge" th:text="${djs.size()}"></span>
+            </h2>
             <span th:if="${inquiry.DJ}"
                   th:class="${djAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${djAssigned ? '✓ Assigned' : '⚡ Needed'}">
-            </span>
-            <span th:unless="${inquiry.DJ}" class="service-status status-not-requested">
-                Not Requested
-            </span>
+                  th:text="${djAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
+            <span th:unless="${inquiry.DJ}" class="service-status status-not-requested">Not Requested</span>
         </div>
         <div class="card-body">
             <div th:if="${inquiry.DJ}">
                 <div th:if="${djAssigned}" class="alert alert-info">
-                    <p>✓ DJ already assigned. You can remove and assign a different one if needed.</p>
+                    <i class="fas fa-info-circle"></i> DJ already assigned. You can remove and assign a different one if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${djs}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="DJ">
-                            <button type="submit" class="btn btn-success"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                <span th:if="${djAssigned}">Reassign DJ</span>
-                                <span th:unless="${djAssigned}">Assign DJ</span>
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="DJ">
+                                <button type="submit" class="btn btn-submit"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span th:if="${djAssigned}">Reassign DJ</span>
+                                    <span th:unless="${djAssigned}">Assign DJ</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div th:unless="${inquiry.DJ}">
                 <div class="alert alert-info">
-                    <p>DJ service was not requested by the customer, but you can still add it if needed.</p>
+                    <i class="fas fa-info-circle"></i> DJ service was not requested by the customer, but you can still add it if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${djs}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="DJ">
-                            <button type="submit" class="btn btn-info"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                Add DJ Service
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="DJ">
+                                <button type="submit" class="btn btn-primary"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-plus-circle"></i> Add DJ Service
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Decorator Section -->
     <div id="decorator-section" class="card service-section" style="display: none;">
         <div class="card-header">
-            <h2>🎨 Decorators <span th:if="${decorators != null}" class="badge bg-secondary" th:text="${decorators.size()}"></span></h2>
+            <h2 class="section-title"><i class="fas fa-paint-brush section-icon"></i> Decorators
+                <span th:if="${decorators != null}" class="badge" th:text="${decorators.size()}"></span>
+            </h2>
             <span th:if="${inquiry.Decorations}"
                   th:class="${decoratorAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${decoratorAssigned ? '✓ Assigned' : '⚡ Needed'}">
-            </span>
-            <span th:unless="${inquiry.Decorations}" class="service-status status-not-requested">
-                Not Requested
-            </span>
+                  th:text="${decoratorAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
+            <span th:unless="${inquiry.Decorations}" class="service-status status-not-requested">Not Requested</span>
         </div>
         <div class="card-body">
             <div th:if="${inquiry.Decorations}">
                 <div th:if="${decoratorAssigned}" class="alert alert-info">
-                    <p>✓ Decorator already assigned. You can remove and assign a different one if needed.</p>
+                    <i class="fas fa-info-circle"></i> Decorator already assigned. You can remove and assign a different one if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${decorators}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Decorator">
-                            <button type="submit" class="btn btn-success"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                <span th:if="${decoratorAssigned}">Reassign Decorator</span>
-                                <span th:unless="${decoratorAssigned}">Assign Decorator</span>
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Decorator">
+                                <button type="submit" class="btn btn-submit"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span th:if="${decoratorAssigned}">Reassign Decorator</span>
+                                    <span th:unless="${decoratorAssigned}">Assign Decorator</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div th:unless="${inquiry.Decorations}">
                 <div class="alert alert-info">
-                    <p>Decorator service was not requested by the customer, but you can still add it if needed.</p>
+                    <i class="fas fa-info-circle"></i> Decorator service was not requested by the customer, but you can still add it if needed.
                 </div>
-
                 <div class="vendor-grid">
                     <div th:each="vendor : ${decorators}" class="vendor-card card">
-                        <h3 th:text="${vendor.VendorName}"></h3>
-                        <p><strong>Type:</strong> <span th:text="${vendor.VendorType}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <p><strong>Availability:</strong>
-                            <span class="status-badge"
-                                  th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                  th:text="${vendor.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                            <input type="hidden" name="serviceType" value="Decorator">
-                            <button type="submit" class="btn btn-info"
-                                    th:disabled="${vendor.Availability != 'Available'}">
-                                Add Decorator Service
-                            </button>
-                        </form>
+                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
+                        <div class="card-body">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
+                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
+                                <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                <input type="hidden" name="serviceType" value="Decorator">
+                                <button type="submit" class="btn btn-primary"
+                                        th:disabled="${vendor.Availability != 'Available'}">
+                                    <i class="fas fa-plus-circle"></i> Add Decorator Service
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- No Vendors Available -->
     <div th:if="${(photographers == null or photographers.empty) and
-               (caterers == null or caterers.empty) and
-               (djs == null or djs.empty) and
-               (decorators == null or decorators.empty)}"
-         class="alert alert-info">
-        <p>No available vendors match your filters. Please try different filter criteria.</p>
+                  (caterers == null or caterers.empty) and
+                  (djs == null or djs.empty) and
+                  (decorators == null or decorators.empty)}"
+         class="empty-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>No Available Vendors</h3>
+        <p>No vendors match your filters. Please try different filter criteria.</p>
     </div>
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add staggered animation to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+        // Initialize default tab
+        showService('photographer');
+    });
+
     function showService(serviceType) {
         document.querySelectorAll('.service-section').forEach(section => {
             section.style.display = 'none';
@@ -419,9 +716,6 @@
         document.getElementById(serviceType + '-section').style.display = 'block';
         event.target.classList.add('active');
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        showService('photographer');
-    });
 </script>
 </body>
 </html>

@@ -4,35 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .success { color: green; padding: 10px; background: #e8f5e8; }
-        .info { margin: 20px 0; padding: 15px; background: #e3f2fd; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h1>Simple Dashboard</h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-<div class="success" th:if="${param.login}">
-    ✅ Login successful! You are now in the dashboard.
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-tachometer-alt logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1>Simple Dashboard</h1>
+        <a th:href="@{/logout}" class="btn-cancel">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.login}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        Login successful! You are now in the dashboard.
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="vendor-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-home section-icon"></i> Welcome to EventSlate
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="welcome-content">
+                <div class="welcome-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="welcome-text">
+                    <h3>Customer Consultant Dashboard</h3>
+                    <p>This is a simplified dashboard to verify login functionality and session management.</p>
+                    <p class="welcome-subtitle">You're successfully authenticated and ready to manage events!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Information -->
+    <div class="vendor-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle section-icon"></i> Session Information
+            </h2>
+            <span class="vendor-count">Active Session</span>
+        </div>
+        <div class="session-info-grid">
+            <div class="session-item">
+                <div class="session-icon">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <div class="session-content">
+                    <label>User ID</label>
+                    <span class="session-value" th:text="${session.userId} ?: 'N/A'"></span>
+                </div>
+            </div>
+
+            <div class="session-item">
+                <div class="session-icon">
+                    <i class="fas fa-user-tag"></i>
+                </div>
+                <div class="session-content">
+                    <label>User Role</label>
+                    <span class="session-value user-role" th:text="${session.userRole} ?: 'N/A'"></span>
+                </div>
+            </div>
+
+            <div class="session-item">
+                <div class="session-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="session-content">
+                    <label>User Name</label>
+                    <span class="session-value" th:text="${session.userName} ?: 'N/A'"></span>
+                </div>
+            </div>
+
+            <div class="session-item">
+                <div class="session-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="session-content">
+                    <label>Session Started</label>
+                    <span class="session-value">Just now</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="vendor-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-rocket section-icon"></i> Quick Navigation
+            </h2>
+        </div>
+        <div class="navigation-grid">
+            <a th:href="@{/consultant/dashboard}" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="nav-content">
+                    <h4>Full Dashboard</h4>
+                    <p>Access the complete dashboard with all features and analytics</p>
+                </div>
+                <div class="nav-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a th:href="@{/debug/session}" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="nav-content">
+                    <h4>Debug Session</h4>
+                    <p>View detailed session information and debugging tools</p>
+                </div>
+                <div class="nav-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a th:href="@{/consultant/customers}" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="nav-content">
+                    <h4>Manage Customers</h4>
+                    <p>View and manage customer accounts and information</p>
+                </div>
+                <div class="nav-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a th:href="@{/consultant/inquiries}" class="nav-card">
+                <div class="nav-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="nav-content">
+                    <h4>Event Inquiries</h4>
+                    <p>Handle event inquiries and customer requests</p>
+                </div>
+                <div class="nav-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="system-status-simple">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>Authentication: <strong>Verified</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Session: <strong>Active</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-check-circle"></i>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+    </div>
 </div>
 
-<div class="info">
-    <h3>Welcome to the Customer Consultant Dashboard!</h3>
-    <p>This is a simple test page to verify login is working.</p>
-</div>
+<script>
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to navigation cards
+        const navCards = document.querySelectorAll('.nav-card');
+        navCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
 
-<div>
-    <h4>Session Information:</h4>
-    <p>User ID: <span th:text="${session.userId}">N/A</span></p>
-    <p>User Role: <span th:text="${session.userRole}">N/A</span></p>
-    <p>User Name: <span th:text="${session.userName}">N/A</span></p>
-</div>
+        // Add session time simulation
+        let sessionTime = 0;
+        const sessionElement = document.querySelector('.session-item:nth-child(4) .session-value');
 
-<div style="margin-top: 20px;">
-    <a th:href="@{/logout}" style="color: blue; text-decoration: underline;">Logout</a> |
-    <a th:href="@{/consultant/dashboard}" style="color: blue; text-decoration: underline;">Full Dashboard</a> |
-    <a th:href="@{/debug/session}" style="color: blue; text-decoration: underline;">Debug Session</a>
-</div>
+        setInterval(() => {
+            sessionTime++;
+            const minutes = Math.floor(sessionTime / 60);
+            const seconds = sessionTime % 60;
+
+            if (sessionElement) {
+                if (sessionTime < 60) {
+                    sessionElement.textContent = `${sessionTime} seconds ago`;
+                } else {
+                    sessionElement.textContent = `${minutes}m ${seconds}s ago`;
+                }
+            }
+        }, 1000);
+
+        // Add status indicator animation
+        const statusIndicator = document.querySelector('.status-indicator');
+        setInterval(() => {
+            statusIndicator.classList.toggle('pulse');
+        }, 2000);
+    });
+</script>
 </body>
 </html>

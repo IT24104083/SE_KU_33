@@ -3,91 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle}">Inquiry Details</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
 <div class="container">
-    <h1 th:text="${pageTitle}">Inquiry Details</h1>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-calendar-alt logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1 th:text="${pageTitle}">Inquiry Details</h1>
+        <div class="header-actions">
+            <a th:href="@{/consultant/inquiries}" class="btn-cancel">
+                <i class="fas fa-arrow-left"></i> Back to Inquiries
+            </a>
+            <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-edit">
+                <i class="fas fa-edit"></i> Edit Inquiry
+            </a>
+        </div>
+    </div>
 
     <!-- Error message -->
-    <div th:if="${error}" class="alert alert-danger">
+    <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
         <span th:text="${error}">Error message</span>
     </div>
 
     <!-- Inquiry Details -->
-    <div th:if="${inquiry != null}" class="card">
-        <h2>Inquiry Information</h2>
-        <table class="table">
-            <tr>
-                <th>Inquiry ID</th>
-                <td th:text="${inquiry.inquiryID}"></td>
-            </tr>
-            <tr>
-                <th>Event Type</th>
-                <td th:text="${inquiry.eventType}"></td>
-            </tr>
-            <tr>
-                <th>Proposed Date</th>
-                <td th:text="${inquiry.proposedDate}"></td>
-            </tr>
-            <tr>
-                <th>Number of Guests</th>
-                <td th:text="${inquiry.guestCount}"></td>
-            </tr>
-            <tr>
-                <th>Budget (LKR)</th>
-                <td th:text="${inquiry.budget}"></td>
-            </tr>
-            <tr>
-                <th>Services Required</th>
-                <td>
-                    <span th:if="${inquiry.photographer}">Photographer, </span>
-                    <span th:if="${inquiry.catering}">Catering, </span>
-                    <span th:if="${inquiry.dj}">DJ Services, </span>
-                    <span th:if="${inquiry.decorations}">Decorations</span>
-                    <span th:if="${!inquiry.photographer and !inquiry.catering and !inquiry.dj and !inquiry.decorations}">
-                        None
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th>Special Requests</th>
-                <td th:text="${inquiry.specialRequests} ?: 'None'"></td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td th:text="${inquiry.status}"></td>
-            </tr>
-        </table>
+    <div class="vendor-section" th:if="${inquiry != null}">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-file-alt section-icon"></i> Inquiry Information
+            </h2>
+            <span class="inquiry-id" th:text="'ID: ' + ${inquiry.inquiryID}"></span>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-hashtag"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Inquiry ID</label>
+                    <span class="detail-value" th:text="${inquiry.inquiryID}"></span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Event Type</label>
+                    <span class="detail-value event-type-badge" th:text="${inquiry.eventType}"></span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Proposed Date</label>
+                    <span class="detail-value" th:text="${#temporals.format(inquiry.proposedDate, 'MMMM dd, yyyy')}"></span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Number of Guests</label>
+                    <span class="detail-value guest-count" th:text="${inquiry.guestCount}"></span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Budget</label>
+                    <span class="detail-value price" th:text="'LKR ' + ${#numbers.formatDecimal(inquiry.budget, 0, 'COMMA', 2, 'POINT')}"></span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="detail-content">
+                    <label>Status</label>
+                    <span th:classappend="'status-' + ${inquiry.status?.toLowerCase()}"
+                          class="status-badge" th:text="${inquiry.status}">
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Required -->
+        <div class="services-section">
+            <h3 class="section-subtitle">
+                <i class="fas fa-concierge-bell"></i> Services Required
+            </h3>
+            <div class="services-list">
+                <div th:if="${inquiry.photographer}" class="service-tag">
+                    <i class="fas fa-camera"></i> Photographer
+                </div>
+                <div th:if="${inquiry.catering}" class="service-tag">
+                    <i class="fas fa-utensils"></i> Catering
+                </div>
+                <div th:if="${inquiry.dj}" class="service-tag">
+                    <i class="fas fa-music"></i> DJ Services
+                </div>
+                <div th:if="${inquiry.decorations}" class="service-tag">
+                    <i class="fas fa-paint-brush"></i> Decorations
+                </div>
+                <div th:if="${inquiry.venue}" class="service-tag">
+                    <i class="fas fa-building"></i> Venue
+                </div>
+                <div th:if="${inquiry.transportation}" class="service-tag">
+                    <i class="fas fa-car"></i> Transportation
+                </div>
+                <div th:if="${!inquiry.photographer and !inquiry.catering and !inquiry.dj and !inquiry.decorations and !inquiry.venue and !inquiry.transportation}"
+                     class="no-services">
+                    <i class="fas fa-times-circle"></i> No services selected
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Requests -->
+        <div class="special-requests-section" th:if="${inquiry.specialRequests}">
+            <h3 class="section-subtitle">
+                <i class="fas fa-comment-alt"></i> Special Requests
+            </h3>
+            <div class="special-requests-content">
+                <p th:text="${inquiry.specialRequests}"></p>
+            </div>
+        </div>
     </div>
 
     <!-- Customer Details -->
-    <div th:if="${customer != null}" class="card">
-        <h2>Customer Information</h2>
-        <table class="table">
-            <tr>
-                <th>Customer ID</th>
-                <td th:text="${customer.customerID}"></td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td th:text="${customer.customerName}"></td>
-            </tr>
-            <tr>
-                <th>Phone</th>
-                <td th:text="${customer.phone} ?: 'Not provided'"></td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td th:text="${customer.email} ?: 'Not provided'"></td>
-            </tr>
-        </table>
+    <div class="vendor-section" th:if="${customer != null}">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-user-circle section-icon"></i> Customer Information
+            </h2>
+            <a th:href="@{'/consultant/customers/view/' + ${customer.customerID}}" class="btn-edit">
+                <i class="fas fa-external-link-alt"></i> View Customer
+            </a>
+        </div>
+
+        <div class="customer-details-grid">
+            <div class="customer-detail-item">
+                <div class="customer-icon">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <div class="customer-content">
+                    <label>Customer ID</label>
+                    <span class="customer-value" th:text="${customer.customerID}"></span>
+                </div>
+            </div>
+
+            <div class="customer-detail-item">
+                <div class="customer-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="customer-content">
+                    <label>Full Name</label>
+                    <span class="customer-value" th:text="${customer.customerName}"></span>
+                </div>
+            </div>
+
+            <div class="customer-detail-item">
+                <div class="customer-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div class="customer-content">
+                    <label>Phone Number</label>
+                    <span class="customer-value" th:text="${customer.phone} ?: 'Not provided'"></span>
+                </div>
+            </div>
+
+            <div class="customer-detail-item">
+                <div class="customer-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="customer-content">
+                    <label>Email Address</label>
+                    <span class="customer-value" th:text="${customer.email}"></span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Actions -->
-    <div class="form-actions">
-        <a th:href="@{/consultant/inquiries}" class="btn btn-secondary">Back to Inquiries</a>
+    <!-- Action Buttons -->
+    <div class="action-buttons-center">
+        <a th:href="@{/consultant/inquiries}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Inquiries
+        </a>
+        <a th:href="@{'/consultant/inquiries/edit/' + ${inquiry.inquiryID}}" class="btn-edit">
+            <i class="fas fa-edit"></i> Edit Inquiry
+        </a>
+        <a th:href="@{'/consultant/inquiries/delete/' + ${inquiry.inquiryID}}"
+           class="btn-delete"
+           onclick="return confirm('Are you sure you want to delete this inquiry?');">
+            <i class="fas fa-trash"></i> Delete Inquiry
+        </a>
+    </div>
+
+    <!-- Quick Stats Footer -->
+    <div class="quick-stats-footer">
+        <div class="stat-item">
+            <i class="fas fa-clock"></i>
+            <span>Created: <strong>Today</strong></span>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-sync"></i>
+            <span>Last Updated: <strong>Just now</strong></span>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-user-edit"></i>
+            <span>Managed By: <strong>You</strong></span>
+        </div>
     </div>
 </div>
+
+<script>
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add confirmation for delete actions
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this inquiry?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Add hover effects to detail items
+        const detailItems = document.querySelectorAll('.detail-item, .customer-detail-item');
+        detailItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Add status color coding
+        const statusBadge = document.querySelector('.status-badge');
+        if (statusBadge) {
+            const status = statusBadge.textContent.toLowerCase();
+            if (status.includes('pending')) {
+                statusBadge.classList.add('status-pending');
+            } else if (status.includes('confirmed')) {
+                statusBadge.classList.add('status-confirmed');
+            } else if (status.includes('completed')) {
+                statusBadge.classList.add('status-completed');
+            } else if (status.includes('cancelled')) {
+                statusBadge.classList.add('status-cancelled');
+            } else if (status.includes('draft')) {
+                statusBadge.classList.add('status-draft');
+            }
+        }
+    });
+</script>
 </body>
 </html>

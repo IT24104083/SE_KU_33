@@ -2,86 +2,83 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Inquiry Details</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}" />
     <style>
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .card-header {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #ddd;
-            border-radius: 8px 8px 0 0;
-        }
-        .card-body {
-            padding: 20px;
-        }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: -10px;
-        }
-        .col {
-            flex: 1;
-            min-width: 300px;
-            padding: 10px;
-        }
         .info-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .info-label {
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-label i {
+            color: var(--primary);
+            width: 16px;
         }
         .info-value {
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border: 1px solid #eee;
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+            border: 1px solid var(--light-gray);
+            font-size: 14px;
+            color: var(--dark);
         }
         .service-badge {
-            display: inline-block;
-            background: #28a745;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--secondary);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            margin: 2px;
-            font-size: 0.9em;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
         }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin-right: 10px;
-            margin-bottom: 10px;
+        .service-not-required {
+            color: var(--gray);
+            font-style: italic;
         }
-        .btn-success { background: #28a745; color: white; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-primary { background: #007bff; color: white; }
-        .alert {
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+        .action-section {
+            padding: var(--card-padding);
+            border-top: 1px solid var(--light-gray);
         }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        @media (max-width: 768px) {
+            .row { flex-direction: column; }
+            .col { min-width: 100%; }
+        }
     </style>
 </head>
 <body>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
 <div class="container">
-    <h1>Inquiry Details</h1>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-glass-cheers logo-icon"></i>
+            <span>PartySlate</span>
+        </div>
+        <h1 th:text="${pageTitle}">Inquiry Details</h1>
+        <div class="header-actions">
+            <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
 
     <!-- Show warning if event already exists -->
     <div th:if="${eventExists}" class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
         <strong>Note:</strong> An event has already been created for this inquiry.
     </div>
 
@@ -89,27 +86,27 @@
         <!-- Customer Information Card -->
         <div class="card">
             <div class="card-header">
-                <h2>Customer Information</h2>
+                <h2 class="section-title"><i class="fas fa-user section-icon"></i> Customer Information</h2>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">Customer Name</div>
+                            <div class="info-label"><i class="fas fa-user"></i> Customer Name</div>
                             <div class="info-value" th:text="${inquiry.Customer_Name}"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Phone Number</div>
+                            <div class="info-label"><i class="fas fa-phone"></i> Phone Number</div>
                             <div class="info-value" th:text="${inquiry.Phone} ?: 'Not provided'"></div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">Email Address</div>
+                            <div class="info-label"><i class="fas fa-envelope"></i> Email Address</div>
                             <div class="info-value" th:text="${inquiry.Email} ?: 'Not provided'"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Customer ID</div>
+                            <div class="info-label"><i class="fas fa-id-card"></i> Customer ID</div>
                             <div class="info-value" th:text="${inquiry.CustomerID}"></div>
                         </div>
                     </div>
@@ -120,35 +117,35 @@
         <!-- Event Details Card -->
         <div class="card">
             <div class="card-header">
-                <h2>Event Details</h2>
+                <h2 class="section-title"><i class="fas fa-calendar section-icon"></i> Event Details</h2>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">Inquiry ID</div>
+                            <div class="info-label"><i class="fas fa-hashtag"></i> Inquiry ID</div>
                             <div class="info-value" th:text="${inquiry.InquiryID}"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Event Type</div>
+                            <div class="info-label"><i class="fas fa-star"></i> Event Type</div>
                             <div class="info-value" th:text="${inquiry.EventType}"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Proposed Date</div>
+                            <div class="info-label"><i class="fas fa-calendar-day"></i> Proposed Date</div>
                             <div class="info-value" th:text="${inquiry.ProposedDate}"></div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">Guest Count</div>
+                            <div class="info-label"><i class="fas fa-users"></i> Guest Count</div>
                             <div class="info-value" th:text="${inquiry.GuestCount}"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Budget (LKR)</div>
+                            <div class="info-label"><i class="fas fa-money-bill"></i> Budget (LKR)</div>
                             <div class="info-value" th:text="${inquiry.Budget} ?: 'Not specified'"></div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Status</div>
+                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
                             <div class="info-value" th:text="${inquiry.Status}"></div>
                         </div>
                     </div>
@@ -159,39 +156,47 @@
         <!-- Services Required Card -->
         <div class="card">
             <div class="card-header">
-                <h2>Services Required</h2>
+                <h2 class="section-title"><i class="fas fa-cogs section-icon"></i> Services Required</h2>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">Photographer</div>
+                            <div class="info-label"><i class="fas fa-camera"></i> Photographer</div>
                             <div class="info-value">
-                                <span th:if="${inquiry.Photographer}" class="service-badge">Required</span>
-                                <span th:unless="${inquiry.Photographer}">Not Required</span>
+                                <span th:if="${inquiry.Photographer}" class="service-badge">
+                                    <i class="fas fa-check"></i> Required
+                                </span>
+                                <span th:unless="${inquiry.Photographer}" class="service-not-required">Not Required</span>
                             </div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Catering</div>
+                            <div class="info-label"><i class="fas fa-utensils"></i> Catering</div>
                             <div class="info-value">
-                                <span th:if="${inquiry.Catering}" class="service-badge">Required</span>
-                                <span th:unless="${inquiry.Catering}">Not Required</span>
+                                <span th:if="${inquiry.Catering}" class="service-badge">
+                                    <i class="fas fa-check"></i> Required
+                                </span>
+                                <span th:unless="${inquiry.Catering}" class="service-not-required">Not Required</span>
                             </div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="info-group">
-                            <div class="info-label">DJ</div>
+                            <div class="info-label"><i class="fas fa-music"></i> DJ</div>
                             <div class="info-value">
-                                <span th:if="${inquiry.DJ}" class="service-badge">Required</span>
-                                <span th:unless="${inquiry.DJ}">Not Required</span>
+                                <span th:if="${inquiry.DJ}" class="service-badge">
+                                    <i class="fas fa-check"></i> Required
+                                </span>
+                                <span th:unless="${inquiry.DJ}" class="service-not-required">Not Required</span>
                             </div>
                         </div>
                         <div class="info-group">
-                            <div class="info-label">Decorations</div>
+                            <div class="info-label"><i class="fas fa-paint-brush"></i> Decorations</div>
                             <div class="info-value">
-                                <span th:if="${inquiry.Decorations}" class="service-badge">Required</span>
-                                <span th:unless="${inquiry.Decorations}">Not Required</span>
+                                <span th:if="${inquiry.Decorations}" class="service-badge">
+                                    <i class="fas fa-check"></i> Required
+                                </span>
+                                <span th:unless="${inquiry.Decorations}" class="service-not-required">Not Required</span>
                             </div>
                         </div>
                     </div>
@@ -202,7 +207,7 @@
         <!-- Special Requests Card -->
         <div class="card">
             <div class="card-header">
-                <h2>Special Requests & Notes</h2>
+                <h2 class="section-title"><i class="fas fa-sticky-note section-icon"></i> Special Requests & Notes</h2>
             </div>
             <div class="card-body">
                 <div class="info-group">
@@ -216,52 +221,64 @@
         <!-- Action Buttons -->
         <div class="card">
             <div class="card-body">
-                <!-- Create Event Form - Only show if no event exists yet and status is Pending -->
-                <div th:unless="${eventExists}">
-                    <div th:if="${inquiry.Status == 'Pending'}">
-                        <h3>Process Inquiry</h3>
-                        <form th:action="@{/event-coordinator/events/create}" method="post">
-                            <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
-                            <input type="hidden" name="customerId" th:value="${inquiry.CustomerID}">
-                            <input type="hidden" name="eventType" th:value="${inquiry.EventType}">
-                            <input type="hidden" name="eventDate" th:value="${inquiry.ProposedDate}">
-
-                            <button type="submit" class="btn btn-success">
-                                ✅ Create Event & Accept Inquiry
-                            </button>
-                        </form>
-
-                        <form th:action="@{/event-coordinator/inquiries/reject}" method="post" style="margin-top: 10px;">
-                            <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
-                            <button type="submit" class="btn btn-danger"
-                                    onclick="return confirm('Are you sure you want to reject this inquiry? This action cannot be undone.')">
-                                ❌ Reject Inquiry
-                            </button>
-                        </form>
+                <div class="action-section">
+                    <!-- Create Event Form - Only show if no event exists yet and status is Pending -->
+                    <div th:unless="${eventExists}">
+                        <div th:if="${inquiry.Status == 'Pending'}">
+                            <h3 class="section-title"><i class="fas fa-cog section-icon"></i> Process Inquiry</h3>
+                            <form th:action="@{/event-coordinator/events/create}" method="post" class="form-actions">
+                                <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
+                                <input type="hidden" name="customerId" th:value="${inquiry.CustomerID}">
+                                <input type="hidden" name="eventType" th:value="${inquiry.EventType}">
+                                <input type="hidden" name="eventDate" th:value="${inquiry.ProposedDate}">
+                                <button type="submit" class="btn btn-submit">
+                                    <i class="fas fa-check-circle"></i> Create Event & Accept Inquiry
+                                </button>
+                            </form>
+                            <form th:action="@{/event-coordinator/inquiries/reject}" method="post" class="form-actions">
+                                <input type="hidden" name="inquiryId" th:value="${inquiry.InquiryID}">
+                                <button type="submit" class="btn btn-delete"
+                                        onclick="return confirm('Are you sure you want to reject this inquiry? This action cannot be undone.')">
+                                    <i class="fas fa-times-circle"></i> Reject Inquiry
+                                </button>
+                            </form>
+                        </div>
+                        <div th:if="${inquiry.Status != 'Pending'}" class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <p>This inquiry has already been processed. Status: <strong th:text="${inquiry.Status}"></strong></p>
+                        </div>
                     </div>
-
-                    <div th:if="${inquiry.Status != 'Pending'}" class="alert alert-info">
-                        <p>This inquiry has already been processed. Status: <strong th:text="${inquiry.Status}"></strong></p>
+                    <div th:if="${eventExists}" class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <p>An event has already been created for this inquiry. No further action is required.</p>
                     </div>
-                </div>
-
-                <div th:if="${eventExists}" class="alert alert-info">
-                    <p>An event has already been created for this inquiry. No further action is required.</p>
-                </div>
-
-                <div style="margin-top: 20px;">
-                    <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
-                        ← Back to Dashboard
-                    </a>
+                    <div class="header-actions">
+                        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:unless="${inquiry}" class="alert alert-danger">
+    <div th:unless="${inquiry}" class="empty-state">
+        <i class="fas fa-exclamation-circle"></i>
         <p>Inquiry not found.</p>
-        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">Back to Dashboard</a>
+        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add staggered animation to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
 </body>
 </html>

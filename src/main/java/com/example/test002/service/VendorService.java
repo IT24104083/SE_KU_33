@@ -17,41 +17,38 @@ public class VendorService {
     private JdbcTemplate jdbcTemplate;
 
     public List<Vendor> getAllVendors() {
-        String sql = "SELECT * FROM Vendor ORDER BY VendorType, VendorName";
-        return jdbcTemplate.query(sql, new VendorRowMapper());
+        return jdbcTemplate.query("SELECT * FROM Vendor", new VendorRowMapper());
     }
 
-    public List<Vendor> getVendorsByType(String vendorType) {
-        String sql = "SELECT * FROM Vendor WHERE VendorType = ? AND Availability = 'Available' ORDER BY VendorName";
-        return jdbcTemplate.query(sql, new VendorRowMapper(), vendorType);
+    public Vendor getVendorById(Integer id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM Vendor WHERE VendorID=?", new VendorRowMapper(), id);
     }
 
-    public List<Vendor> getAvailableVendors() {
-        String sql = "SELECT * FROM Vendor WHERE Availability = 'Available' ORDER BY VendorType, VendorName";
-        return jdbcTemplate.query(sql, new VendorRowMapper());
+    public void addVendor(Vendor vendor) {
+        jdbcTemplate.update("INSERT INTO Vendor (VendorName, VendorType, Price, ContactNo, Availability) VALUES (?, ?, ?, ?, ?)",
+                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo(), vendor.getAvailability());
     }
 
-    public Vendor getVendorById(Integer vendorId) {
-        String sql = "SELECT * FROM Vendor WHERE VendorID = ?";
-        return jdbcTemplate.queryForObject(sql, new VendorRowMapper(), vendorId);
+    public void updateVendor(Vendor vendor) {
+        jdbcTemplate.update("UPDATE Vendor SET VendorName=?, VendorType=?, Price=?, ContactNo=?, Availability=? WHERE VendorID=?",
+                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo(), vendor.getAvailability(), vendor.getVendorID());
     }
 
-    public void updateVendorAvailability(Integer vendorId, String availability) {
-        String sql = "UPDATE Vendor SET Availability = ? WHERE VendorID = ?";
-        jdbcTemplate.update(sql, availability, vendorId);
+    public void deleteVendor(Integer id) {
+        jdbcTemplate.update("DELETE FROM Vendor WHERE VendorID=?", id);
     }
 
     private static class VendorRowMapper implements RowMapper<Vendor> {
-        @Override
         public Vendor mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Vendor vendor = new Vendor();
-            vendor.setVendorID(rs.getInt("VendorID"));
-            vendor.setVendorName(rs.getString("VendorName"));
-            vendor.setVendorType(rs.getString("VendorType"));
-            vendor.setPrice(rs.getBigDecimal("Price"));
-            vendor.setContactNo(rs.getString("ContactNo"));
-            vendor.setAvailability(rs.getString("Availability"));
-            return vendor;
+            Vendor v = new Vendor();
+            v.setVendorID(rs.getInt("VendorID"));
+            v.setVendorName(rs.getString("VendorName"));
+            v.setVendorType(rs.getString("VendorType"));
+            v.setPrice(rs.getBigDecimal("Price"));
+            v.setContactNo(rs.getString("ContactNo"));
+            v.setAvailability(rs.getString("Availability"));
+            return v;
         }
     }
 }
+

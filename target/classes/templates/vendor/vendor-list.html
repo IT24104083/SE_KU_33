@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vendor Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+</head>
+<body>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-glass-cheers logo-icon"></i>
+            <span>PartySlate</span>
+        </div>
+        <h1>Vendor Management</h1>
+        <a th:href="@{/vendors/new}" class="btn-primary">
+            <i class="fas fa-plus"></i> Add Vendor
+        </a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="filter-container">
+        <div class="filter-title">
+            <i class="fas fa-filter"></i> Filter Vendors
+        </div>
+        <form th:action="@{/vendors/filter}" method="get" class="filter-form">
+            <div class="form-group">
+                <label for="type">Vendor Type:</label>
+                <select name="type" id="type">
+                    <option value="">All Types</option>
+                    <option value="Photographer" th:selected="${selectedType == 'Photographer'}">Photographer</option>
+                    <option value="DJ" th:selected="${selectedType == 'DJ'}">DJ</option>
+                    <option value="Caterer" th:selected="${selectedType == 'Caterer'}">Caterer</option>
+                    <option value="Decorator" th:selected="${selectedType == 'Decorator'}">Decorator</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="minPrice">Min Price (Rs.):</label>
+                <input type="number" step="0.01" id="minPrice" name="minPrice" th:value="${minPrice}" placeholder="Min Price"/>
+            </div>
+
+            <div class="form-group">
+                <label for="maxPrice">Max Price (Rs.):</label>
+                <input type="number" step="0.01" id="maxPrice" name="maxPrice" th:value="${maxPrice}" placeholder="Max Price"/>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <a th:href="@{/vendors}" class="btn-reset">
+                    <i class="fas fa-times"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Vendor List Section -->
+    <div class="vendor-section" th:if="${vendors != null and !vendors.isEmpty()}">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-users section-icon"></i> All Vendors
+            </h2>
+            <span class="vendor-count" th:text="${vendors.size()} + ' vendors'"></span>
+        </div>
+        <table class="vendor-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Contact</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vendor : ${vendors}">
+                <td th:text="${vendor.vendorName}"></td>
+                <td>
+                    <span class="vendor-type" th:text="${vendor.vendorType}"></span>
+                </td>
+                <td class="price" th:text="'Rs. ' + ${vendor.price}"></td>
+                <td th:text="${vendor.contactNo}"></td>
+                <td>
+                            <span th:class="${vendor.availability} ? 'status-available' : 'status-unavailable'"
+                                  th:text="${vendor.availability} ? 'Available' : 'Unavailable'"></span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn-edit" th:href="@{'/vendors/edit/' + ${vendor.vendorID}}">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a class="btn-delete" th:href="@{'/vendors/delete/' + ${vendor.vendorID}}"
+                           onclick="return confirm('Are you sure you want to delete this vendor?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    <div class="vendor-section" th:if="${vendors == null or vendors.isEmpty()}">
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <p>No vendors found. <a th:href="@{/vendors/new}" style="color: var(--primary); text-decoration: none;">Add your first vendor</a> to get started.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add confirmation for delete actions
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this vendor?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Add staggered animation to vendor sections
+        const vendorSections = document.querySelectorAll('.vendor-section');
+        vendorSections.forEach((section, index) => {
+            section.style.animationDelay = ${index * 0.1}s;
+        });
+    });
+</script>
+</body>
+</html>
+
+

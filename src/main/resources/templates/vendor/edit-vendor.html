@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Vendor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/style.css}" />
+</head>
+<body>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-glass-cheers logo-icon"></i>
+            <span>PartySlate</span>
+        </div>
+        <h1>Edit Vendor</h1>
+        <a th:href="@{/vendors}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Vendors
+        </a>
+    </div>
+
+    <div class="form-container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-edit section-icon"></i> Edit Vendor Details
+            </h2>
+            <span class="vendor-id" th:text="'ID: ' + ${vendor.vendorID}"></span>
+        </div>
+
+        <form th:action="@{/vendors/edit}" th:object="${vendor}" method="post" class="vendor-form">
+            <input type="hidden" th:field="*{vendorID}" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vendorName">Vendor Name</label>
+                    <input type="text" id="vendorName" th:field="*{vendorName}" required placeholder="Enter vendor name" />
+                    <div class="form-hint">Enter the full name of the vendor</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vendorType">Vendor Type</label>
+                    <select id="vendorType" th:field="*{vendorType}" required>
+                        <option value="Photographer">Photographer</option>
+                        <option value="DJ">DJ</option>
+                        <option value="Caterer">Caterer</option>
+                        <option value="Decorator">Decorator</option>
+                    </select>
+                    <div class="form-hint">Choose the type of service provided</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Price (Rs.)</label>
+                    <input type="number" id="price" th:field="*{price}" step="0.01" required placeholder="0.00" />
+                    <div class="form-hint">Enter the price </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactNo">Contact Number</label>
+                    <input type="text" id="contactNo" th:field="*{contactNo}" required placeholder="Enter contact number" />
+                    <div class="form-hint">Enter Phone number </div>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="availability">Availability Status</label>
+                <select id="availability" th:field="*{availability}" required>
+                    <option value="Available">Available</option>
+                    <option value="Unavailable">Unavailable</option>
+                </select>
+                <div class="form-hint">Current availability status of the vendor</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Update Vendor
+                </button>
+                <a th:href="@{/vendors}" class="btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add form validation and interactivity
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.vendor-form');
+        const inputs = form.querySelectorAll('input, select');
+
+        // Add focus effects
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+
+            // Check if input has value on page load (for edit form)
+            if (input.value !== '') {
+                input.parentElement.classList.add('focused');
+            }
+        });
+
+        // Form submission feedback
+        form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+        });
+
+        // Pre-select the current vendor type and availability
+        const vendorType = document.getElementById('vendorType');
+        const availability = document.getElementById('availability');
+
+        // These values will be automatically set by Thymeleaf
+        // This is just for visual feedback
+        if (vendorType.value) {
+            vendorType.parentElement.classList.add('focused');
+        }
+        if (availability.value) {
+            availability.parentElement.classList.add('focused');
+        }
+    });
+</script>
+</body>
+</html>

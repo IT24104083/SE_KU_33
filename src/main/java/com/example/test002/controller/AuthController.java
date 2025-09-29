@@ -71,7 +71,7 @@ public class AuthController {
                     case "VenueCoordinator":
                         return "redirect:/venue/dashboard?login=success";
                     case "VendorCoordinator":
-                        return "redirect:/vendor/dashboard?login=success";
+                        return "redirect:/vendors/dashboard?login=success"; //changed vendor into vendors
                     case "FinanceOfficer":
                         return "redirect:/finance/dashboard?login=success";
                     case "CustomerSupportOfficer":

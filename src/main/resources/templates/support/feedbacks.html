@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Feedbacks</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .rating-1 { background-color: #ffebee; }
+        .rating-5 { background-color: #e8f5e8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Manage Customer Feedback</h1>
+    <p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+
+    <div class="navigation">
+        <a th:href="@{/support/dashboard}">← Back to Dashboard</a>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.success}" class="success-message">
+        <p th:if="${param.success == 'response_submitted'}">Response submitted successfully!</p>
+        <p th:if="${param.success == 'status_updated'}">Status updated successfully!</p>
+    </div>
+
+    <!-- Feedback Table -->
+    <div th:if="${feedbackList.empty}">
+        <p>No feedback found.</p>
+    </div>
+
+    <div th:unless="${feedbackList.empty}">
+        <table>
+            <thead>
+            <tr>
+                <th>Feedback ID</th>
+                <th>Customer</th>
+                <th>Event</th>
+                <th>Rating</th>
+                <th>Issue Description</th>
+                <th>Comments</th>
+                <th>Date Submitted</th>
+                <th>Status</th>
+                <th>Response</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="feedback : ${feedbackList}"
+                th:classappend="'rating-' + ${feedback.Rating}">
+                <td th:text="${feedback.FeedbackID}"></td>
+                <td>
+                    <strong th:text="${feedback.Customer_Name}"></strong><br>
+                    <small th:text="${feedback.Email}"></small>
+                </td>
+                <td>
+                    <span th:text="${feedback.EventType} ?: 'N/A'"></span><br>
+                    <small th:text="${feedback.EventDate} ?: ''"></small>
+                </td>
+                <td th:text="${feedback.Rating}"></td>
+                <td th:text="${feedback.IssueDescription} ?: 'No issue description'"></td>
+                <td th:text="${feedback.Comments} ?: 'No comments'"></td>
+                <td th:text="${feedback.DateSubmitted}"></td>
+                <td th:text="${feedback.Status}"></td>
+                <td th:text="${feedback.Response} ?: 'No response yet'"></td>
+                <td>
+                    <a th:href="@{'/support/feedbacks/respond?id=' + ${feedback.FeedbackID}}">Respond</a>
+                    <form th:action="@{/support/feedbacks/update-status}" method="post" style="display: inline;">
+                        <input type="hidden" name="feedbackId" th:value="${feedback.FeedbackID}">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="New" th:selected="${feedback.Status == 'New'}">New</option>
+                            <option value="Reviewed" th:selected="${feedback.Status == 'Reviewed'}">Reviewed</option>
+                            <option value="Responded" th:selected="${feedback.Status == 'Responded'}">Responded</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

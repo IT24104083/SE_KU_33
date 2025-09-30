@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Complaints</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .status-new { background-color: #ffebee; }
+        .status-resolved { background-color: #e8f5e8; }
+        .filter-form { margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Manage Customer Complaints</h1>
+    <p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+
+    <div class="navigation">
+        <a th:href="@{/support/dashboard}">← Back to Dashboard</a>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="filter-form">
+        <form th:action="@{/support/complaints/filter}" method="get">
+            <label>Filter by Status:</label>
+            <select name="status">
+                <option value="all">All Statuses</option>
+                <option value="New">New</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+            <button type="submit">Filter</button>
+            <a th:href="@{/support/complaints}">Clear Filter</a>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.success}" class="success-message">
+        <p th:if="${param.success == 'response_submitted'}">Response submitted successfully!</p>
+        <p th:if="${param.success == 'status_updated'}">Status updated successfully!</p>
+    </div>
+
+    <!-- Complaints Table -->
+    <div th:if="${complaints.empty}">
+        <p>No complaints found.</p>
+    </div>
+
+    <div th:unless="${complaints.empty}">
+        <table>
+            <thead>
+            <tr>
+                <th>Complaint ID</th>
+                <th>Customer</th>
+                <th>Description</th>
+                <th>Date Submitted</th>
+                <th>Status</th>
+                <th>Response</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="complaint : ${complaints}"
+                th:classappend="${complaint.Status == 'New'} ? 'status-new' :
+                                      (${complaint.Status == 'Resolved'} ? 'status-resolved' : '')">
+                <td th:text="${complaint.ComplaintID}"></td>
+                <td>
+                    <strong th:text="${complaint.Customer_Name}"></strong><br>
+                    <small th:text="${complaint.Email}"></small><br>
+                    <small th:text="${complaint.Phone}"></small>
+                </td>
+                <td th:text="${complaint.Description}"></td>
+                <td th:text="${complaint.DateSubmitted}"></td>
+                <td th:text="${complaint.Status}"></td>
+                <td th:text="${complaint.Response} ?: 'No response yet'"></td>
+                <td>
+                    <a th:href="@{'/support/complaints/respond?id=' + ${complaint.ComplaintID}}">Respond</a>
+                    <form th:action="@{/support/complaints/update-status}" method="post" style="display: inline;">
+                        <input type="hidden" name="complaintId" th:value="${complaint.ComplaintID}">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="New" th:selected="${complaint.Status == 'New'}">New</option>
+                            <option value="In Progress" th:selected="${complaint.Status == 'In Progress'}">In Progress</option>
+                            <option value="Resolved" th:selected="${complaint.Status == 'Resolved'}">Resolved</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

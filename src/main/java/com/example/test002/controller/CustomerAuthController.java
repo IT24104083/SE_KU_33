@@ -22,7 +22,6 @@ public class CustomerAuthController {
     // Show login page
     @GetMapping("/login")
     public String showLoginForm() {
-        // looks for customer-login.html under /templates
         return "customer-login";
     }
 
@@ -47,15 +46,58 @@ public class CustomerAuthController {
         return "customer-login";
     }
 
-    // Show profile page
+    // Show read-only profile and feedback form
     @GetMapping("/profile")
     public String viewProfile(Model model) {
         Map<String, Object> customer = (Map<String, Object>) sessionManager.getAttribute("customer");
         if (customer == null) {
             return "redirect:/customer/login";
         }
+
+        // Fetch customer's latest event for feedback (optional)
+        Integer customerId = (Integer) customer.get("CustomerID");
+        String eventSql = "SELECT TOP 1 EventID, EventType, EventDate FROM Event WHERE CustomerID = ? ORDER BY EventDate DESC";
+        Map<String, Object> event = null;
+        try {
+            event = jdbcTemplate.queryForMap(eventSql, customerId);
+        } catch (Exception ignored) {}
+
         model.addAttribute("customer", customer);
-        return "customer-profile"; // looks for customer-profile.html
+        model.addAttribute("event", event);
+        return "customer-profile";
+    }
+
+    // Handle feedback submission
+    @PostMapping("/feedback/submit")
+    public String submitFeedback(@RequestParam int eventId,
+                                 @RequestParam String issueDescription,
+                                 @RequestParam int rating,
+                                 @RequestParam(required = false) String comments,
+                                 Model model) {
+
+        Map<String, Object> customer = (Map<String, Object>) sessionManager.getAttribute("customer");
+        if (customer == null) {
+            return "redirect:/customer/login";
+        }
+
+        Integer customerId = (Integer) customer.get("CustomerID");
+
+        try {
+            String sql = "INSERT INTO Feedback (CustomerID, EventID, IssueDescription, Rating, Comments) VALUES (?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql, customerId, eventId, issueDescription, rating, comments);
+            model.addAttribute("message", "Feedback submitted successfully!");
+        } catch (Exception e) {
+            model.addAttribute("error", "Error submitting feedback: " + e.getMessage());
+        }
+
+        // Reload profile after submission
+        model.addAttribute("customer", customer);
+        String eventSql = "SELECT TOP 1 EventID, EventType, EventDate FROM Event WHERE CustomerID = ? ORDER BY EventDate DESC";
+        try {
+            Map<String, Object> event = jdbcTemplate.queryForMap(eventSql, customerId);
+            model.addAttribute("event", event);
+        } catch (Exception ignored) {}
+        return "customer-profile";
     }
 
     // Logout
@@ -65,6 +107,3 @@ public class CustomerAuthController {
         return "redirect:/customer/login";
     }
 }
-
-
-

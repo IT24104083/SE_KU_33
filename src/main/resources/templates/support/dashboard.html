@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Support Officer Dashboard</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<h1>Welcome, Customer Support Officer</h1>
+<p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+
+<!-- Dashboard Statistics -->
+<div th:if="${newComplaints != null}">
+    <h3>Dashboard Overview:</h3>
+    <p>New Complaints: <span th:text="${newComplaints}">0</span></p>
+    <p>New Feedback: <span th:text="${newFeedback}">0</span></p>
+    <p>Total Customers: <span th:text="${totalCustomers}">0</span></p>
+    <p>Resolved This Month: <span th:text="${resolvedThisMonth}">0</span></p>
+</div>
+
+<p>Select a section to manage:</p>
+
+<div>
+    <!-- FIXED: Use Thymeleaf URL syntax to point to controller endpoints -->
+    <a th:href="@{/support/complaints}" class="nav-button">Manage Complaints</a>
+    <a th:href="@{/support/feedbacks}" class="nav-button">Manage Feedbacks</a>
+</div>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/logout}" class="logout-button">Logout</a>
+</div>
+</body>
+</html>

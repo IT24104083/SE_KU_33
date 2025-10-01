@@ -2,12 +2,115 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Overview - Event Coordinator</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" th:href="@{/style.css}">
+  <style>
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .overview-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .event-details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+    }
+
+    /* Loading states */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Accessibility improvements */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus states for keyboard navigation */
+    .btn-overview:focus,
+    .quick-action-large:focus,
+    .confirm-button:focus {
+      outline: 2px solid #3498db;
+      outline-offset: 2px;
+    }
+
+    /* Error states */
+    .error-state {
+      background-color: #ffe6e6;
+      border-left: 4px solid #e74c3c;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .error-state i {
+      color: #e74c3c;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner" aria-label="Loading..."></div>
+</div>
+
 <!-- Animated background elements -->
 <div class="bg-element bg-element-1"></div>
 <div class="bg-element bg-element-2"></div>
@@ -35,11 +138,11 @@
   </div>
 
   <!-- Flash Messages -->
-  <div th:if="${success}" class="alert alert-success">
+  <div th:if="${success}" class="alert alert-success" role="alert">
     <i class="fas fa-check-circle"></i>
     <span th:text="${success}"></span>
   </div>
-  <div th:if="${error}" class="alert alert-error">
+  <div th:if="${error}" class="alert alert-error" role="alert">
     <i class="fas fa-exclamation-circle"></i>
     <span th:text="${error}"></span>
   </div>
@@ -222,7 +325,7 @@
         <input type="hidden" name="eventId" th:value="${event.EventID}">
         <button type="submit" class="confirm-button"
                 th:disabled="${event.Status == 'Confirmed'}"
-                onclick="return confirm('Are you sure you want to confirm this event? This will finalize all assignments.')">
+                onclick="return confirmEvent()">
           <div class="action-icon-large">
             <i class="fas fa-check-circle"></i>
           </div>
@@ -324,6 +427,28 @@
       });
     }, 2000);
   });
+
+  // Enhanced confirm event function with loading state
+  function confirmEvent() {
+    if (confirm('Are you sure you want to confirm this event? This will finalize all assignments.')) {
+      showLoading();
+      return true;
+    }
+    return false;
+  }
+
+  // Show loading overlay
+  function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+  }
+
+  // Hide loading overlay (call this after page loads or operations complete)
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+  }
+
+  // Hide loading when page is fully loaded
+  window.addEventListener('load', hideLoading);
 </script>
 </body>
 </html>

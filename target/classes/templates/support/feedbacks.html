@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Feedbacks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1 i {
+            color: #ff8c00;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .navigation {
+            margin-bottom: 25px;
+        }
+
+        .navigation a {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5ee;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .navigation a:hover {
+            background: #fff;
+            border-color: #ff8c00;
+            color: #ff8c00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.2);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #28a745;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-message i {
+            color: #28a745;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px 12px;
+            vertical-align: top;
+        }
+
+        tr {
+            transition: background-color 0.3s ease;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .rating-1 { background-color: #ffebee; }
+        .rating-2 { background-color: #ffcdd2; }
+        .rating-3 { background-color: #fff3e0; }
+        .rating-4 { background-color: #e8f5e8; }
+        .rating-5 { background-color: #c8e6c9; }
+
+        strong {
+            color: #444;
+            font-weight: 600;
+        }
+
+        small {
+            color: #666;
+            font-size: 12px;
+        }
+
+        a {
+            color: #ff8c00;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #e67e00;
+            text-decoration: underline;
+        }
+
+        form {
+            display: inline;
+            margin-left: 10px;
+        }
+
+        select {
+            padding: 6px 10px;
+            border: 2px solid #e1e5ee;
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            border-color: #ff8c00;
+            outline: none;
+        }
+
+        /* Status badges */
+        td:nth-child(8) {
+            font-weight: 600;
+        }
+
+        td:nth-child(8):contains("New") {
+            color: #856404;
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        td:nth-child(8):contains("Reviewed") {
+            color: #004085;
+            background: #cce7ff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        td:nth-child(8):contains("Responded") {
+            color: #155724;
+            background: #d4edda;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+        }
+
+        /* Animation for table rows */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tr {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        tr:nth-child(1) { animation-delay: 0.1s; }
+        tr:nth-child(2) { animation-delay: 0.2s; }
+        tr:nth-child(3) { animation-delay: 0.3s; }
+        tr:nth-child(4) { animation-delay: 0.4s; }
+        tr:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Action buttons styling */
+        td:last-child {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 150px;
+        }
+
+        td:last-child a {
+            background: #ff8c00;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        td:last-child a:hover {
+            background: #e67e00;
+            transform: translateY(-1px);
+            text-decoration: none;
+            box-shadow: 0 3px 8px rgba(255, 140, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        <i class="fas fa-comment-dots"></i>
+        Manage Customer Feedback
+    </h1>
+    <p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+
+    <div class="navigation">
+        <a th:href="@{/support/dashboard}">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${param.success}" class="success-message">
+        <i class="fas fa-check-circle"></i>
+        <p th:if="${param.success == 'response_submitted'}">Response submitted successfully!</p>
+        <p th:if="${param.success == 'status_updated'}">Status updated successfully!</p>
+    </div>
+
+    <!-- Feedback Table -->
+    <div th:if="${feedbackList.empty}">
+        <p>No feedback found.</p>
+    </div>
+
+    <div th:unless="${feedbackList.empty}">
+        <table>
+            <thead>
+            <tr>
+                <th>Feedback ID</th>
+                <th>Customer</th>
+                <th>Event</th>
+                <th>Rating</th>
+                <th>Issue Description</th>
+                <th>Comments</th>
+                <th>Date Submitted</th>
+                <th>Status</th>
+                <th>Response</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="feedback : ${feedbackList}"
+                th:classappend="'rating-' + ${feedback.Rating}">
+                <td th:text="${feedback.FeedbackID}"></td>
+                <td>
+                    <strong th:text="${feedback.Customer_Name}"></strong><br>
+                    <small th:text="${feedback.Email}"></small>
+                </td>
+                <td>
+                    <span th:text="${feedback.EventType} ?: 'N/A'"></span><br>
+                    <small th:text="${feedback.EventDate} ?: ''"></small>
+                </td>
+                <td th:text="${feedback.Rating}"></td>
+                <td th:text="${feedback.IssueDescription} ?: 'No issue description'"></td>
+                <td th:text="${feedback.Comments} ?: 'No comments'"></td>
+                <td th:text="${feedback.DateSubmitted}"></td>
+                <td th:text="${feedback.Status}"></td>
+                <td th:text="${feedback.Response} ?: 'No response yet'"></td>
+                <td>
+                    <a th:href="@{'/support/feedbacks/respond?id=' + ${feedback.FeedbackID}}">Respond</a>
+                    <form th:action="@{/support/feedbacks/update-status}" method="post" style="display: inline;">
+                        <input type="hidden" name="feedbackId" th:value="${feedback.FeedbackID}">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="New" th:selected="${feedback.Status == 'New'}">New</option>
+                            <option value="Reviewed" th:selected="${feedback.Status == 'Reviewed'}">Reviewed</option>
+                            <option value="Responded" th:selected="${feedback.Status == 'Responded'}">Responded</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add status badge styling
+        const statusCells = document.querySelectorAll('td:nth-child(8)');
+        statusCells.forEach(cell => {
+            const status = cell.textContent.trim();
+            if (status === 'New') {
+                cell.style.color = '#856404';
+                cell.style.background = '#fff3cd';
+                cell.style.padding = '4px 8px';
+                cell.style.borderRadius = '12px';
+                cell.style.fontSize = '12px';
+                cell.style.fontWeight = '600';
+            } else if (status === 'Reviewed') {
+                cell.style.color = '#004085';
+                cell.style.background = '#cce7ff';
+                cell.style.padding = '4px 8px';
+                cell.style.borderRadius = '12px';
+                cell.style.fontSize = '12px';
+                cell.style.fontWeight = '600';
+            } else if (status === 'Responded') {
+                cell.style.color = '#155724';
+                cell.style.background = '#d4edda';
+                cell.style.padding = '4px 8px';
+                cell.style.borderRadius = '12px';
+                cell.style.fontSize = '12px';
+                cell.style.fontWeight = '600';
+            }
+        });
+
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = '#f8f9fa';
+            });
+
+            row.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+    });
+</script>
+</body>
+</html>

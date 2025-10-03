@@ -9,9 +9,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 @Service
@@ -56,7 +56,7 @@ public class InquiryService {
 
     // Get all inquiries
     public List<Inquiry> getAllInquiries() {
-        String sql = "SELECT * FROM EventInquiry ORDER BY InquiryID DESC";
+        String sql = "SELECT * FROM EventInquiry ORDER BY InquiryID ASC"; // ✅ Fetch all columns
         return jdbcTemplate.query(sql, new InquiryRowMapper());
     }
 

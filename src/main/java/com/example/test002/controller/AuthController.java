@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import com.example.test002.config.SessionManager;
+import com.example.test002.strategy.LoginStrategy;
+import com.example.test002.strategy.LoginStrategyFactory;
 
 import java.util.Map;
 
@@ -19,6 +21,9 @@ public class AuthController {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private LoginStrategyFactory loginStrategyFactory; // NEW: Strategy Factory
 
     // Login page
     @GetMapping("/login")
@@ -40,7 +45,7 @@ public class AuthController {
         return "login";
     }
 
-    // Login processing
+    // Login processing - MODIFIED: Using Strategy Pattern
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -62,23 +67,13 @@ public class AuthController {
                 String userRole = (String) user.get("UserRole");
                 System.out.println("Login successful! Role: " + userRole);
 
-                // Redirect based on role
-                switch (userRole) {
-                    case "CustomerConsultant":
-                        return "redirect:/consultant/dashboard?login=success";
-                    case "EventCoordinator":
-                        return "redirect:/event-coordinator/dashboard?login=success";
-                    case "VenueCoordinator":
-                        return "redirect:/venue/dashboard?login=success";
-                    case "VendorCoordinator":
-                        return "redirect:/vendors/dashboard?login=success"; //changed vendor into vendors
-                    case "FinanceOfficer":
-                        return "redirect:/finance/dashboard?login=success";
-                    case "CustomerSupportOfficer":
-                        return "redirect:/support/dashboard?login=success";
-                    default:
-                        model.addAttribute("error", "Invalid user role: " + userRole);
-                        return "login";
+                // NEW: Use Strategy Pattern instead of switch statement
+                try {
+                    LoginStrategy strategy = loginStrategyFactory.getStrategy(userRole);
+                    return strategy.getRedirectUrl();
+                } catch (IllegalArgumentException e) {
+                    model.addAttribute("error", "Invalid user role: " + userRole);
+                    return "login";
                 }
             }
         } catch (Exception e) {

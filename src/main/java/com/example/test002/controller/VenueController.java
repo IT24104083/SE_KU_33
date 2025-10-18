@@ -32,16 +32,21 @@ public class VenueController {
             Model model) {
 
         List<Venue> availableVenues;
+        boolean isSearchPerformed = false;
+
         if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
             availableVenues = venueService.getAvailableVenues();
         } else {
             availableVenues = venueService.searchVenues(location, venueCost, capacity);
+            isSearchPerformed = true;
         }
 
         model.addAttribute("availableVenues", availableVenues);
         model.addAttribute("location", location);
         model.addAttribute("venueCost", venueCost);
         model.addAttribute("capacity", capacity);
+        model.addAttribute("isSearchPerformed", isSearchPerformed);
+        model.addAttribute("noResultsFound", isSearchPerformed && availableVenues.isEmpty());
 
         // Add inquiries for the Booking Requests tab
         List<Inquiry> inquiries = inquiryService.getAllInquiries();
@@ -63,17 +68,21 @@ public class VenueController {
             Model model) {
 
         List<Venue> venues;
+        boolean isSearchPerformed = false;
 
         if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
             venues = venueService.getAvailableVenues();
         } else {
             venues = venueService.searchVenues(location, venueCost, capacity);
+            isSearchPerformed = true;
         }
 
         model.addAttribute("availableVenues", venues);
         model.addAttribute("location", location);
         model.addAttribute("venueCost", venueCost);
         model.addAttribute("capacity", capacity);
+        model.addAttribute("isSearchPerformed", isSearchPerformed);
+        model.addAttribute("noResultsFound", isSearchPerformed && venues.isEmpty());
 
         return "booking/available-hotels :: available-hotels";
     }

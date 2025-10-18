@@ -12,12 +12,12 @@
                    th:value="${location}" placeholder="e.g., Kandy">
         </div>
         <div class="col-md-3">
-            <label for="venueCost" class="form-label">Max Venue Cost:</label>
+            <label for="venueCost" class="form-label">Venue Cost:</label>
             <input type="number" id="venueCost" name="venueCost" class="form-control"
                    th:value="${venueCost}" placeholder="e.g., 5000">
         </div>
         <div class="col-md-3">
-            <label for="capacity" class="form-label">Min Capacity:</label>
+            <label for="capacity" class="form-label">Capacity:</label>
             <input type="number" id="capacity" name="capacity" class="form-control"
                    th:value="${capacity}" placeholder="e.g., 150">
         </div>
@@ -26,6 +26,13 @@
             <a th:href="@{/}" class="btn btn-secondary w-100"><i class="fas fa-times"></i> Clear</a>
         </div>
     </form>
+
+    <!-- Alert message for no matching hotels -->
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${noResultsFound}">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>No matching hotels found!</strong> Please try different search criteria.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <h3 class="mt-5">Available Hotels</h3>
     <div class="table-container">
@@ -48,7 +55,7 @@
                 <td th:text="${venue.location}">Location</td>
                 <td th:text="'$' + ${#numbers.formatDecimal(venue.venueCost, 1, 'COMMA', 2, 'POINT')}">5000.00</td>
                 <td th:text="${venue.capacity}">200</td>
-                <td><a href="#" class="btn btn-primary btn-sm">View Details</a></td>
+                <td><a href="#" class="btn btn-primary btn-sm">Book Now</a></td>
             </tr>
             </tbody>
         </table>

@@ -4,11 +4,15 @@ import com.example.test002.model.Venue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +21,30 @@ public class VenueService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    // Create a new venue (Add Hotel)
+    public Venue createVenue(Venue venue) {
+        String sql = "INSERT INTO Venue (Name, Location, VenueCost, Capacity, Availability) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, venue.getName());
+            ps.setString(2, venue.getLocation());
+            ps.setBigDecimal(3, venue.getVenueCost());
+            ps.setInt(4, venue.getCapacity());
+            ps.setString(5, venue.getAvailability());
+            return ps;
+        }, keyHolder);
+
+        if (keyHolder.getKey() != null) {
+            venue.setVenueID(keyHolder.getKey().intValue());
+        }
+
+        return venue;
+    }
 
     // Get all venues
     public List<Venue> getAllVenues() {

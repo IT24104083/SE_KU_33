@@ -56,6 +56,7 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
+        // Handle Update Tab showing
         const showUpdateTab = /*[[${showUpdateTab}]]*/ false;
 
         if (showUpdateTab) {
@@ -66,6 +67,7 @@
             }
         }
 
+        // Auto-dismiss alerts
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
             setTimeout(function() {
@@ -73,6 +75,38 @@
                 bsAlert.close();
             }, 5000);
         });
+
+        // Add Hotel Form Toggle - Available Hotels Tab
+        const toggleAddHotelBtn = document.getElementById('toggleAddHotelBtn');
+        const addHotelFormContainer = document.getElementById('addHotelFormContainer');
+        const cancelAddHotelBtn = document.getElementById('cancelAddHotelBtn');
+        const addHotelForm = document.getElementById('add-hotel-form');
+
+        if (toggleAddHotelBtn && addHotelFormContainer) {
+            toggleAddHotelBtn.addEventListener('click', function() {
+                if (addHotelFormContainer.style.display === 'none' || addHotelFormContainer.style.display === '') {
+                    addHotelFormContainer.style.display = 'block';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-minus-circle"></i> Hide Form';
+                    // Smooth scroll to form
+                    setTimeout(function() {
+                        addHotelFormContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    addHotelFormContainer.style.display = 'none';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
+
+        if (cancelAddHotelBtn && addHotelFormContainer && addHotelForm) {
+            cancelAddHotelBtn.addEventListener('click', function() {
+                addHotelForm.reset();
+                addHotelFormContainer.style.display = 'none';
+                if (toggleAddHotelBtn) {
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
     });
 </script>
 

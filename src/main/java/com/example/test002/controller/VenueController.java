@@ -59,6 +59,41 @@ public class VenueController {
         return "booking/index";
     }
 
+    // Add Hotel - POST endpoint
+    @PostMapping("/add-hotel")
+    public String addHotel(
+            @RequestParam("hotelName") String name,
+            @RequestParam("location") String location,
+            @RequestParam("venueCost") BigDecimal venueCost,
+            @RequestParam("capacity") Integer capacity,
+            @RequestParam("availability") String availability,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Create new venue object
+            Venue newVenue = new Venue();
+            newVenue.setName(name);
+            newVenue.setLocation(location);
+            newVenue.setVenueCost(venueCost);
+            newVenue.setCapacity(capacity);
+            newVenue.setAvailability(availability);
+
+            // Save to database
+            venueService.createVenue(newVenue);
+
+            // Add success message
+            redirectAttributes.addFlashAttribute("addHotelSuccess",
+                    "Hotel '" + name + "' has been added successfully!");
+
+        } catch (Exception e) {
+            // Add error message if creation fails
+            redirectAttributes.addFlashAttribute("addHotelError",
+                    "Failed to add hotel. Please try again. Error: " + e.getMessage());
+        }
+
+        return "redirect:/";
+    }
+
     // Available Hotels with filters
     @GetMapping("/available-hotels")
     public String availableHotelsPage(
@@ -121,18 +156,19 @@ public class VenueController {
             @RequestParam("location") String location,
             @RequestParam("venueCost") BigDecimal venueCost,
             @RequestParam("capacity") Integer capacity,
+            @RequestParam("availability") String availability,
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Update the venue in the database
+            // Update other fields
             venueService.updateVenue(venueId, name, location, venueCost, capacity);
+            // Persist availability (uses existing JDBC method)
+            venueService.updateVenueAvailability(venueId, availability);
 
-            // Add flash attributes (these will be available only for the next request)
             redirectAttributes.addFlashAttribute("successMessage", "Hotel details updated successfully!");
             redirectAttributes.addFlashAttribute("showUpdateTab", true);
 
         } catch (Exception e) {
-            // Add error message if update fails
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update hotel details. Please try again.");
             redirectAttributes.addFlashAttribute("showUpdateTab", true);
         }

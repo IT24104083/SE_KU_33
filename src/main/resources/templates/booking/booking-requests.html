@@ -1,0 +1,42 @@
+<div th:fragment="booking-requests">
+    <h2>Incoming Booking Requests</h2>
+
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>Inquiry ID</th>
+                <th>Customer ID</th>
+                <th>Event Type</th>
+                <th>Date</th>
+                <th>Guests</th>
+                <th>Budget</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${inquiries.isEmpty()}">
+                <td colspan="8" class="text-center p-4">No incoming booking requests at the moment.</td>
+            </tr>
+            <tr th:each="inquiry : ${inquiries}">
+                <td th:text="${inquiry.inquiryID}"></td>
+                <td th:text="${inquiry.customerID}"></td>
+                <td th:text="${inquiry.eventType}"></td>
+                <td th:text="${inquiry.proposedDate}"></td>
+                <td th:text="${inquiry.guestCount}"></td>
+                <td th:text="'$' + ${#numbers.formatDecimal(inquiry.budget, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td>
+                    <span th:text="${inquiry.status}"
+                          th:classappend="${inquiry.status == 'Pending' ? 'status-pending' : (inquiry.status == 'Rejected' ? 'status-rejected' : 'status-approved')}"
+                          class="status-badge"></span>
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-approve" title="Approve"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-reject" title="Reject"><i class="fas fa-times"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

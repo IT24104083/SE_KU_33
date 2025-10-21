@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,65 +70,108 @@ public class EventService {
         return jdbcTemplate.queryForMap(sql, eventId);
     }
 
+    // UPDATED: Date-based venue assignment
     public void assignVenueToEvent(Integer eventId, Integer venueId) {
-        // First check if there's already a venue assigned to this event
-        String checkSql = "SELECT VenueID FROM Event WHERE EventID = ?";
-        Integer currentVenueId = jdbcTemplate.queryForObject(checkSql, Integer.class, eventId);
+        try {
+            // First get the event date
+            String eventDateSql = "SELECT EventDate FROM Event WHERE EventID = ?";
+            String eventDate = jdbcTemplate.queryForObject(eventDateSql, String.class, eventId);
 
-        if (currentVenueId != null) {
-            // Set old venue to available
-            jdbcTemplate.update("UPDATE Venue SET Availability = 'Available' WHERE VenueID = ?", currentVenueId);
-        }
+            // Check if venue is already booked on this date
+            String availabilityCheckSql = "SELECT COUNT(*) FROM VenueAvailability WHERE VenueID = ? AND UnavailableDate = ?";
+            Integer conflictCount = jdbcTemplate.queryForObject(availabilityCheckSql, Integer.class, venueId, eventDate);
 
-        // Update the event with the new venue
-        String updateSql = "UPDATE Event SET VenueID = ? WHERE EventID = ?";
-        jdbcTemplate.update(updateSql, venueId, eventId);
-
-        // Set new venue to booked
-        jdbcTemplate.update("UPDATE Venue SET Availability = 'Booked' WHERE VenueID = ?", venueId);
-    }
-
-    public void assignVendorToEvent(Integer eventId, Integer vendorId, String serviceType) {
-        // First check if there's already a vendor assigned for this service type
-        String checkSql = "SELECT COUNT(*) FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, eventId, serviceType);
-
-        if (count != null && count > 0) {
-            // Update existing record - first get the current vendor ID
-            String getCurrentVendorSql = "SELECT VendorID FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
-            Integer currentVendorId = jdbcTemplate.queryForObject(getCurrentVendorSql, Integer.class, eventId, serviceType);
-
-            // Update the vendor assignment
-            String updateSql = "UPDATE EventVendor SET VendorID = ? WHERE EventID = ? AND ServiceType = ?";
-            jdbcTemplate.update(updateSql, vendorId, eventId, serviceType);
-
-            // Set old vendor to available
-            if (currentVendorId != null) {
-                jdbcTemplate.update("UPDATE Vendor SET Availability = 'Available' WHERE VendorID = ?", currentVendorId);
+            if (conflictCount != null && conflictCount > 0) {
+                throw new RuntimeException("Venue is already booked on " + eventDate);
             }
-        } else {
-            // Insert new record
-            String insertSql = "INSERT INTO EventVendor (EventID, VendorID, ServiceType) VALUES (?, ?, ?)";
-            jdbcTemplate.update(insertSql, eventId, vendorId, serviceType);
-        }
 
-        // Set new vendor to booked
-        jdbcTemplate.update("UPDATE Vendor SET Availability = 'Booked' WHERE VendorID = ?", vendorId);
+            // Check if there's already a venue assigned to this event
+            String checkSql = "SELECT VenueID FROM Event WHERE EventID = ?";
+            Integer currentVenueId = jdbcTemplate.queryForObject(checkSql, Integer.class, eventId);
+
+            if (currentVenueId != null) {
+                // Release the old venue for this event date
+                releaseVenueFromEvent(currentVenueId, eventDate);
+            }
+
+            // Update the event with the new venue
+            String updateSql = "UPDATE Event SET VenueID = ? WHERE EventID = ?";
+            jdbcTemplate.update(updateSql, venueId, eventId);
+
+            // Block the new venue for this event date
+            String blockSql = "INSERT INTO VenueAvailability (VenueID, UnavailableDate, EventID, Reason) VALUES (?, ?, ?, 'Event Booking')";
+            jdbcTemplate.update(blockSql, venueId, eventDate, eventId);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to assign venue: " + e.getMessage(), e);
+        }
     }
 
+    // UPDATED: Date-based vendor assignment
+    public void assignVendorToEvent(Integer eventId, Integer vendorId, String serviceType) {
+        try {
+            // First get the event date
+            String eventDateSql = "SELECT EventDate FROM Event WHERE EventID = ?";
+            String eventDate = jdbcTemplate.queryForObject(eventDateSql, String.class, eventId);
+
+            // Check if vendor is already booked on this date
+            String availabilityCheckSql = "SELECT COUNT(*) FROM VendorAvailability WHERE VendorID = ? AND UnavailableDate = ?";
+            Integer conflictCount = jdbcTemplate.queryForObject(availabilityCheckSql, Integer.class, vendorId, eventDate);
+
+            if (conflictCount != null && conflictCount > 0) {
+                throw new RuntimeException("Vendor is already booked on " + eventDate);
+            }
+
+            // Check if there's already a vendor assigned for this service type
+            String checkSql = "SELECT COUNT(*) FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
+            Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, eventId, serviceType);
+
+            if (count != null && count > 0) {
+                // Update existing record - first get the current vendor ID
+                String getCurrentVendorSql = "SELECT VendorID FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
+                Integer currentVendorId = jdbcTemplate.queryForObject(getCurrentVendorSql, Integer.class, eventId, serviceType);
+
+                // Update the vendor assignment
+                String updateSql = "UPDATE EventVendor SET VendorID = ? WHERE EventID = ? AND ServiceType = ?";
+                jdbcTemplate.update(updateSql, vendorId, eventId, serviceType);
+
+                // Remove old vendor's date block
+                if (currentVendorId != null) {
+                    jdbcTemplate.update("DELETE FROM VendorAvailability WHERE VendorID = ? AND UnavailableDate = ? AND EventID = ?",
+                            currentVendorId, eventDate, eventId);
+                }
+            } else {
+                // Insert new record
+                String insertSql = "INSERT INTO EventVendor (EventID, VendorID, ServiceType) VALUES (?, ?, ?)";
+                jdbcTemplate.update(insertSql, eventId, vendorId, serviceType);
+            }
+
+            // Block the vendor for this date
+            String blockSql = "INSERT INTO VendorAvailability (VendorID, UnavailableDate, EventID, Reason) VALUES (?, ?, ?, 'Event Booking')";
+            jdbcTemplate.update(blockSql, vendorId, eventDate, eventId);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to assign vendor: " + e.getMessage(), e);
+        }
+    }
+
+    // UPDATED: Date-based venue removal
     public void removeVenueFromEvent(Integer eventId) {
         try {
-            // Get current venue ID first
-            String getSql = "SELECT VenueID FROM Event WHERE EventID = ?";
-            Integer venueId = jdbcTemplate.queryForObject(getSql, Integer.class, eventId);
+            // Get current venue ID and event date first
+            String getSql = "SELECT e.VenueID, e.EventDate FROM Event e WHERE e.EventID = ?";
+            Map<String, Object> event = jdbcTemplate.queryForMap(getSql, eventId);
+
+            Integer venueId = (Integer) event.get("VenueID");
+            String eventDate = (String) event.get("EventDate");
 
             if (venueId != null) {
+                // Remove venue from event
                 String sql = "UPDATE Event SET VenueID = NULL WHERE EventID = ?";
                 jdbcTemplate.update(sql, eventId);
 
-                // Update venue availability back to available
-                sql = "UPDATE Venue SET Availability = 'Available' WHERE VenueID = ?";
-                jdbcTemplate.update(sql, venueId);
+                // Release the venue for this specific date
+                releaseVenueFromEvent(venueId, eventDate);
             }
         } catch (Exception e) {
             // No venue found for this event, nothing to remove
@@ -135,23 +179,40 @@ public class EventService {
         }
     }
 
+    // UPDATED: Date-based vendor removal
     public void removeVendorFromEvent(Integer eventId, String serviceType) {
         try {
-            // Get vendor ID first
-            String getSql = "SELECT VendorID FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
-            Integer vendorId = jdbcTemplate.queryForObject(getSql, Integer.class, eventId, serviceType);
+            // Get vendor ID and event date first
+            String getSql = "SELECT ev.VendorID, e.EventDate FROM EventVendor ev " +
+                    "JOIN Event e ON ev.EventID = e.EventID " +
+                    "WHERE ev.EventID = ? AND ev.ServiceType = ?";
+            Map<String, Object> assignment = jdbcTemplate.queryForMap(getSql, eventId, serviceType);
+
+            Integer vendorId = (Integer) assignment.get("VendorID");
+            String eventDate = (String) assignment.get("EventDate");
 
             if (vendorId != null) {
+                // Remove the vendor assignment
                 String sql = "DELETE FROM EventVendor WHERE EventID = ? AND ServiceType = ?";
                 jdbcTemplate.update(sql, eventId, serviceType);
 
-                // Update vendor availability back to available
-                sql = "UPDATE Vendor SET Availability = 'Available' WHERE VendorID = ?";
-                jdbcTemplate.update(sql, vendorId);
+                // Remove the date block for this vendor
+                sql = "DELETE FROM VendorAvailability WHERE VendorID = ? AND UnavailableDate = ? AND EventID = ?";
+                jdbcTemplate.update(sql, vendorId, eventDate, eventId);
             }
         } catch (Exception e) {
             // No vendor found for this service type, nothing to remove
             System.out.println("No vendor found for event " + eventId + " and service " + serviceType);
+        }
+    }
+
+    // NEW: Helper method to release venue for specific date
+    private void releaseVenueFromEvent(Integer venueId, String eventDate) {
+        try {
+            String sql = "DELETE FROM VenueAvailability WHERE VenueID = ? AND UnavailableDate = ?";
+            jdbcTemplate.update(sql, venueId, eventDate);
+        } catch (Exception e) {
+            System.out.println("Error releasing venue " + venueId + " for date " + eventDate);
         }
     }
 
@@ -177,7 +238,7 @@ public class EventService {
 
     // Get vendors assigned to an event
     public List<Map<String, Object>> getAssignedVendorsForEvent(Integer eventId) {
-        String sql = "SELECT ev.*, v.VendorName, v.VendorType, v.Price, v.ContactNo, v.Availability " +
+        String sql = "SELECT ev.*, v.VendorName, v.VendorType, v.Price, v.ContactNo " +
                 "FROM EventVendor ev " +
                 "JOIN Vendor v ON ev.VendorID = v.VendorID " +
                 "WHERE ev.EventID = ?";
@@ -249,52 +310,110 @@ public class EventService {
         return jdbcTemplate.queryForMap(sql);
     }
 
-    // Add these methods to your EventService class
+    // UPDATED: Get available venues with date-based filtering
+    public List<Map<String, Object>> getAvailableVenuesWithFilter(String sortOrder, Double minPrice, Double maxPrice, String eventDate) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT v.* FROM Venue v " +
+                        "WHERE v.Availability = 'Available' " +
+                        "AND v.VenueID NOT IN (" +
+                        "   SELECT va.VenueID FROM VenueAvailability va WHERE va.UnavailableDate = ?" +
+                        ")"
+        );
 
-    public List<Map<String, Object>> getAvailableVenuesWithFilter(String sortOrder, Double minPrice, Double maxPrice) {
-        String sql = "SELECT * FROM Venue WHERE Availability = 'Available'";
+        List<Object> params = new ArrayList<>();
+        params.add(eventDate);
 
         // Add price filters if provided
         if (minPrice != null) {
-            sql += " AND VenueCost >= " + minPrice;
+            sql.append(" AND v.VenueCost >= ?");
+            params.add(minPrice);
         }
         if (maxPrice != null) {
-            sql += " AND VenueCost <= " + maxPrice;
+            sql.append(" AND v.VenueCost <= ?");
+            params.add(maxPrice);
         }
 
         // Add sorting
         if ("min-max".equals(sortOrder)) {
-            sql += " ORDER BY VenueCost ASC";
+            sql.append(" ORDER BY v.VenueCost ASC");
         } else if ("max-min".equals(sortOrder)) {
-            sql += " ORDER BY VenueCost DESC";
+            sql.append(" ORDER BY v.VenueCost DESC");
         } else {
-            sql += " ORDER BY Name";
+            sql.append(" ORDER BY v.Name");
         }
 
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
 
-    public List<Map<String, Object>> getVendorsByTypeWithFilter(String vendorType, String sortOrder, Double minPrice, Double maxPrice) {
-        String sql = "SELECT * FROM Vendor WHERE VendorType = ? AND Availability = 'Available'";
+    // UPDATED: Get vendors by type with date-based availability check
+    public List<Map<String, Object>> getVendorsByTypeWithFilter(String vendorType, String eventDate, String sortOrder, Double minPrice, Double maxPrice) {
+        String sql = "SELECT v.* FROM Vendor v " +
+                "WHERE v.VendorType = ? AND v.IsActive = 1 " +
+                "AND v.VendorID NOT IN (" +
+                "   SELECT VendorID FROM VendorAvailability WHERE UnavailableDate = ?" +
+                ")";
 
         // Add price filters if provided
         if (minPrice != null) {
-            sql += " AND Price >= " + minPrice;
+            sql += " AND v.Price >= " + minPrice;
         }
         if (maxPrice != null) {
-            sql += " AND Price <= " + maxPrice;
+            sql += " AND v.Price <= " + maxPrice;
         }
 
         // Add sorting
         if ("min-max".equals(sortOrder)) {
-            sql += " ORDER BY Price ASC";
+            sql += " ORDER BY v.Price ASC";
         } else if ("max-min".equals(sortOrder)) {
-            sql += " ORDER BY Price DESC";
+            sql += " ORDER BY v.Price DESC";
         } else {
-            sql += " ORDER BY VendorName";
+            sql += " ORDER BY v.VendorName";
         }
 
-        return jdbcTemplate.queryForList(sql, vendorType);
+        return jdbcTemplate.queryForList(sql, vendorType, eventDate);
     }
 
+    // NEW: Check venue availability for a specific date
+    public boolean isVenueAvailable(Integer venueId, String date) {
+        try {
+            String sql = "SELECT COUNT(*) FROM VenueAvailability WHERE VenueID = ? AND UnavailableDate = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, venueId, date);
+            return count == null || count == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // NEW: Check vendor availability for a specific date
+    public boolean isVendorAvailable(Integer vendorId, String date) {
+        try {
+            String sql = "SELECT COUNT(*) FROM VendorAvailability WHERE VendorID = ? AND UnavailableDate = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, vendorId, date);
+            return count == null || count == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // NEW: Get venue's booked dates
+    public List<String> getVenueBookedDates(Integer venueId) {
+        String sql = "SELECT UnavailableDate FROM VenueAvailability WHERE VenueID = ? ORDER BY UnavailableDate";
+        return jdbcTemplate.queryForList(sql, String.class, venueId);
+    }
+
+    // NEW: Get vendor's booked dates
+    public List<String> getVendorBookedDates(Integer vendorId) {
+        String sql = "SELECT UnavailableDate FROM VendorAvailability WHERE VendorID = ? ORDER BY UnavailableDate";
+        return jdbcTemplate.queryForList(sql, String.class, vendorId);
+    }
+
+    // NEW: Get event date
+    public String getEventDate(Integer eventId) {
+        try {
+            String sql = "SELECT EventDate FROM Event WHERE EventID = ?";
+            return jdbcTemplate.queryForObject(sql, String.class, eventId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

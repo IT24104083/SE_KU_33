@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Complaint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .complaint-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .complaint-header {
+      background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .complaint-header h2 {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .complaint-content {
+      padding: 30px;
+    }
+
+    .btn-back {
+      background: #f8f9fa;
+      color: #666;
+      border: 2px solid #e1e5ee;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+
+    .btn-back:hover {
+      background: #fff;
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e1e5ee;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+      outline: none;
+    }
+
+    .btn-submit {
+      background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 25px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    .btn-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .complaint-info {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .complaint-info h4 {
+      color: #856404;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .complaint-info p {
+      color: #856404;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .submitting {
+      animation: pulse 1s infinite;
+    }
+
+    @media (max-width: 768px) {
+      .complaint-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="complaint-container">
+  <div class="complaint-header">
+    <h2><i class="fas fa-exclamation-triangle"></i> Submit Complaint</h2>
+    <p>We're here to help resolve any issues</p>
+  </div>
+
+  <div class="complaint-content">
+    <a th:href="@{/customer/profile}" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Profile
+    </a>
+
+    <div class="complaint-info">
+      <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+      <p>Please provide detailed information about your complaint. Our support team will review it and get back to you within 24-48 hours. For urgent matters, please call our support hotline.</p>
+    </div>
+
+    <form th:action="@{/customer/complaint/submit}" method="post" id="complaintForm">
+      <div class="form-group">
+        <label for="description">Complaint Details *</label>
+        <textarea id="description" name="description"
+                  placeholder="Please describe your complaint in detail. Include relevant information such as dates, people involved, and specific issues encountered..."
+                  required></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <i class="fas fa-paper-plane"></i> Submit Complaint
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const complaintForm = document.getElementById('complaintForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (complaintForm) {
+      complaintForm.addEventListener('submit', function(e) {
+        const description = document.getElementById('description').value.trim();
+
+        if (!description) {
+          e.preventDefault();
+          alert('Please provide details about your complaint.');
+          return;
+        }
+
+        if (description.length < 10) {
+          e.preventDefault();
+          alert('Please provide more detailed information about your complaint.');
+          return;
+        }
+
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitBtn.disabled = true;
+        submitBtn.classList.add('submitting');
+      });
+    }
+  });
+</script>
+</body>
+</html>

@@ -8,7 +8,6 @@ public class Vendor {
     private String vendorType;
     private BigDecimal price;
     private String contactNo;
-    private String availability;
 
     // Constructors
     public Vendor() {}
@@ -18,7 +17,6 @@ public class Vendor {
         this.vendorType = vendorType;
         this.price = price;
         this.contactNo = contactNo;
-        this.availability = "Available";
     }
 
     // Getters and Setters
@@ -37,9 +35,6 @@ public class Vendor {
     public String getContactNo() { return contactNo; }
     public void setContactNo(String contactNo) { this.contactNo = contactNo; }
 
-    public String getAvailability() { return availability; }
-    public void setAvailability(String availability) { this.availability = availability; }
-
     @Override
     public String toString() {
         return "Vendor{" +
@@ -48,7 +43,6 @@ public class Vendor {
                 ", vendorType='" + vendorType + '\'' +
                 ", price=" + price +
                 ", contactNo='" + contactNo + '\'' +
-                ", availability='" + availability + '\'' +
                 '}';
     }
 }

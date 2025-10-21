@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -46,26 +47,7 @@ public class CustomerAuthController {
         return "customer-login";
     }
 
-    // Show read-only profile and feedback form
-    @GetMapping("/profile")
-    public String viewProfile(Model model) {
-        Map<String, Object> customer = (Map<String, Object>) sessionManager.getAttribute("customer");
-        if (customer == null) {
-            return "redirect:/customer/login";
-        }
-
-        // Fetch customer's latest event for feedback (optional)
-        Integer customerId = (Integer) customer.get("CustomerID");
-        String eventSql = "SELECT TOP 1 EventID, EventType, EventDate FROM Event WHERE CustomerID = ? ORDER BY EventDate DESC";
-        Map<String, Object> event = null;
-        try {
-            event = jdbcTemplate.queryForMap(eventSql, customerId);
-        } catch (Exception ignored) {}
-
-        model.addAttribute("customer", customer);
-        model.addAttribute("event", event);
-        return "customer-profile";
-    }
+    // REMOVED: Duplicate profile method - Now using CustomerController's enhanced profile
 
     // Handle feedback submission
     @PostMapping("/feedback/submit")
@@ -83,21 +65,62 @@ public class CustomerAuthController {
         Integer customerId = (Integer) customer.get("CustomerID");
 
         try {
-            String sql = "INSERT INTO Feedback (CustomerID, EventID, IssueDescription, Rating, Comments) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Feedback (CustomerID, EventID, IssueDescription, Rating, Comments, Status, DateSubmitted) VALUES (?, ?, ?, ?, ?, 'New', GETDATE())";
             jdbcTemplate.update(sql, customerId, eventId, issueDescription, rating, comments);
             model.addAttribute("message", "Feedback submitted successfully!");
         } catch (Exception e) {
             model.addAttribute("error", "Error submitting feedback: " + e.getMessage());
         }
 
-        // Reload profile after submission
-        model.addAttribute("customer", customer);
-        String eventSql = "SELECT TOP 1 EventID, EventType, EventDate FROM Event WHERE CustomerID = ? ORDER BY EventDate DESC";
+        // Redirect to profile page instead of reloading
+        return "redirect:/customer/profile?success=feedback_submitted";
+    }
+
+    // View customer invoices
+    @GetMapping("/invoices")
+    public String viewCustomerInvoices(Model model) {
+        Map<String, Object> customer = (Map<String, Object>) sessionManager.getAttribute("customer");
+        if (customer == null) {
+            return "redirect:/customer/login";
+        }
+
+        Integer customerId = (Integer) customer.get("CustomerID");
+
         try {
-            Map<String, Object> event = jdbcTemplate.queryForMap(eventSql, customerId);
-            model.addAttribute("event", event);
-        } catch (Exception ignored) {}
-        return "customer-profile";
+            String sql = """
+            SELECT i.*, e.EventType, e.EventDate
+            FROM Invoice i
+            JOIN Event e ON i.EventID = e.EventID
+            WHERE i.CustomerID = ?
+            ORDER BY i.IssueDate DESC
+            """;
+
+            List<Map<String, Object>> invoices = jdbcTemplate.queryForList(sql, customerId);
+
+            // Convert java.sql.Date to java.util.Date for Thymeleaf
+            for (Map<String, Object> invoice : invoices) {
+                if (invoice.get("EventDate") instanceof java.sql.Date) {
+                    java.sql.Date sqlDate = (java.sql.Date) invoice.get("EventDate");
+                    invoice.put("EventDate", new java.util.Date(sqlDate.getTime()));
+                }
+                if (invoice.get("IssueDate") instanceof java.sql.Date) {
+                    java.sql.Date sqlDate = (java.sql.Date) invoice.get("IssueDate");
+                    invoice.put("IssueDate", new java.util.Date(sqlDate.getTime()));
+                }
+                if (invoice.get("DueDate") instanceof java.sql.Date) {
+                    java.sql.Date sqlDate = (java.sql.Date) invoice.get("DueDate");
+                    invoice.put("DueDate", new java.util.Date(sqlDate.getTime()));
+                }
+            }
+
+            model.addAttribute("invoices", invoices);
+            model.addAttribute("customer", customer);
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading invoices: " + e.getMessage());
+        }
+
+        return "customer/invoices";
     }
 
     // Logout

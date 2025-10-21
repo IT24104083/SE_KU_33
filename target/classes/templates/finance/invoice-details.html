@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Invoice Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #7f8c8d;
+        }
+        .invoice-details {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .invoice-info h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .invoice-status {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .status-paid {
+            background: #27ae60;
+            color: white;
+        }
+        .status-pending {
+            background: #e74c3c;
+            color: white;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .detail-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        .detail-value {
+            color: #2c3e50;
+        }
+        .cost-breakdown {
+            margin: 30px 0;
+        }
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .cost-total {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 2px solid #34495e;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+        .vendors-list {
+            margin-top: 20px;
+        }
+        .vendor-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border: 1px solid #ecf0f1;
+        }
+        .comments-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .comments-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #219a52;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 th:text="${pageTitle}">Invoice Details</h1>
+    </div>
+
+    <a th:href="@{/finance/invoices}" class="back-btn">← Back to Invoices</a>
+
+    <div class="invoice-details">
+        <!-- Invoice Header -->
+        <div class="invoice-header">
+            <div class="invoice-info">
+                <h2>Invoice #<span th:text="${invoice.InvoiceID}">123</span></h2>
+                <p>Event: <span th:text="${invoice.EventType}">Wedding</span></p>
+            </div>
+            <div th:class="${invoice.PaymentStatus == 'Received'} ? 'invoice-status status-paid' : 'invoice-status status-pending'"
+                 th:text="${invoice.PaymentStatus}">
+                Pending
+            </div>
+        </div>
+
+        <!-- Customer and Event Details -->
+        <div class="details-grid">
+            <div class="detail-section">
+                <h3>👤 Customer Information</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value" th:text="${invoice.Customer_Name}">John Doe</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value" th:text="${invoice.Email}">john@example.com</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value" th:text="${invoice.Phone}">+1234567890</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3>📅 Invoice Information</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Issue Date:</span>
+                    <!-- NO DATE FORMATTING -->
+                    <span class="detail-value" th:text="${invoice.IssueDate}">2024-12-01</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Due Date:</span>
+                    <!-- NO DATE FORMATTING -->
+                    <span class="detail-value" th:text="${invoice.DueDate}">2024-12-15</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Event Date:</span>
+                    <!-- NO DATE FORMATTING -->
+                    <span class="detail-value" th:text="${invoice.EventDate}">2024-12-20</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Venue:</span>
+                    <span class="detail-value" th:text="${invoice.VenueName != null} ? ${invoice.VenueName} : 'Not Assigned'">Grand Ballroom</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Breakdown -->
+        <div class="cost-breakdown">
+            <h3>💰 Cost Breakdown</h3>
+            <div class="cost-item">
+                <span>Venue Cost:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.VenueCost, 1, 2)}">$1,000.00</span>
+            </div>
+            <div class="cost-item">
+                <span>Vendor Costs:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.VendorCost, 1, 2)}">$500.00</span>
+            </div>
+            <div class="cost-item">
+                <span>Service Charges:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.ServiceCharges, 1, 2)}">$100.00</span>
+            </div>
+            <div class="cost-item">
+                <span>Tax Amount:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.TaxAmount, 1, 2)}">$150.00</span>
+            </div>
+            <div class="cost-item">
+                <span>Additional Charges:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.AdditionalCharges, 1, 2)}">$50.00</span>
+            </div>
+            <div class="cost-item">
+                <span>Other Charges:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.OtherCharges, 1, 2)}">$25.00</span>
+            </div>
+            <div class="cost-item cost-total">
+                <span>GRAND TOTAL:</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.Total_Pay, 1, 2)}">$1,825.00</span>
+            </div>
+        </div>
+
+        <!-- Assigned Vendors -->
+        <div th:if="${not vendors.empty}" class="vendors-list">
+            <h3>🛠️ Assigned Vendors</h3>
+            <div th:each="vendor : ${vendors}" class="vendor-item">
+                <span th:text="${vendor.ServiceType}">Photographer</span>
+                <span th:text="${vendor.VendorName}">John Photography</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(vendor.Price, 1, 2)}">$200.00</span>
+            </div>
+        </div>
+
+        <!-- Additional Comments -->
+        <div th:if="${invoice.AdditionalComments}" class="comments-section">
+            <h4>📝 Additional Comments</h4>
+            <p th:text="${invoice.AdditionalComments}">Additional setup charges for special decorations.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a th:href="@{/finance/invoices}" class="btn btn-primary">Back to Invoices</a>
+            <form th:if="${invoice.PaymentStatus != 'Received'}"
+                  th:action="@{/finance/update-payment-status}"
+                  method="post" style="display: inline;">
+                <input type="hidden" name="invoiceId" th:value="${invoice.InvoiceID}">
+                <input type="hidden" name="paymentStatus" value="Received">
+                <button type="submit" class="btn btn-success"
+                        onclick="return confirm('Mark this invoice as Paid?')">
+                    Mark as Paid
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

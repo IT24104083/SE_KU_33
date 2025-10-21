@@ -39,11 +39,22 @@ public class InquiryController {
             return "redirect:/login?error=unauthorized";
         }
 
+        // Debug database status
+        inquiryService.debugDatabaseStatus();
+
         List<Inquiry> inquiries = inquiryService.getAllInquiries();
+
+        System.out.println("DEBUG: Controller - Received " + inquiries.size() + " inquiries from service");
+        for (Inquiry inquiry : inquiries) {
+            System.out.println("DEBUG: Controller - Inquiry ID: " + inquiry.getInquiryID() +
+                    ", CustomerID: " + inquiry.getCustomerID() +
+                    ", Status: " + inquiry.getStatus());
+        }
+
         model.addAttribute("inquiries", inquiries);
         model.addAttribute("pageTitle", "Manage Inquiries");
-        model.addAttribute("totalInquiries", inquiryService.getInquiriesCount()); // Added for total inquiries count
-        model.addAttribute("pendingInquiries", inquiryService.getPendingInquiriesCount()); // Added for pending inquiries count
+        model.addAttribute("totalInquiries", inquiryService.getInquiriesCount());
+        model.addAttribute("pendingInquiries", inquiryService.getPendingInquiriesCount());
 
         return "consultant/inquiries-list";
     }

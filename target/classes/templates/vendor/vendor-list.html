@@ -82,7 +82,7 @@
                 <th>Type</th>
                 <th>Price</th>
                 <th>Contact</th>
-                <th>Availability</th>
+                <!-- REMOVED: Availability column -->
                 <th>Actions</th>
             </tr>
             </thead>
@@ -94,10 +94,7 @@
                 </td>
                 <td class="price" th:text="'Rs. ' + ${vendor.price}"></td>
                 <td th:text="${vendor.contactNo}"></td>
-                <td>
-                            <span th:class="${vendor.availability} ? 'status-available' : 'status-unavailable'"
-                                  th:text="${vendor.availability} ? 'Available' : 'Unavailable'"></span>
-                </td>
+                <!-- REMOVED: Availability cell -->
                 <td>
                     <div class="action-buttons">
                         <a class="btn-edit" th:href="@{'/vendors/edit/' + ${vendor.vendorID}}">
@@ -138,7 +135,7 @@
         // Add staggered animation to vendor sections
         const vendorSections = document.querySelectorAll('.vendor-section');
         vendorSections.forEach((section, index) => {
-            section.style.animationDelay = ${index * 0.1}s;
+            section.style.animationDelay = (index * 0.1) + 's';
         });
     });
 </script>

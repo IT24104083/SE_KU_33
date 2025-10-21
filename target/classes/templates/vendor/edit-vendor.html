@@ -68,14 +68,7 @@
                 </div>
             </div>
 
-            <div class="form-group full-width">
-                <label for="availability">Availability Status</label>
-                <select id="availability" th:field="*{availability}" required>
-                    <option value="Available">Available</option>
-                    <option value="Unavailable">Unavailable</option>
-                </select>
-                <div class="form-hint">Current availability status of the vendor</div>
-            </div>
+            <!-- REMOVED: Availability section -->
 
             <div class="form-actions">
                 <button type="submit" class="btn-submit">
@@ -120,17 +113,13 @@
             submitBtn.disabled = true;
         });
 
-        // Pre-select the current vendor type and availability
+        // Pre-select the current vendor type
         const vendorType = document.getElementById('vendorType');
-        const availability = document.getElementById('availability');
 
         // These values will be automatically set by Thymeleaf
         // This is just for visual feedback
         if (vendorType.value) {
             vendorType.parentElement.classList.add('focused');
-        }
-        if (availability.value) {
-            availability.parentElement.classList.add('focused');
         }
     });
 </script>

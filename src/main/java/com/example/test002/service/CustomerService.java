@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerService {
@@ -54,11 +55,77 @@ public class CustomerService {
         return jdbcTemplate.queryForObject(sql, new CustomerRowMapper(), id);
     }
 
+    // Get customer events for feedback
+    public List<Map<String, Object>> getCustomerEventsForFeedback(Integer customerId) {
+        String sql = """
+            SELECT e.EventID, e.EventType, e.EventDate, e.Status, e.VenueID, 
+                   v.Name as VenueName, v.Location,
+                   CASE 
+                     WHEN EXISTS (SELECT 1 FROM Feedback f WHERE f.EventID = e.EventID AND f.CustomerID = ?) THEN 1 
+                     ELSE 0 
+                   END as HasFeedback
+            FROM Event e
+            LEFT JOIN Venue v ON e.VenueID = v.VenueID
+            WHERE e.CustomerID = ? 
+            AND e.Status IN ('Completed', 'Confirmed')
+            AND e.EventDate <= GETDATE()
+            ORDER BY e.EventDate DESC
+            """;
+        return jdbcTemplate.queryForList(sql, customerId, customerId);
+    }
+
+    // Get specific event details for customer
+    public Map<String, Object> getCustomerEvent(Integer customerId, Integer eventId) {
+        String sql = """
+            SELECT e.EventID, e.EventType, e.EventDate, e.Status, 
+                   v.Name as VenueName, v.Location, v.Capacity
+            FROM Event e
+            LEFT JOIN Venue v ON e.VenueID = v.VenueID
+            WHERE e.EventID = ? AND e.CustomerID = ?
+            """;
+        return jdbcTemplate.queryForMap(sql, eventId, customerId);
+    }
+
+    // Submit a complaint
+    public boolean submitComplaint(Integer customerId, String description, String complaintType) {
+        String sql = """
+            INSERT INTO Complaint (CustomerID, Description, Status, DateSubmitted)
+            VALUES (?, ?, 'New', GETDATE())
+            """;
+
+        int result = jdbcTemplate.update(sql, customerId, description);
+        return result > 0;
+    }
+
     // Check if email already exists
     public boolean emailExists(String email) {
         String sql = "SELECT COUNT(*) FROM Customer WHERE Email = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
         return count != null && count > 0;
+    }
+
+    // Get customer's previous feedbacks
+    public List<Map<String, Object>> getCustomerFeedbacks(Integer customerId) {
+        String sql = """
+            SELECT f.FeedbackID, f.Rating, f.Comments, f.IssueDescription, f.DateSubmitted, f.Status, f.Response,
+                   e.EventType, e.EventDate
+            FROM Feedback f
+            INNER JOIN Event e ON f.EventID = e.EventID
+            WHERE f.CustomerID = ?
+            ORDER BY f.DateSubmitted DESC
+            """;
+        return jdbcTemplate.queryForList(sql, customerId);
+    }
+
+    // Get customer's previous complaints
+    public List<Map<String, Object>> getCustomerComplaints(Integer customerId) {
+        String sql = """
+            SELECT ComplaintID, Description, Status, DateSubmitted, Response
+            FROM Complaint 
+            WHERE CustomerID = ?
+            ORDER BY DateSubmitted DESC
+            """;
+        return jdbcTemplate.queryForList(sql, customerId);
     }
 
     // RowMapper for Customer - using exact column names

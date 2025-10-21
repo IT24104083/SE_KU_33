@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="update-hotel" class="update-hotel-container">
+    <h2>Update Hotel Details</h2>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage}">
+        <i class="fas fa-check-circle"></i> <span th:text="${successMessage}">Success!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${errorMessage}">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}">Error!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form th:action="@{/update-hotel}" method="post" id="update-hotel-form">
+        <div class="form-group full-width">
+            <label for="hotel-id" class="form-label">Select Hotel to Update:</label>
+            <select id="hotel-id" name="hotelID" class="form-select" required>
+                <option value="">-- Choose a Hotel --</option>
+                <option th:each="venue : ${venues}"
+                        th:value="${venue.venueID}"
+                        th:text="${venue.name}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="update-hotel-name" class="form-label">Hotel Name:</label>
+            <input type="text" id="update-hotel-name" name="hotelName" class="form-control"
+                   placeholder="Enter Hotel Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="update-location" class="form-label">Location:</label>
+            <input type="text" id="update-location" name="location" class="form-control"
+                   placeholder="Enter Location" required>
+        </div>
+
+        <div class="form-group">
+            <label for="update-venue-cost" class="form-label">Venue Cost ($):</label>
+            <input type="number" step="0.01" id="update-venue-cost" name="venueCost" class="form-control"
+                   placeholder="Enter Venue Cost" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="update-capacity" class="form-label">Capacity:</label>
+            <input type="number" id="update-capacity" name="capacity" class="form-control"
+                   placeholder="Enter Capacity" min="0" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="reset" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Details</button>
+        </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const hotelSelect = document.getElementById('hotel-id');
+        const hotelNameInput = document.getElementById('update-hotel-name');
+        const locationInput = document.getElementById('update-location');
+        const venueCostInput = document.getElementById('update-venue-cost');
+        const capacityInput = document.getElementById('update-capacity');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        if (hotelSelect) {
+            hotelSelect.addEventListener('change', function() {
+                const venueId = this.value;
+                if (venueId) {
+                    fetch('/get-venue/' + venueId)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            hotelNameInput.value = data.name;
+                            locationInput.value = data.location;
+                            venueCostInput.value = data.venueCost;
+                            capacityInput.value = data.capacity;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching venue details:', error);
+                            alert('Failed to load hotel details. Please try again.');
+                        });
+                } else {
+                    clearForm();
+                }
+            });
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                clearForm();
+                if (hotelSelect) {
+                    hotelSelect.value = '';
+                }
+            });
+        }
+
+        function clearForm() {
+            hotelNameInput.value = '';
+            locationInput.value = '';
+            venueCostInput.value = '';
+            capacityInput.value = '';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/booking-style/style.css}">
     <style>
@@ -26,7 +26,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
             position: relative;
@@ -39,6 +39,7 @@
             border-radius: 50%;
             z-index: -1;
             opacity: 0.05;
+            animation: float 6s ease-in-out infinite;
         }
 
         .bg-element-1 {
@@ -47,6 +48,7 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             top: -150px;
             right: -150px;
+            animation-delay: 0s;
         }
 
         .bg-element-2 {
@@ -55,6 +57,7 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             bottom: -100px;
             left: -100px;
+            animation-delay: 2s;
         }
 
         .bg-element-3 {
@@ -63,6 +66,49 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             top: 50%;
             left: 10%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
         }
 
         .main-title {
@@ -78,68 +124,7 @@
             font-weight: 400;
         }
 
-        .management-card {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--light-gray);
-        }
-
-        .nav-tabs {
-            background: var(--light);
-            border-bottom: 1px solid var(--light-gray);
-            padding: 0 1rem;
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            color: var(--gray);
-            font-weight: 500;
-            padding: 1rem 1.5rem;
-            border-radius: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-tabs .nav-link:hover {
-            color: var(--primary);
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .nav-tabs .nav-link.active {
-            color: var(--primary);
-            background: white;
-            border-bottom: 3px solid var(--primary);
-            font-weight: 600;
-        }
-
-        .tab-content {
-            padding: 2rem;
-        }
-
-        /* Header with Logout Button */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .header-content {
-            flex: 1;
-        }
-
-        .logout-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-logout {
+        .btn-cancel {
             background: #f7fafc;
             color: #4a5568;
             border: 2px solid #e2e8f0;
@@ -153,10 +138,10 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .btn-logout:hover {
+        .btn-cancel:hover {
             background: #fed7d7;
             border-color: #feb2b2;
             color: #c53030;
@@ -164,31 +149,286 @@
             box-shadow: 0 8px 20px rgba(254, 178, 178, 0.3);
         }
 
-        /* Logo Styling */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 1rem;
+        /* Dashboard Highlight Section */
+        .dashboard-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        .logo-icon {
+        .dashboard-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .highlight-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        /* Management Card Styling */
+        .management-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: none;
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs {
+            background: var(--light);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--gray);
+            font-weight: 500;
+            padding: 1.2rem 1.5rem;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
             color: var(--primary);
-            font-size: 28px;
+            background: rgba(102, 126, 234, 0.05);
+            border-bottom-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .tab-content {
+            padding: 2.5rem;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 161, 105, 0.4);
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .alert-danger {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .alert-warning {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        /* System Status Footer */
+        .system-status-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .online {
+            background: #38a169;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .header-container {
+            .header {
                 flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .header-content {
+                gap: 20px;
                 text-align: center;
             }
 
@@ -200,14 +440,84 @@
                 font-size: 1rem;
             }
 
+            .highlight-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .highlight-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
             .nav-tabs .nav-link {
-                padding: 0.75rem 1rem;
+                padding: 1rem;
                 font-size: 0.9rem;
             }
 
             .tab-content {
                 padding: 1.5rem;
             }
+
+            .system-status-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+
+        /* Table Styling */
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            border-color: #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .badge-info {
+            background: #bee3f8;
+            color: #2c5282;
         }
     </style>
 </head>
@@ -218,37 +528,64 @@
 <div class="bg-element bg-element-2"></div>
 <div class="bg-element bg-element-3"></div>
 
-<div class="container mt-5 mb-5">
-    <!-- Header with Logout Button -->
-    <div class="header-container">
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-user-tie logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
         <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-user-tie logo-icon"></i>
-                <span>EventSlate</span>
-            </div>
             <h1 class="main-title">Venue Management Dashboard</h1>
             <p class="subtitle">Your all-in-one hub for managing venues and bookings.</p>
         </div>
-        <div class="logout-section">
-            <a th:href="@{/login}" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
+        <a th:href="@{/login}" class="btn-cancel">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
     </div>
 
+    <!-- Dashboard Highlight Section -->
+    <div class="dashboard-highlight-section">
+        <div class="highlight-header">
+            <h2 class="highlight-title">
+                <i class="fas fa-hotel"></i> Venue & Hotel Management
+            </h2>
+            <div class="highlight-actions">
+                <a href="#" class="highlight-btn">
+                    <i class="fas fa-plus-circle"></i> Quick Actions
+                </a>
+                <a href="#" class="highlight-btn">
+                    <i class="fas fa-chart-line"></i> View Reports
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Manage hotel availability, booking requests, and venue assignments with our comprehensive management system.
+        </p>
+    </div>
+
+    <!-- Management Card -->
     <div class="management-card">
         <ul class="nav nav-tabs" id="bookingTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="hotels-tab" data-bs-toggle="tab" data-bs-target="#available-hotels" type="button" role="tab"><i class="fas fa-hotel"></i> Available Hotels</button>
+                <button class="nav-link active" id="hotels-tab" data-bs-toggle="tab" data-bs-target="#available-hotels" type="button" role="tab">
+                    <i class="fas fa-hotel"></i> Available Hotels
+                </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#booking-requests" type="button" role="tab"><i class="fas fa-clipboard-list"></i> Booking Requests</button>
+                <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#booking-requests" type="button" role="tab">
+                    <i class="fas fa-clipboard-list"></i> Booking Requests
+                </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update-hotel" type="button" role="tab"><i class="fas fa-edit"></i> Update Hotel</button>
+                <button class="nav-link" id="update-tab" data-bs-toggle="tab" data-bs-target="#update-hotel" type="button" role="tab">
+                    <i class="fas fa-edit"></i> Update Hotel
+                </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#booking-history" type="button" role="tab"><i class="fas fa-history"></i> Booking History</button>
+                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#booking-history" type="button" role="tab">
+                    <i class="fas fa-history"></i> Booking History
+                </button>
             </li>
         </ul>
 
@@ -265,6 +602,26 @@
             <div class="tab-pane fade" id="booking-history" role="tabpanel">
                 <div th:replace="~{booking/booking-history :: booking-history}"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- System Status Footer -->
+    <div class="system-status-footer">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database"></i>
+            <span>Database: <strong>Connected</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security: <strong>Active</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-hotel"></i>
+            <span>Venues: <strong>Active</strong></span>
         </div>
     </div>
 </div>
@@ -451,8 +808,20 @@
                 }, 100);
             });
         }
+
+        // Add interactive effects
+        const interactiveElements = document.querySelectorAll('.feature-card, .btn, .nav-link');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
     });
 </script>
 
 </body>
 </html>
+

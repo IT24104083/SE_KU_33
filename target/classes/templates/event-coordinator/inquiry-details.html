@@ -8,51 +8,317 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}" />
     <style>
+        /* Enhanced Details Page Styles */
+        .details-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .details-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .highlight-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .highlight-btn-primary:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
         .info-group {
             margin-bottom: 20px;
         }
+
         .info-label {
             font-weight: 600;
-            color: var(--dark);
+            color: #2d3748;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
+
         .info-label i {
-            color: var(--primary);
+            color: #667eea;
             width: 16px;
         }
+
         .info-value {
             padding: 12px 15px;
-            background: var(--light);
-            border-radius: var(--radius);
-            border: 1px solid var(--light-gray);
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
             font-size: 14px;
-            color: var(--dark);
+            color: #4a5568;
         }
+
         .service-badge {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: var(--secondary);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             padding: 6px 12px;
             border-radius: 15px;
             font-size: 0.85em;
             font-weight: 500;
         }
+
         .service-not-required {
-            color: var(--gray);
+            color: #a0aec0;
             font-style: italic;
         }
+
         .action-section {
-            padding: var(--card-padding);
-            border-top: 1px solid var(--light-gray);
+            padding: 25px;
+            border-top: 1px solid #e2e8f0;
+            background: #f7fafc;
+            border-radius: 0 0 15px 15px;
         }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-pending { background: #ed8936; }
+        .status-completed { background: #38a169; }
+        .status-in-progress { background: #3182ce; }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-warning {
+            background: #fffaf0;
+            border: 1px solid #fed7d7;
+            color: #c05621;
+        }
+
+        .alert-info {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            color: #2b6cb0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #cbd5e0;
+        }
+
         @media (max-width: 768px) {
-            .row { flex-direction: column; }
-            .col { min-width: 100%; }
+            .highlight-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .highlight-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -63,17 +329,33 @@
 <div class="bg-element bg-element-3"></div>
 
 <div class="container">
+    <!-- Header Section -->
     <div class="header">
         <div class="logo">
-            <i class="fas fa-glass-cheers logo-icon"></i>
-            <span>PartySlate</span>
+            <i class="fas fa-user-tie logo-icon"></i>
+            <span>EventSlate</span>
         </div>
         <h1 th:text="${pageTitle}">Inquiry Details</h1>
-        <div class="header-actions">
-            <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
+        <a th:href="@{/event-coordinator/dashboard}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Inquiry Highlight Section -->
+    <div class="details-highlight-section">
+        <div class="highlight-header">
+            <h2 class="highlight-title">
+                <i class="fas fa-calendar-check"></i> Inquiry Details
+            </h2>
+            <div class="highlight-actions">
+                <a th:href="@{/event-coordinator/dashboard}" class="highlight-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
         </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            View and manage inquiry details, customer information, and event requirements.
+        </p>
     </div>
 
     <!-- Show warning if event already exists -->
@@ -84,120 +366,108 @@
 
     <div th:if="${inquiry}">
         <!-- Customer Information Card -->
-        <div class="card">
+        <div class="info-card">
             <div class="card-header">
                 <h2 class="section-title"><i class="fas fa-user section-icon"></i> Customer Information</h2>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-user"></i> Customer Name</div>
-                            <div class="info-value" th:text="${inquiry.Customer_Name}"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-phone"></i> Phone Number</div>
-                            <div class="info-value" th:text="${inquiry.Phone} ?: 'Not provided'"></div>
-                        </div>
+                <div class="info-grid">
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-user"></i> Customer Name</div>
+                        <div class="info-value" th:text="${inquiry.Customer_Name}"></div>
                     </div>
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-envelope"></i> Email Address</div>
-                            <div class="info-value" th:text="${inquiry.Email} ?: 'Not provided'"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-id-card"></i> Customer ID</div>
-                            <div class="info-value" th:text="${inquiry.CustomerID}"></div>
-                        </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-phone"></i> Phone Number</div>
+                        <div class="info-value" th:text="${inquiry.Phone} ?: 'Not provided'"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-envelope"></i> Email Address</div>
+                        <div class="info-value" th:text="${inquiry.Email} ?: 'Not provided'"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-id-card"></i> Customer ID</div>
+                        <div class="info-value" th:text="${inquiry.CustomerID}"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Event Details Card -->
-        <div class="card">
+        <div class="info-card">
             <div class="card-header">
                 <h2 class="section-title"><i class="fas fa-calendar section-icon"></i> Event Details</h2>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-hashtag"></i> Inquiry ID</div>
-                            <div class="info-value" th:text="${inquiry.InquiryID}"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-star"></i> Event Type</div>
-                            <div class="info-value" th:text="${inquiry.EventType}"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-calendar-day"></i> Proposed Date</div>
-                            <div class="info-value" th:text="${inquiry.ProposedDate}"></div>
-                        </div>
+                <div class="info-grid">
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-hashtag"></i> Inquiry ID</div>
+                        <div class="info-value" th:text="${inquiry.InquiryID}"></div>
                     </div>
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-users"></i> Guest Count</div>
-                            <div class="info-value" th:text="${inquiry.GuestCount}"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-money-bill"></i> Budget (LKR)</div>
-                            <div class="info-value" th:text="${inquiry.Budget} ?: 'Not specified'"></div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
-                            <div class="info-value" th:text="${inquiry.Status}"></div>
-                        </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-star"></i> Event Type</div>
+                        <div class="info-value" th:text="${inquiry.EventType}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-calendar-day"></i> Proposed Date</div>
+                        <div class="info-value" th:text="${inquiry.ProposedDate}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-users"></i> Guest Count</div>
+                        <div class="info-value" th:text="${inquiry.GuestCount}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-money-bill"></i> Budget (LKR)</div>
+                        <div class="info-value" th:text="${inquiry.Budget} ?: 'Not specified'"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                        <div class="info-value" th:text="${inquiry.Status}"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Services Required Card -->
-        <div class="card">
+        <div class="info-card">
             <div class="card-header">
                 <h2 class="section-title"><i class="fas fa-cogs section-icon"></i> Services Required</h2>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-camera"></i> Photographer</div>
-                            <div class="info-value">
-                                <span th:if="${inquiry.Photographer}" class="service-badge">
-                                    <i class="fas fa-check"></i> Required
-                                </span>
-                                <span th:unless="${inquiry.Photographer}" class="service-not-required">Not Required</span>
-                            </div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-utensils"></i> Catering</div>
-                            <div class="info-value">
-                                <span th:if="${inquiry.Catering}" class="service-badge">
-                                    <i class="fas fa-check"></i> Required
-                                </span>
-                                <span th:unless="${inquiry.Catering}" class="service-not-required">Not Required</span>
-                            </div>
+                <div class="info-grid">
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-camera"></i> Photographer</div>
+                        <div class="info-value">
+                            <span th:if="${inquiry.Photographer}" class="service-badge">
+                                <i class="fas fa-check"></i> Required
+                            </span>
+                            <span th:unless="${inquiry.Photographer}" class="service-not-required">Not Required</span>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-music"></i> DJ</div>
-                            <div class="info-value">
-                                <span th:if="${inquiry.DJ}" class="service-badge">
-                                    <i class="fas fa-check"></i> Required
-                                </span>
-                                <span th:unless="${inquiry.DJ}" class="service-not-required">Not Required</span>
-                            </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-utensils"></i> Catering</div>
+                        <div class="info-value">
+                            <span th:if="${inquiry.Catering}" class="service-badge">
+                                <i class="fas fa-check"></i> Required
+                            </span>
+                            <span th:unless="${inquiry.Catering}" class="service-not-required">Not Required</span>
                         </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-paint-brush"></i> Decorations</div>
-                            <div class="info-value">
-                                <span th:if="${inquiry.Decorations}" class="service-badge">
-                                    <i class="fas fa-check"></i> Required
-                                </span>
-                                <span th:unless="${inquiry.Decorations}" class="service-not-required">Not Required</span>
-                            </div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-music"></i> DJ</div>
+                        <div class="info-value">
+                            <span th:if="${inquiry.DJ}" class="service-badge">
+                                <i class="fas fa-check"></i> Required
+                            </span>
+                            <span th:unless="${inquiry.DJ}" class="service-not-required">Not Required</span>
+                        </div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-paint-brush"></i> Decorations</div>
+                        <div class="info-value">
+                            <span th:if="${inquiry.Decorations}" class="service-badge">
+                                <i class="fas fa-check"></i> Required
+                            </span>
+                            <span th:unless="${inquiry.Decorations}" class="service-not-required">Not Required</span>
                         </div>
                     </div>
                 </div>
@@ -205,7 +475,7 @@
         </div>
 
         <!-- Special Requests Card -->
-        <div class="card">
+        <div class="info-card">
             <div class="card-header">
                 <h2 class="section-title"><i class="fas fa-sticky-note section-icon"></i> Special Requests & Notes</h2>
             </div>
@@ -219,7 +489,7 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="card">
+        <div class="info-card">
             <div class="card-body">
                 <div class="action-section">
                     <!-- Create Event Form - Only show if no event exists yet and status is Pending -->
@@ -252,7 +522,7 @@
                         <i class="fas fa-info-circle"></i>
                         <p>An event has already been created for this inquiry. No further action is required.</p>
                     </div>
-                    <div class="header-actions">
+                    <div class="form-actions">
                         <a th:href="@{/event-coordinator/dashboard}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to Dashboard
                         </a>
@@ -265,16 +535,58 @@
     <div th:unless="${inquiry}" class="empty-state">
         <i class="fas fa-exclamation-circle"></i>
         <p>Inquiry not found.</p>
-        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-primary">
+        <a th:href="@{/event-coordinator/dashboard}" class="btn btn-submit">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
+    </div>
+
+    <!-- System Status Footer -->
+    <div class="system-status-footer">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database"></i>
+            <span>Database: <strong>Connected</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security: <strong>Active</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Inquiries: <strong th:text="${totalInquiries != null ? totalInquiries : '0'}">0</strong> Active</span>
+        </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to all interactive elements
+        const interactiveElements = document.querySelectorAll('.info-card, .btn');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
         // Add staggered animation to cards
-        const cards = document.querySelectorAll('.card');
+        const cards = document.querySelectorAll('.info-card');
         cards.forEach((card, index) => {
             card.style.animationDelay = `${index * 0.1}s`;
         });

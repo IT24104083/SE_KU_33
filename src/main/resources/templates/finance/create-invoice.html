@@ -1,9 +1,11 @@
+[file name]: view-invoice.html
+[file content begin]
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle}">Create Invoice</title>
+    <title th:text="${pageTitle}">View Invoice</title>
     <style>
         * {
             margin: 0;
@@ -45,24 +47,24 @@
         .back-btn:hover {
             background: #7f8c8d;
         }
-        .invoice-form {
+        .invoice-details {
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .form-section {
+        .invoice-section {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #ecf0f1;
         }
-        .form-section h3 {
+        .invoice-section h3 {
             color: #2c3e50;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #3498db;
         }
-        .event-details {
+        .event-details, .invoice-info {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
@@ -84,33 +86,6 @@
         .detail-value {
             color: #2c3e50;
             font-size: 16px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        .cost-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
         }
         .vendors-list {
             margin-top: 15px;
@@ -143,53 +118,132 @@
             padding-top: 10px;
             margin-top: 10px;
         }
+        .invoice-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-overdue {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
         .btn {
-            padding: 15px 30px;
+            padding: 12px 24px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
             font-size: 16px;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-primary {
-            background: #27ae60;
+            background: #3498db;
             color: white;
-            width: 100%;
         }
         .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-success:hover {
             background: #219a52;
             transform: translateY(-2px);
+        }
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+        .comments-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
         }
         .alert {
             padding: 15px;
             border-radius: 6px;
             margin-bottom: 20px;
         }
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1 th:text="${pageTitle}">Create Invoice</h1>
+        <h1 th:text="${pageTitle}">View Invoice</h1>
     </div>
 
-    <a th:href="@{/finance/confirmed-events}" class="back-btn">← Back to Confirmed Events</a>
+    <a th:href="@{/finance/invoices}" class="back-btn">← Back to Invoices</a>
 
-    <!-- Error Messages -->
-    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+    <!-- Info Messages -->
+    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
 
-    <form th:action="@{/finance/generate-invoice}" method="post" class="invoice-form">
-        <input type="hidden" name="eventId" th:value="${event.EventID}">
-        <input type="hidden" name="customerId" th:value="${event.CustomerID}">
+    <div class="invoice-details">
+        <!-- Invoice Header -->
+        <div class="invoice-section">
+            <div class="invoice-info">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Invoice Number</div>
+                        <div class="detail-value" th:text="${invoice.InvoiceNumber}">INV-001</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Invoice Date</div>
+                        <div class="detail-value" th:text="${#dates.format(invoice.InvoiceDate, 'dd/MM/yyyy')}">15/12/2024</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Due Date</div>
+                        <div class="detail-value" th:text="${#dates.format(invoice.DueDate, 'dd/MM/yyyy')}">30/12/2024</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span th:text="${invoice.Status}">Paid</span>
+                            <span th:classappend="'invoice-status ' + 
+                                ${invoice.Status == 'Paid'} ? 'status-paid' : 
+                                ${invoice.Status == 'Overdue'} ? 'status-overdue' : 'status-pending'">
+                                <span th:if="${invoice.Status == 'Paid'}">✓</span>
+                                <span th:if="${invoice.Status == 'Overdue'}">⚠</span>
+                                <span th:if="${invoice.Status == 'Pending'}">⏳</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Event Details Section -->
-        <div class="form-section">
+        <div class="invoice-section">
             <h3>📋 Event Details</h3>
             <div class="event-details">
                 <div class="detail-grid">
@@ -203,7 +257,6 @@
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Event Date</div>
-                        <!-- FIXED: Changed from #temporals.format to #dates.format -->
                         <div class="detail-value" th:text="${#dates.format(event.EventDate, 'dd/MM/yyyy')}">15/12/2024</div>
                     </div>
                     <div class="detail-item">
@@ -214,21 +267,33 @@
             </div>
         </div>
 
-        <!-- Base Costs Section -->
-        <div class="form-section">
-            <h3>💰 Base Costs</h3>
-            <div class="cost-grid">
-                <div class="form-group">
-                    <label for="venueCost">Venue Cost ($)</label>
-                    <input type="number" id="venueCost" name="venueCost"
-                           th:value="${event.VenueCost != null} ? ${#numbers.formatDecimal(event.VenueCost, 1, 2)} : 0"
-                           step="0.01" min="0" required>
+        <!-- Cost Breakdown Section -->
+        <div class="invoice-section">
+            <h3>💰 Cost Breakdown</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Venue Cost</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.VenueCost, 1, 2)}">$500.00</div>
                 </div>
-                <div class="form-group">
-                    <label for="vendorCost">Total Vendor Cost ($)</label>
-                    <input type="number" id="vendorCost" name="vendorCost"
-                           th:value="${event.TotalVendorCost != null} ? ${#numbers.formatDecimal(event.TotalVendorCost, 1, 2)} : 0"
-                           step="0.01" min="0" required>
+                <div class="detail-item">
+                    <div class="detail-label">Vendor Cost</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.VendorCost, 1, 2)}">$300.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Service Charges</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.ServiceCharges, 1, 2)}">$50.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tax Amount</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.TaxAmount, 1, 2)}">$25.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Additional Charges</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.AdditionalCharges, 1, 2)}">$20.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Other Charges</div>
+                    <div class="detail-value" th:text="'$' + ${#numbers.formatDecimal(invoice.OtherCharges, 1, 2)}">$15.00</div>
                 </div>
             </div>
 
@@ -243,119 +308,54 @@
             </div>
         </div>
 
-        <!-- Additional Charges Section -->
-        <div class="form-section">
-            <h3>💼 Additional Charges</h3>
-            <div class="cost-grid">
-                <div class="form-group">
-                    <label for="serviceCharges">Service Charges ($)</label>
-                    <input type="number" id="serviceCharges" name="serviceCharges"
-                           value="0" step="0.01" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="taxAmount">Tax Amount ($)</label>
-                    <input type="number" id="taxAmount" name="taxAmount"
-                           value="0" step="0.01" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="additionalCharges">Additional Charges ($)</label>
-                    <input type="number" id="additionalCharges" name="additionalCharges"
-                           value="0" step="0.01" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="otherCharges">Other Charges ($)</label>
-                    <input type="number" id="otherCharges" name="otherCharges"
-                           value="0" step="0.01" min="0">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="additionalComments">Additional Comments</label>
-                <textarea id="additionalComments" name="additionalComments"
-                          rows="3" placeholder="Describe what the additional charges are for..."></textarea>
+        <!-- Additional Comments -->
+        <div th:if="${invoice.AdditionalComments}" class="invoice-section">
+            <h3>📝 Additional Comments</h3>
+            <div class="comments-section">
+                <p th:text="${invoice.AdditionalComments}">Additional setup fees for special lighting requirements.</p>
             </div>
         </div>
 
-        <!-- Invoice Details -->
-        <div class="form-section">
-            <h3>📅 Invoice Details</h3>
-            <div class="cost-grid">
-                <div class="form-group">
-                    <label for="dueDate">Due Date</label>
-                    <input type="date" id="dueDate" name="dueDate"
-                           th:value="${dueDate}" required>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Calculation -->
+        <!-- Total Section -->
         <div class="total-section">
             <div class="total-row">
                 <span>Venue Cost:</span>
-                <span id="displayVenueCost">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.VenueCost, 1, 2)}">$500.00</span>
             </div>
             <div class="total-row">
                 <span>Vendor Cost:</span>
-                <span id="displayVendorCost">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.VendorCost, 1, 2)}">$300.00</span>
             </div>
             <div class="total-row">
                 <span>Service Charges:</span>
-                <span id="displayServiceCharges">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.ServiceCharges, 1, 2)}">$50.00</span>
             </div>
             <div class="total-row">
                 <span>Tax Amount:</span>
-                <span id="displayTaxAmount">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.TaxAmount, 1, 2)}">$25.00</span>
             </div>
             <div class="total-row">
                 <span>Additional Charges:</span>
-                <span id="displayAdditionalCharges">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.AdditionalCharges, 1, 2)}">$20.00</span>
             </div>
             <div class="total-row">
                 <span>Other Charges:</span>
-                <span id="displayOtherCharges">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.OtherCharges, 1, 2)}">$15.00</span>
             </div>
             <div class="total-row grand-total">
                 <span>GRAND TOTAL:</span>
-                <span id="displayGrandTotal">$0.00</span>
+                <span th:text="'$' + ${#numbers.formatDecimal(invoice.GrandTotal, 1, 2)}">$910.00</span>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="margin-top: 30px;">
-            🧾 Create Invoice
-        </button>
-    </form>
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a th:href="@{/finance/invoices}" class="btn btn-primary">← Back to List</a>
+            <a th:href="@{/finance/edit-invoice/{id}(id=${invoice.InvoiceID})}" class="btn btn-warning">✏️ Edit Invoice</a>
+            <a th:href="@{/finance/generate-pdf/{id}(id=${invoice.InvoiceID})}" class="btn btn-success">📄 Generate PDF</a>
+        </div>
+    </div>
 </div>
-
-<script>
-    // Real-time total calculation
-    function calculateTotal() {
-        const venueCost = parseFloat(document.getElementById('venueCost').value) || 0;
-        const vendorCost = parseFloat(document.getElementById('vendorCost').value) || 0;
-        const serviceCharges = parseFloat(document.getElementById('serviceCharges').value) || 0;
-        const taxAmount = parseFloat(document.getElementById('taxAmount').value) || 0;
-        const additionalCharges = parseFloat(document.getElementById('additionalCharges').value) || 0;
-        const otherCharges = parseFloat(document.getElementById('otherCharges').value) || 0;
-
-        const grandTotal = venueCost + vendorCost + serviceCharges + taxAmount + additionalCharges + otherCharges;
-
-        // Update display
-        document.getElementById('displayVenueCost').textContent = '$' + venueCost.toFixed(2);
-        document.getElementById('displayVendorCost').textContent = '$' + vendorCost.toFixed(2);
-        document.getElementById('displayServiceCharges').textContent = '$' + serviceCharges.toFixed(2);
-        document.getElementById('displayTaxAmount').textContent = '$' + taxAmount.toFixed(2);
-        document.getElementById('displayAdditionalCharges').textContent = '$' + additionalCharges.toFixed(2);
-        document.getElementById('displayOtherCharges').textContent = '$' + otherCharges.toFixed(2);
-        document.getElementById('displayGrandTotal').textContent = '$' + grandTotal.toFixed(2);
-    }
-
-    // Add event listeners to all cost inputs
-    document.addEventListener('DOMContentLoaded', function() {
-        const costInputs = ['venueCost', 'vendorCost', 'serviceCharges', 'taxAmount', 'additionalCharges', 'otherCharges'];
-        costInputs.forEach(inputId => {
-            document.getElementById(inputId).addEventListener('input', calculateTotal);
-        });
-        calculateTotal(); // Initial calculation
-    });
-</script>
 </body>
 </html>
+[file content end]

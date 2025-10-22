@@ -2,157 +2,192 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Event - Event Coordinator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Enhanced Manage Event Styles */
+        .dashboard-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        .dashboard-nav {
+        .dashboard-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .highlight-actions {
             display: flex;
             gap: 15px;
-            margin-bottom: 25px;
-            align-items: center;
         }
 
-        .nav-item {
-            padding: 10px 20px;
-            border-radius: 6px;
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
             text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s ease;
         }
 
-        .btn-primary {
-            background: #007bff;
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             color: white;
-            border: 1px solid #007bff;
         }
 
-        .btn-primary:hover {
-            background: #0056b3;
-            transform: translateY(-1px);
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
         }
 
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            border: 1px solid #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background: #545b62;
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-            border: 1px solid #28a745;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-            border: 1px solid #dc3545;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-1px);
-        }
-
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 0.875rem;
-        }
-
-        .btn:disabled {
-            background: #6c757d;
-            border-color: #6c757d;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .card {
+        .highlight-btn-primary:hover {
             background: white;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
+            color: #764ba2;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
         .card-header {
-            padding: 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
-            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .card-header h2, .card-header h3, .card-header h4 {
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
             margin: 0;
-            color: #333;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .card-body {
-            padding: 25px;
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
         }
 
-        .row {
+        .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 25px;
+            margin: 20px 0;
         }
 
-        .col {
-            padding: 0;
+        .info-group {
+            margin-bottom: 15px;
         }
 
-        .alert {
-            padding: 16px 20px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            border: 1px solid transparent;
+        .info-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
+        .info-label i {
+            color: #667eea;
+            width: 16px;
         }
 
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border-color: #bee5eb;
+        .info-value {
+            padding: 12px 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #4a5568;
         }
 
         .service-badge {
-            display: inline-block;
-            background: #e7f3ff;
-            color: #0066cc;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
             padding: 8px 16px;
             border-radius: 20px;
-            margin: 5px 10px 5px 0;
+            font-size: 0.85em;
             font-weight: 500;
-            border: 1px solid #b3d9ff;
+            margin: 5px 10px 5px 0;
         }
 
         .venue-grid, .vendor-grid {
@@ -163,14 +198,29 @@
         }
 
         .venue-card, .vendor-card {
-            background: #fafafa;
-            border: 1px solid #eee;
-            transition: all 0.2s ease;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .venue-card::before, .vendor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         .venue-card:hover, .vendor-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .assigned-item {
@@ -181,32 +231,32 @@
 
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 12px;
             border-radius: 15px;
             font-size: 0.8em;
             font-weight: 600;
         }
 
         .status-available {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
         }
 
         .status-booked {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
         }
 
         .service-tabs {
             display: flex;
             gap: 5px;
             margin: 25px 0;
-            background: #f8f9fa;
+            background: #f7fafc;
             padding: 5px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
         }
 
         .service-tab {
@@ -215,20 +265,21 @@
             text-align: center;
             background: transparent;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            color: #6c757d;
-            transition: all 0.2s ease;
+            color: #718096;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .service-tab:hover {
-            background: #e9ecef;
-            color: #495057;
+            background: #edf2f7;
+            color: #4a5568;
         }
 
         .service-tab.active {
-            background: #007bff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
@@ -241,122 +292,328 @@
             to { opacity: 1; }
         }
 
-        h1 {
-            color: #333;
+        .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            background: #cbd5e0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        p {
-            margin: 8px 0;
-            color: #555;
+        .alert-success {
+            background: #c6f6d5;
+            border: 1px solid #9ae6b4;
+            color: #276749;
         }
 
-        strong {
-            color: #333;
+        .alert-danger {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
         }
 
-        form {
-            margin: 0;
+        .alert-info {
+            background: #bee3f8;
+            border: 1px solid #90cdf4;
+            color: #2c5282;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .system-status-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .online {
+            background: #38a169;
         }
 
         @media (max-width: 768px) {
-            .dashboard-nav {
+            .highlight-header {
                 flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
             }
 
-            .nav-item {
+            .highlight-actions {
                 width: 100%;
-                justify-content: center;
+                justify-content: flex-start;
             }
 
-            .row {
-                grid-template-columns: 1fr;
+            .service-tabs {
+                flex-direction: column;
             }
 
             .venue-grid, .vendor-grid {
                 grid-template-columns: 1fr;
             }
 
-            .service-tabs {
+            .system-status-footer {
                 flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Manage Event #<span th:text="${event.EventID}"></span></h1>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div class="dashboard-nav">
-        <a th:href="@{/event-coordinator/dashboard}" class="nav-item btn-secondary">← Back to Dashboard</a>
-        <a th:href="@{/event-coordinator/events/needing-assignments}" class="nav-item btn-primary">View All Assignments</a>
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-user-tie logo-icon"></i>
+            <span>EventSlate</span>
+        </div>
+        <h1>Manage Event #<span th:text="${event.EventID}"></span></h1>
+        <a th:href="@{/logout}" class="btn-cancel">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Event Management Highlight Section -->
+    <div class="dashboard-highlight-section">
+        <div class="highlight-header">
+            <h2 class="highlight-title">
+                <i class="fas fa-calendar-alt"></i> Event Management
+            </h2>
+            <div class="highlight-actions">
+                <a th:href="@{/event-coordinator/events/needing-assignments}" class="highlight-btn highlight-btn-primary">
+                    <i class="fas fa-tasks"></i> View All Assignments
+                </a>
+                <a th:href="@{/event-coordinator/dashboard}" class="highlight-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Manage venue assignments, vendor services, and coordinate all event details efficiently.
+        </p>
     </div>
 
     <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
         <span th:text="${success}"></span>
     </div>
     <div th:if="${error}" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
         <span th:text="${error}"></span>
     </div>
 
-    <div class="card">
+    <!-- Event Overview Card -->
+    <div class="feature-card">
         <div class="card-header">
-            <h2>Event Overview</h2>
+            <h2 class="section-title"><i class="fas fa-info-circle section-icon"></i> Event Overview</h2>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <p><strong>Event Type:</strong> <span th:text="${event.EventType}"></span></p>
-                    <p><strong>Event Date:</strong> <span th:text="${event.EventDate}"></span></p>
-                    <p><strong>Status:</strong> <span th:text="${event.Status}"></span></p>
+            <div class="info-grid">
+                <div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-star"></i> Event Type</div>
+                        <div class="info-value" th:text="${event.EventType}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-calendar-day"></i> Event Date</div>
+                        <div class="info-value" th:text="${event.EventDate}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                        <div class="info-value" th:text="${event.Status}"></div>
+                    </div>
                 </div>
-                <div class="col">
-                    <p><strong>Customer:</strong> <span th:text="${event.Customer_Name}"></span></p>
-                    <p><strong>Email:</strong> <span th:text="${event.Email}"></span></p>
-                    <p><strong>Phone:</strong> <span th:text="${event.Phone} ?: 'Not provided'"></span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <h2>Customer Requested Services</h2>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <span th:if="${inquiry.Photographer}" class="service-badge">✓ Photographer Requested</span>
-                    <span th:if="${inquiry.Catering}" class="service-badge">✓ Catering Requested</span>
-                    <span th:if="${inquiry.DJ}" class="service-badge">✓ DJ Requested</span>
-                    <span th:if="${inquiry.Decorations}" class="service-badge">✓ Decorations Requested</span>
-                    <div th:if="${!inquiry.Photographer and !inquiry.Catering and !inquiry.DJ and !inquiry.Decorations}" class="alert alert-info">
-                        No specific services requested initially
+                <div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-user"></i> Customer</div>
+                        <div class="info-value" th:text="${event.Customer_Name}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                        <div class="info-value" th:text="${event.Email}"></div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                        <div class="info-value" th:text="${event.Phone} ?: 'Not provided'"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card">
+    <!-- Customer Requested Services Card -->
+    <div class="feature-card">
         <div class="card-header">
-            <h3>Venue Assignment</h3>
+            <h2 class="section-title"><i class="fas fa-concierge-bell section-icon"></i> Customer Requested Services</h2>
+        </div>
+        <div class="card-body">
+            <div>
+                <span th:if="${inquiry.Photographer}" class="service-badge">
+                    <i class="fas fa-camera"></i> Photographer Requested
+                </span>
+                <span th:if="${inquiry.Catering}" class="service-badge">
+                    <i class="fas fa-utensils"></i> Catering Requested
+                </span>
+                <span th:if="${inquiry.DJ}" class="service-badge">
+                    <i class="fas fa-music"></i> DJ Requested
+                </span>
+                <span th:if="${inquiry.Decorations}" class="service-badge">
+                    <i class="fas fa-paint-brush"></i> Decorations Requested
+                </span>
+                <div th:if="${!inquiry.Photographer and !inquiry.Catering and !inquiry.DJ and !inquiry.Decorations}" class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    No specific services requested initially
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Venue Assignment Card -->
+    <div class="feature-card">
+        <div class="card-header">
+            <h3 class="section-title"><i class="fas fa-map-marker-alt section-icon"></i> Venue Assignment</h3>
         </div>
         <div class="card-body">
             <div th:if="${event.VenueID != null}">
-                <div class="card assigned-item">
+                <div class="feature-card assigned-item">
                     <h4 class="card-header">Currently Assigned Venue</h4>
                     <div class="card-body">
-                        <p><strong>Name:</strong> <span th:text="${event.VenueName}"></span></p>
-                        <p><strong>Location:</strong> <span th:text="${event.Location}"></span></p>
-                        <p><strong>Cost:</strong> LKR <span th:text="${event.VenueCost}"></span></p>
-                        <form th:action="@{/event-coordinator/events/remove-venue}" method="post" style="margin-top: 10px;">
+                        <div class="info-grid">
+                            <div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-building"></i> Name</div>
+                                    <div class="info-value" th:text="${event.VenueName}"></div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-location-dot"></i> Location</div>
+                                    <div class="info-value" th:text="${event.Location}"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-money-bill"></i> Cost</div>
+                                    <div class="info-value">LKR <span th:text="${event.VenueCost}"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <form th:action="@{/event-coordinator/events/remove-venue}" method="post" style="margin-top: 20px;">
                             <input type="hidden" name="eventId" th:value="${event.EventID}">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure you want to remove this venue?')">
-                                Remove Venue
+                                <i class="fas fa-times"></i> Remove Venue
                             </button>
                         </form>
                     </div>
@@ -364,25 +621,39 @@
             </div>
 
             <div th:unless="${event.VenueID != null}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
                 <p>No venue assigned yet.</p>
             </div>
 
+            <h4>Available Venues</h4>
             <div class="venue-grid">
-                <div th:each="venue : ${availableVenues}" class="card venue-card">
+                <div th:each="venue : ${availableVenues}" class="venue-card">
                     <h4 class="card-header" th:text="${venue.Name}"></h4>
                     <div class="card-body">
-                        <p><strong>Location:</strong> <span th:text="${venue.Location}"></span></p>
-                        <p><strong>Capacity:</strong> <span th:text="${venue.Capacity}"></span> guests</p>
-                        <p><strong>Cost:</strong> LKR <span th:text="${venue.VenueCost}"></span></p>
-                        <p><strong>Status:</strong>
-                            <span class="status-badge status-available" th:text="${venue.Availability}"></span>
-                        </p>
-                        <form th:action="@{/event-coordinator/events/assign-venue}" method="post">
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-location-dot"></i> Location</div>
+                            <div class="info-value" th:text="${venue.Location}"></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-users"></i> Capacity</div>
+                            <div class="info-value" th:text="${venue.Capacity}"></div> guests
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-money-bill"></i> Cost</div>
+                            <div class="info-value">LKR <span th:text="${venue.VenueCost}"></span></div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                            <div class="info-value">
+                                <span class="status-badge status-available" th:text="${venue.Availability}"></span>
+                            </div>
+                        </div>
+                        <form th:action="@{/event-coordinator/events/assign-venue}" method="post" style="margin-top: 15px;">
                             <input type="hidden" name="eventId" th:value="${event.EventID}">
                             <input type="hidden" name="venueId" th:value="${venue.VenueID}">
                             <button type="submit" class="btn btn-success btn-sm"
                                     th:disabled="${venue.Availability != 'Available'}">
-                                Assign This Venue
+                                <i class="fas fa-check"></i> Assign This Venue
                             </button>
                         </form>
                     </div>
@@ -390,30 +661,47 @@
             </div>
 
             <div th:if="${availableVenues != null and availableVenues.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
                 <p>No available venues at the moment.</p>
             </div>
         </div>
     </div>
 
-    <div class="card">
+    <!-- Vendor Assignment Card -->
+    <div class="feature-card">
         <div class="card-header">
-            <h3>Vendor Assignment</h3>
+            <h3 class="section-title"><i class="fas fa-truck section-icon"></i> Vendor Assignment</h3>
         </div>
         <div class="card-body">
             <div th:if="${assignedVendors != null and !assignedVendors.empty}">
                 <h4>Currently Assigned Vendors</h4>
-                <div th:each="vendor : ${assignedVendors}" class="card assigned-item">
+                <div th:each="vendor : ${assignedVendors}" class="feature-card assigned-item">
                     <h4 class="card-header" th:text="${vendor.ServiceType}"></h4>
                     <div class="card-body">
-                        <p><strong>Vendor:</strong> <span th:text="${vendor.VendorName}"></span></p>
-                        <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
-                        <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post" style="margin-top: 10px;">
+                        <div class="info-grid">
+                            <div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-store"></i> Vendor</div>
+                                    <div class="info-value" th:text="${vendor.VendorName}"></div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                    <div class="info-value">LKR <span th:text="${vendor.Price}"></span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="info-group">
+                                    <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                    <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post" style="margin-top: 15px;">
                             <input type="hidden" name="eventId" th:value="${event.EventID}">
                             <input type="hidden" name="serviceType" th:value="${vendor.ServiceType}">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure you want to remove this ' + '${vendor.ServiceType}' + '?')">
-                                Remove <span th:text="${vendor.ServiceType}"></span>
+                                <i class="fas fa-times"></i> Remove <span th:text="${vendor.ServiceType}"></span>
                             </button>
                         </form>
                     </div>
@@ -421,36 +709,54 @@
             </div>
 
             <div th:if="${assignedVendors == null or assignedVendors.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
                 <p>No vendors assigned yet.</p>
             </div>
 
             <div class="service-tabs">
-                <a class="service-tab active" onclick="showService(event, 'photographer')">Photographers</a>
-                <a class="service-tab" onclick="showService(event, 'caterer')">Caterers</a>
-                <a class="service-tab" onclick="showService(event, 'dj')">DJs</a>
-                <a class="service-tab" onclick="showService(event, 'decorator')">Decorators</a>
+                <a class="service-tab active" onclick="showService(event, 'photographer')">
+                    <i class="fas fa-camera"></i> Photographers
+                </a>
+                <a class="service-tab" onclick="showService(event, 'caterer')">
+                    <i class="fas fa-utensils"></i> Caterers
+                </a>
+                <a class="service-tab" onclick="showService(event, 'dj')">
+                    <i class="fas fa-music"></i> DJs
+                </a>
+                <a class="service-tab" onclick="showService(event, 'decorator')">
+                    <i class="fas fa-paint-brush"></i> Decorators
+                </a>
             </div>
 
             <div id="photographer-section" class="service-vendor-section">
                 <h4>Photographers</h4>
                 <div class="vendor-grid">
-                    <div th:each="vendor : ${photographers}" class="card vendor-card">
+                    <div th:each="vendor : ${photographers}" class="vendor-card">
                         <h4 class="card-header" th:text="${vendor.VendorName}"></h4>
                         <div class="card-body">
-                            <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
-                            <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                            <p><strong>Status:</strong>
-                                <span class="status-badge"
-                                      th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                      th:text="${vendor.Availability}"></span>
-                            </p>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${vendor.Price}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
+                                <div class="info-value">
+                                    <span class="status-badge"
+                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
+                                          th:text="${vendor.Availability}"></span>
+                                </div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" style="margin-top: 15px;">
                                 <input type="hidden" name="eventId" th:value="${event.EventID}">
                                 <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
                                 <input type="hidden" name="serviceType" value="Photographer">
                                 <button type="submit" class="btn btn-success btn-sm"
                                         th:disabled="${vendor.Availability != 'Available'}">
-                                    Assign Photographer
+                                    <i class="fas fa-check"></i> Assign Photographer
                                 </button>
                             </form>
                         </div>
@@ -461,18 +767,24 @@
             <div id="caterer-section" class="service-vendor-section" style="display: none;">
                 <h4>Caterers</h4>
                 <div class="vendor-grid">
-                    <div th:each="vendor : ${caterers}" class="card vendor-card">
+                    <div th:each="vendor : ${caterers}" class="vendor-card">
                         <h4 class="card-header" th:text="${vendor.VendorName}"></h4>
                         <div class="card-body">
-                            <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
-                            <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${vendor.Price}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" style="margin-top: 15px;">
                                 <input type="hidden" name="eventId" th:value="${event.EventID}">
                                 <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
                                 <input type="hidden" name="serviceType" value="Caterer">
                                 <button type="submit" class="btn btn-success btn-sm"
                                         th:disabled="${vendor.Availability != 'Available'}">
-                                    Assign Caterer
+                                    <i class="fas fa-check"></i> Assign Caterer
                                 </button>
                             </form>
                         </div>
@@ -483,18 +795,24 @@
             <div id="dj-section" class="service-vendor-section" style="display: none;">
                 <h4>DJs</h4>
                 <div class="vendor-grid">
-                    <div th:each="vendor : ${djs}" class="card vendor-card">
+                    <div th:each="vendor : ${djs}" class="vendor-card">
                         <h4 class="card-header" th:text="${vendor.VendorName}"></h4>
                         <div class="card-body">
-                            <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
-                            <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${vendor.Price}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" style="margin-top: 15px;">
                                 <input type="hidden" name="eventId" th:value="${event.EventID}">
                                 <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
                                 <input type="hidden" name="serviceType" value="DJ">
                                 <button type="submit" class="btn btn-success btn-sm"
                                         th:disabled="${vendor.Availability != 'Available'}">
-                                    Assign DJ
+                                    <i class="fas fa-check"></i> Assign DJ
                                 </button>
                             </form>
                         </div>
@@ -505,18 +823,24 @@
             <div id="decorator-section" class="service-vendor-section" style="display: none;">
                 <h4>Decorators</h4>
                 <div class="vendor-grid">
-                    <div th:each="vendor : ${decorators}" class="card vendor-card">
+                    <div th:each="vendor : ${decorators}" class="vendor-card">
                         <h4 class="card-header" th:text="${vendor.VendorName}"></h4>
                         <div class="card-body">
-                            <p><strong>Price:</strong> LKR <span th:text="${vendor.Price}"></span></p>
-                            <p><strong>Contact:</strong> <span th:text="${vendor.ContactNo}"></span></p>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
+                                <div class="info-value">LKR <span th:text="${vendor.Price}"></span></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
+                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                            </div>
+                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" style="margin-top: 15px;">
                                 <input type="hidden" name="eventId" th:value="${event.EventID}">
                                 <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
                                 <input type="hidden" name="serviceType" value="Decorator">
                                 <button type="submit" class="btn btn-success btn-sm"
                                         th:disabled="${vendor.Availability != 'Available'}">
-                                    Assign Decorator
+                                    <i class="fas fa-check"></i> Assign Decorator
                                 </button>
                             </form>
                         </div>
@@ -529,8 +853,29 @@
                  (djs == null or djs.empty) and
                  (decorators == null or decorators.empty)}"
                  class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
                 <p>No available vendors at the moment.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- System Status Footer -->
+    <div class="system-status-footer">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database"></i>
+            <span>Database: <strong>Connected</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security: <strong>Active</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Events: <strong th:text="${totalEvents != null ? totalEvents : '0'}">0</strong> Active</span>
         </div>
     </div>
 </div>
@@ -551,6 +896,30 @@
         document.getElementById(serviceType + '-section').style.display = 'block';
         event.target.classList.add('active');
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to all interactive elements
+        const interactiveElements = document.querySelectorAll('.feature-card, .venue-card, .vendor-card, .btn');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    });
 </script>
 </body>
 </html>

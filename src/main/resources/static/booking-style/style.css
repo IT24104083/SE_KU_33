@@ -1,0 +1,333 @@
+/* ------------------------------
+   Global Variables & Body
+------------------------------- */
+:root {
+    --primary-color: #4A90E2; /* A fresh, modern blue */
+    --primary-hover: #357ABD;
+    --secondary-color: #50E3C2; /* A vibrant accent teal */
+    --text-color: #333;
+    --text-color-light: #777;
+    --background-color: #f4f7f6;
+    --surface-color: #ffffff;
+    --border-color: #e0e0e0;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --font-family: 'Inter', sans-serif;
+    --border-radius-md: 12px;
+    --border-radius-sm: 8px;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------
+   Main Content Card & Header
+------------------------------- */
+.container {
+    max-width: 1400px;
+}
+
+.main-title {
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+}
+
+.management-card {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden; /* Ensures child elements conform to border radius */
+}
+
+h2 {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* ------------------------------
+   Modern Tabs
+------------------------------- */
+.nav-tabs {
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px 0 20px;
+    background-color: #fbfdff;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px; /* Aligns active tab border with main border */
+}
+
+.nav-tabs .nav-link {
+    font-weight: 600;
+    color: var(--text-color-light);
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    padding: 15px 20px;
+}
+
+.nav-tabs .nav-link i {
+    margin-right: 8px;
+    color: #9db2c6;
+    transition: color 0.3s ease;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover {
+    color: var(--primary-color);
+    background-color: transparent;
+    border-color: var(--primary-color);
+}
+
+.nav-tabs .nav-link:hover i,
+.nav-tabs .nav-link.active i {
+    color: var(--primary-color);
+}
+
+/* ------------------------------
+   Tab Content
+------------------------------- */
+.tab-content {
+    padding: 30px;
+}
+
+/* ------------------------------
+   Form & Input Styling
+------------------------------- */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    height: 48px;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    background-color: #fdfdfd;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15);
+    background-color: #fff;
+}
+
+/* Search form specific styling */
+.search-form {
+    background-color: #f8faff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+}
+
+/* ------------------------------
+   Button Styling
+------------------------------- */
+.btn {
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background-image: linear-gradient(to right, var(--primary-color), #3a7bd5);
+    color: #fff;
+    background-size: 200% auto;
+}
+
+.btn-primary:hover {
+    background-position: right center;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+/* ------------------------------
+   Modern Table Styling
+------------------------------- */
+.table-container {
+    max-height: 550px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.styled-table thead th {
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.styled-table tbody td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.styled-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.styled-table tbody tr:last-of-type td {
+    border-bottom: none;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #f2f8ff;
+}
+
+/* Override for Bootstrap striped table in available-hotels */
+.table.table-striped {
+    width: 100%;
+}
+.table.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: #fbfdff;
+}
+.table.table-striped thead th {
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+/* ------------------------------
+   Status & Action Styling
+------------------------------- */
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #fff;
+    background-color: var(--text-color-light); /* Default/Pending */
+    display: inline-block;
+    min-width: 90px;
+    text-align: center;
+}
+
+.status-approved { background-color: var(--success-color); }
+.status-rejected { background-color: var(--danger-color); }
+.status-pending { background-color: var(--warning-color); }
+
+.action-buttons .btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 0.9rem;
+    margin: 2px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-approve { background-color: var(--success-color); color: white; }
+.btn-approve:hover { background-color: #229954; }
+.btn-reject { background-color: var(--danger-color); color: white; }
+.btn-reject:hover { background-color: #cb4335; }
+
+/* ------------------------------
+   Update Hotel Page
+------------------------------- */
+.update-hotel-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+.update-hotel-container .form-group.full-width {
+    grid-column: 1 / -1; /* Makes an element span both columns */
+}
+.update-hotel-container .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 15px;
+}
+.alert {
+    border-radius: var(--border-radius-sm);
+}
+
+/* -------------------------------
+   Booking History Page
+------------------------------- */
+.history-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------
+   Responsive Adjustments
+------------------------------- */
+@media (max-width: 992px) {
+    .update-hotel-container form {
+        grid-template-columns: 1fr; /* Stack form fields on smaller screens */
+    }
+    .update-hotel-container .form-group.full-width {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-tabs {
+        padding: 5px 10px 0 10px;
+    }
+    .nav-tabs .nav-link {
+        padding: 12px 10px;
+        font-size: 0.9rem;
+    }
+    .tab-content {
+        padding: 20px;
+    }
+}

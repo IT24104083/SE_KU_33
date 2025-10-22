@@ -23,33 +23,31 @@ public class VenueController {
     @Autowired
     private InquiryService inquiryService;
 
-    // Home Page - UPDATED: Added eventDate parameter
+    // Home Page
     @GetMapping("/")
     public String showBookingHome(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Double venueCost,
             @RequestParam(required = false) Integer capacity,
-            @RequestParam(required = false) String eventDate, // NEW: Add event date parameter
             Model model) {
 
         List<Venue> availableVenues;
-        if ((location == null || location.isEmpty()) && venueCost == null && capacity == null && eventDate == null) {
-            availableVenues = venueService.getAvailableVenues();
+        boolean isSearchPerformed = false;
+
+        if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
+            // Changed to fetch ALL venues instead of just available ones
+            availableVenues = venueService.getAllVenues();
         } else {
-            // Use date-based search if date provided, otherwise use basic search
-            if (eventDate != null && !eventDate.isEmpty()) {
-                availableVenues = venueService.searchVenues(location, venueCost, capacity, eventDate);
-            } else {
-                // Fallback to basic search without date filtering
-                availableVenues = venueService.searchVenuesBasic(location, venueCost, capacity);
-            }
+            availableVenues = venueService.searchVenues(location, venueCost, capacity);
+            isSearchPerformed = true;
         }
 
         model.addAttribute("availableVenues", availableVenues);
         model.addAttribute("location", location);
         model.addAttribute("venueCost", venueCost);
         model.addAttribute("capacity", capacity);
-        model.addAttribute("eventDate", eventDate); // Add eventDate to model
+        model.addAttribute("isSearchPerformed", isSearchPerformed);
+        model.addAttribute("noResultsFound", isSearchPerformed && availableVenues.isEmpty());
 
         // Add inquiries for the Booking Requests tab
         List<Inquiry> inquiries = inquiryService.getAllInquiries();
@@ -62,34 +60,66 @@ public class VenueController {
         return "booking/index";
     }
 
-    // Available Hotels with filters - UPDATED: Added eventDate parameter
+    // Add Hotel - POST endpoint
+    @PostMapping("/add-hotel")
+    public String addHotel(
+            @RequestParam("hotelName") String name,
+            @RequestParam("location") String location,
+            @RequestParam("venueCost") BigDecimal venueCost,
+            @RequestParam("capacity") Integer capacity,
+            @RequestParam("availability") String availability,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Create new venue object
+            Venue newVenue = new Venue();
+            newVenue.setName(name);
+            newVenue.setLocation(location);
+            newVenue.setVenueCost(venueCost);
+            newVenue.setCapacity(capacity);
+            newVenue.setAvailability(availability);
+
+            // Save to database
+            venueService.createVenue(newVenue);
+
+            // Add success message
+            redirectAttributes.addFlashAttribute("addHotelSuccess",
+                    "Hotel '" + name + "' has been added successfully!");
+
+        } catch (Exception e) {
+            // Add error message if creation fails
+            redirectAttributes.addFlashAttribute("addHotelError",
+                    "Failed to add hotel. Please try again. Error: " + e.getMessage());
+        }
+
+        return "redirect:/";
+    }
+
+    // Available Hotels with filters
     @GetMapping("/available-hotels")
     public String availableHotelsPage(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Double venueCost,
             @RequestParam(required = false) Integer capacity,
-            @RequestParam(required = false) String eventDate, // NEW: Add event date parameter
             Model model) {
 
         List<Venue> venues;
+        boolean isSearchPerformed = false;
 
-        if ((location == null || location.isEmpty()) && venueCost == null && capacity == null && eventDate == null) {
-            venues = venueService.getAvailableVenues();
+        if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
+            // Changed to fetch ALL venues instead of just available ones
+            venues = venueService.getAllVenues();
         } else {
-            // Use date-based search if date provided, otherwise use basic search
-            if (eventDate != null && !eventDate.isEmpty()) {
-                venues = venueService.searchVenues(location, venueCost, capacity, eventDate);
-            } else {
-                // Fallback to basic search without date filtering
-                venues = venueService.searchVenuesBasic(location, venueCost, capacity);
-            }
+            venues = venueService.searchVenues(location, venueCost, capacity);
+            isSearchPerformed = true;
         }
 
         model.addAttribute("availableVenues", venues);
         model.addAttribute("location", location);
         model.addAttribute("venueCost", venueCost);
         model.addAttribute("capacity", capacity);
-        model.addAttribute("eventDate", eventDate); // Add eventDate to model
+        model.addAttribute("isSearchPerformed", isSearchPerformed);
+        model.addAttribute("noResultsFound", isSearchPerformed && venues.isEmpty());
 
         return "booking/available-hotels :: available-hotels";
     }
@@ -128,18 +158,19 @@ public class VenueController {
             @RequestParam("location") String location,
             @RequestParam("venueCost") BigDecimal venueCost,
             @RequestParam("capacity") Integer capacity,
+            @RequestParam("availability") String availability,
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Update the venue in the database
+            // Update other fields
             venueService.updateVenue(venueId, name, location, venueCost, capacity);
+            // Persist availability (uses existing JDBC method)
+            venueService.updateVenueAvailability(venueId, availability);
 
-            // Add flash attributes (these will be available only for the next request)
             redirectAttributes.addFlashAttribute("successMessage", "Hotel details updated successfully!");
             redirectAttributes.addFlashAttribute("showUpdateTab", true);
 
         } catch (Exception e) {
-            // Add error message if update fails
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update hotel details. Please try again.");
             redirectAttributes.addFlashAttribute("showUpdateTab", true);
         }

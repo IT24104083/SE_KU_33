@@ -4,11 +4,15 @@ import com.example.test002.model.Venue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,27 +22,40 @@ public class VenueService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Create a new venue (Add Hotel)
+    public Venue createVenue(Venue venue) {
+        String sql = "INSERT INTO Venue (Name, Location, VenueCost, Capacity, Availability) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, venue.getName());
+            ps.setString(2, venue.getLocation());
+            ps.setBigDecimal(3, venue.getVenueCost());
+            ps.setInt(4, venue.getCapacity());
+            ps.setString(5, venue.getAvailability());
+            return ps;
+        }, keyHolder);
+
+        if (keyHolder.getKey() != null) {
+            venue.setVenueID(keyHolder.getKey().intValue());
+        }
+
+        return venue;
+    }
+
     // Get all venues
     public List<Venue> getAllVenues() {
         String sql = "SELECT * FROM Venue ORDER BY Name";
         return jdbcTemplate.query(sql, new VenueRowMapper());
     }
 
-    // Get only available venues (without date filter - for general listing)
+    // Get only available venues
     public List<Venue> getAvailableVenues() {
         String sql = "SELECT * FROM Venue WHERE Availability = 'Available' ORDER BY Name";
         return jdbcTemplate.query(sql, new VenueRowMapper());
-    }
-
-    // NEW: Get available venues for a specific date
-    public List<Venue> getAvailableVenuesForDate(String eventDate) {
-        String sql = "SELECT v.* FROM Venue v " +
-                "WHERE v.Availability = 'Available' " +
-                "AND v.VenueID NOT IN (" +
-                "   SELECT va.VenueID FROM VenueAvailability va WHERE va.UnavailableDate = ?" +
-                ") " +
-                "ORDER BY v.Name";
-        return jdbcTemplate.query(sql, new VenueRowMapper(), eventDate);
     }
 
     // Get a single venue by ID
@@ -47,28 +64,10 @@ public class VenueService {
         return jdbcTemplate.queryForObject(sql, new VenueRowMapper(), venueId);
     }
 
-    // NEW: Check if venue is available for specific date
-    public boolean isVenueAvailableForDate(Integer venueId, String eventDate) {
-        try {
-            String sql = "SELECT COUNT(*) FROM VenueAvailability WHERE VenueID = ? AND UnavailableDate = ?";
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, venueId, eventDate);
-            return count == null || count == 0;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // UPDATED: Update venue availability - now date-specific
-    public void updateVenueAvailability(Integer venueId, String eventDate, String action) {
-        if ("book".equals(action)) {
-            // Block venue for specific date
-            String sql = "INSERT INTO VenueAvailability (VenueID, UnavailableDate, Reason) VALUES (?, ?, 'Event Booking')";
-            jdbcTemplate.update(sql, venueId, eventDate);
-        } else if ("release".equals(action)) {
-            // Release venue for specific date
-            String sql = "DELETE FROM VenueAvailability WHERE VenueID = ? AND UnavailableDate = ?";
-            jdbcTemplate.update(sql, venueId, eventDate);
-        }
+    // Update venue availability (Booked / Available)
+    public void updateVenueAvailability(Integer venueId, String availability) {
+        String sql = "UPDATE Venue SET Availability = ? WHERE VenueID = ?";
+        jdbcTemplate.update(sql, availability, venueId);
     }
 
     // Update venue details (Name, Location, VenueCost, Capacity)
@@ -78,42 +77,29 @@ public class VenueService {
         jdbcTemplate.update(sql, name, location, venueCost, capacity, venueId);
     }
 
-    // UPDATED: Search venues with date-based availability
-    public List<Venue> searchVenues(String location, Double venueCost, Integer capacity, String eventDate) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT v.* FROM Venue v " +
-                        "WHERE v.Availability = 'Available' " +
-                        "AND v.VenueID NOT IN (" +
-                        "   SELECT va.VenueID FROM VenueAvailability va WHERE va.UnavailableDate = ?" +
-                        ")"
-        );
+    // Search venues with filters - Modified to return all venues (not just available)
+    public List<Venue> searchVenues(String location, Double venueCost, Integer capacity) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM Venue WHERE 1=1");
         List<Object> params = new ArrayList<>();
-        params.add(eventDate);
 
         if (location != null && !location.isEmpty()) {
-            sql.append(" AND v.Location LIKE ?");
+            sql.append(" AND Location LIKE ?");
             params.add("%" + location + "%");
         }
 
         if (venueCost != null) {
-            sql.append(" AND v.VenueCost <= ?");
+            sql.append(" AND VenueCost = ?");
             params.add(venueCost);
         }
 
         if (capacity != null) {
-            sql.append(" AND v.Capacity >= ?");
+            sql.append(" AND Capacity = ?");
             params.add(capacity);
         }
 
-        sql.append(" ORDER BY v.Name");
+        sql.append(" ORDER BY Name");
 
         return jdbcTemplate.query(sql.toString(), new VenueRowMapper(), params.toArray());
-    }
-
-    // NEW: Get venue's booked dates
-    public List<String> getVenueBookedDates(Integer venueId) {
-        String sql = "SELECT UnavailableDate FROM VenueAvailability WHERE VenueID = ? ORDER BY UnavailableDate";
-        return jdbcTemplate.queryForList(sql, String.class, venueId);
     }
 
     // RowMapper for Venue model
@@ -129,30 +115,5 @@ public class VenueService {
             venue.setAvailability(rs.getString("Availability"));
             return venue;
         }
-    }
-
-    // Add this method to VenueService.java for backward compatibility
-    public List<Venue> searchVenuesBasic(String location, Double venueCost, Integer capacity) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM Venue WHERE Availability = 'Available'");
-        List<Object> params = new ArrayList<>();
-
-        if (location != null && !location.isEmpty()) {
-            sql.append(" AND Location LIKE ?");
-            params.add("%" + location + "%");
-        }
-
-        if (venueCost != null) {
-            sql.append(" AND VenueCost <= ?");
-            params.add(venueCost);
-        }
-
-        if (capacity != null) {
-            sql.append(" AND Capacity >= ?");
-            params.add(capacity);
-        }
-
-        sql.append(" ORDER BY Name");
-
-        return jdbcTemplate.query(sql.toString(), new VenueRowMapper(), params.toArray());
     }
 }

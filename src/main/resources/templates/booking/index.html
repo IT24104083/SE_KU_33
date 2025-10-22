@@ -10,14 +10,231 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/booking-style/style.css}">
+    <style>
+        /* EventSlate Theme Styling */
+        :root {
+            --primary: #667eea;
+            --primary-light: #764ba2;
+            --secondary: #48cae4;
+            --dark: #2d3748;
+            --gray: #718096;
+            --light-gray: #e2e8f0;
+            --light: #f7fafc;
+            --radius: 15px;
+            --shadow: 0 8px 25px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Elements */
+        .bg-element {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            top: 50%;
+            left: 10%;
+        }
+
+        .main-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .management-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+
+        .nav-tabs {
+            background: var(--light);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 0 1rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--gray);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            padding: 2rem;
+        }
+
+        /* Header with Logout Button */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .logout-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-logout:hover {
+            background: #fed7d7;
+            border-color: #feb2b2;
+            color: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(254, 178, 178, 0.3);
+        }
+
+        /* Logo Styling */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-content {
+                text-align: center;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .tab-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
+
 <div class="container mt-5 mb-5">
-    <header class="text-center mb-5">
-        <h1 class="main-title">Venue Management Dashboard</h1>
-        <p class="subtitle">Your all-in-one hub for managing venues and bookings.</p>
-    </header>
+    <!-- Header with Logout Button -->
+    <div class="header-container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-user-tie logo-icon"></i>
+                <span>EventSlate</span>
+            </div>
+            <h1 class="main-title">Venue Management Dashboard</h1>
+            <p class="subtitle">Your all-in-one hub for managing venues and bookings.</p>
+        </div>
+        <div class="logout-section">
+            <a th:href="@{/login}" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
 
     <div class="management-card">
         <ul class="nav nav-tabs" id="bookingTabs" role="tablist">
@@ -56,23 +273,184 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        const showUpdateTab = /*[[${showUpdateTab}]]*/ false;
+        // Handle Update Tab showing
+        var showUpdateTab = /*[[${showUpdateTab}]]*/ false;
 
         if (showUpdateTab) {
-            const updateTab = document.getElementById('update-tab');
+            var updateTab = document.getElementById('update-tab');
             if (updateTab) {
-                const updateTabTrigger = new bootstrap.Tab(updateTab);
+                var updateTabTrigger = new bootstrap.Tab(updateTab);
                 updateTabTrigger.show();
             }
         }
 
-        const alerts = document.querySelectorAll('.alert');
+        // Auto-dismiss alerts
+        var alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
             setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(alert);
+                var bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }, 5000);
         });
+
+        // Add Hotel Form Toggle - Available Hotels Tab
+        var toggleAddHotelBtn = document.getElementById('toggleAddHotelBtn');
+        var addHotelFormContainer = document.getElementById('addHotelFormContainer');
+        var cancelAddHotelBtn = document.getElementById('cancelAddHotelBtn');
+        var addHotelForm = document.getElementById('add-hotel-form');
+
+        if (toggleAddHotelBtn && addHotelFormContainer) {
+            toggleAddHotelBtn.addEventListener('click', function() {
+                if (addHotelFormContainer.style.display === 'none' || addHotelFormContainer.style.display === '') {
+                    addHotelFormContainer.style.display = 'block';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-minus-circle"></i> Hide Form';
+                    // Smooth scroll to form
+                    setTimeout(function() {
+                        addHotelFormContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    addHotelFormContainer.style.display = 'none';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
+
+        if (cancelAddHotelBtn && addHotelFormContainer && addHotelForm) {
+            cancelAddHotelBtn.addEventListener('click', function() {
+                addHotelForm.reset();
+                addHotelFormContainer.style.display = 'none';
+                if (toggleAddHotelBtn) {
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
+
+        // ============ HOTEL FILTER FUNCTIONALITY ============
+        function initializeHotelFilters() {
+            console.log('Initializing hotel filters...');
+
+            var filterRadios = document.querySelectorAll('input[name="hotelFilter"]');
+            var tbody = document.getElementById('hotelsTableBody');
+
+            if (!tbody) {
+                console.error('Table body not found');
+                return;
+            }
+
+            console.log('Filter radios found:', filterRadios.length);
+
+            function filterHotels(filterValue) {
+                console.log('=== Filtering hotels by:', filterValue, '===');
+
+                var allRows = tbody.querySelectorAll('tr');
+                console.log('Total rows in table:', allRows.length);
+
+                var visibleCount = 0;
+                var noResultsRow = null;
+
+                // Process each row
+                allRows.forEach(function(row, index) {
+                    // Check if this is the no-results row
+                    if (row.classList.contains('no-results-row')) {
+                        noResultsRow = row;
+                        console.log('Found no-results row at index:', index);
+                        return;
+                    }
+
+                    // Check if this is a hotel row
+                    if (!row.classList.contains('hotel-row')) {
+                        console.log('Row', index, 'is not a hotel row, skipping');
+                        return;
+                    }
+
+                    var availability = row.getAttribute('data-availability');
+                    console.log('Row', index, '- Availability attribute:', availability);
+
+                    if (!availability) {
+                        console.warn('Row', index, 'has no availability attribute');
+                        row.style.display = 'none';
+                        return;
+                    }
+
+                    var shouldShow = false;
+
+                    if (filterValue === 'all') {
+                        shouldShow = true;
+                        console.log('Row', index, '- Show All mode, showing');
+                    } else if (filterValue === 'available') {
+                        shouldShow = (availability === 'Available');
+                        console.log('Row', index, '- Available filter:', availability, '=== "Available"?', shouldShow);
+                    } else if (filterValue === 'booked') {
+                        shouldShow = (availability === 'Booked');
+                        console.log('Row', index, '- Booked filter:', availability, '=== "Booked"?', shouldShow);
+                    }
+
+                    if (shouldShow) {
+                        row.style.display = '';
+                        visibleCount++;
+                        console.log('Row', index, '✓ VISIBLE');
+                    } else {
+                        row.style.display = 'none';
+                        console.log('Row', index, '✗ HIDDEN');
+                    }
+                });
+
+                console.log('=== Total visible rows:', visibleCount, '===');
+
+                // Handle no results message
+                if (noResultsRow) {
+                    if (visibleCount === 0) {
+                        noResultsRow.style.display = '';
+                        var td = noResultsRow.querySelector('td');
+                        if (td) {
+                            if (filterValue === 'available') {
+                                td.textContent = 'No available hotels at the moment.';
+                            } else if (filterValue === 'booked') {
+                                td.textContent = 'No booked hotels at the moment.';
+                            } else {
+                                td.textContent = 'No hotels found.';
+                            }
+                        }
+                    } else {
+                        noResultsRow.style.display = 'none';
+                    }
+                }
+            }
+
+            // Add event listeners to radio buttons
+            filterRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    console.log('Radio button changed to:', this.value);
+                    filterHotels(this.value);
+                });
+            });
+
+            // Initialize with Available Hotels filter
+            setTimeout(function() {
+                var availableRadio = document.getElementById('filterAvailable');
+                if (availableRadio) {
+                    availableRadio.checked = true;
+                    console.log('Setting initial filter to: available');
+                    filterHotels('available');
+                } else {
+                    console.error('Available radio button not found');
+                }
+            }, 300);
+        }
+
+        // Initialize filters on page load
+        initializeHotelFilters();
+
+        // Re-initialize filters when the Available Hotels tab is shown
+        var hotelsTab = document.getElementById('hotels-tab');
+        if (hotelsTab) {
+            hotelsTab.addEventListener('shown.bs.tab', function() {
+                console.log('Available Hotels tab shown, re-initializing filters...');
+                setTimeout(function() {
+                    initializeHotelFilters();
+                }, 100);
+            });
+        }
     });
 </script>
 

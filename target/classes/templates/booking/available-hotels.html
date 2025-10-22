@@ -1,10 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <body>
 
 <div th:fragment="available-hotels">
+    <!-- Top-right Add Hotel button (above messages and heading) -->
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-primary" id="toggleAddHotelBtn">
+            <i class="fas fa-plus-circle"></i> Add Hotel
+        </button>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${addHotelSuccess}">
+        <i class="fas fa-check-circle"></i> <span th:text="${addHotelSuccess}">Hotel added successfully!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${addHotelError}">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${addHotelError}">Error adding hotel!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Add Hotel Form (Placed above the "Check Available Hotels" heading and visible by default) -->
+    <div id="addHotelFormContainer" class="mb-4" style="display: none;">
+        <div class="management-card p-4">
+            <h3 class="mb-4">Add New Hotel</h3>
+            <form th:action="@{/add-hotel}" method="post" id="add-hotel-form">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="add-hotel-name" class="form-label">Hotel Name:</label>
+                        <input type="text" id="add-hotel-name" name="hotelName" class="form-control"
+                               placeholder="Enter Hotel Name" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="add-location" class="form-label">Location:</label>
+                        <input type="text" id="add-location" name="location" class="form-control"
+                               placeholder="Enter Location" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="add-venue-cost" class="form-label">Venue Cost ($):</label>
+                        <input type="number" step="0.01" id="add-venue-cost" name="venueCost" class="form-control"
+                               placeholder="Enter Venue Cost" min="0" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="add-capacity" class="form-label">Capacity:</label>
+                        <input type="number" id="add-capacity" name="capacity" class="form-control"
+                               placeholder="Enter Capacity" min="1" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="add-availability" class="form-label">Availability:</label>
+                        <select id="add-availability" name="availability" class="form-select" required>
+                            <option value="">-- Choose Availability --</option>
+                            <option value="Available">Available</option>
+                            <option value="Booked">Booked</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end gap-3 mt-3">
+                            <button type="button" class="btn btn-secondary" id="cancelAddHotelBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Create Hotel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <h2>Check Available Hotels</h2>
 
+    <!-- Search Form -->
     <form th:action="@{/}" method="get" class="row g-3 align-items-end mb-4 p-4 search-form">
         <div class="col-md-3">
             <label for="location" class="form-label">Location:</label>
@@ -12,12 +82,12 @@
                    th:value="${location}" placeholder="e.g., Kandy">
         </div>
         <div class="col-md-3">
-            <label for="venueCost" class="form-label">Max Venue Cost:</label>
+            <label for="venueCost" class="form-label">Venue Cost:</label>
             <input type="number" id="venueCost" name="venueCost" class="form-control"
                    th:value="${venueCost}" placeholder="e.g., 5000">
         </div>
         <div class="col-md-3">
-            <label for="capacity" class="form-label">Min Capacity:</label>
+            <label for="capacity" class="form-label">Capacity:</label>
             <input type="number" id="capacity" name="capacity" class="form-control"
                    th:value="${capacity}" placeholder="e.g., 150">
         </div>
@@ -27,28 +97,69 @@
         </div>
     </form>
 
-    <h3 class="mt-5">Available Hotels</h3>
+    <!-- Alert message for no matching hotels -->
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${noResultsFound}">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>No matching hotels found!</strong> Please try different search criteria.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <h3 class="mt-5">Hotels List</h3>
+
+    <!-- Filter Radio Buttons -->
+    <div class="mb-4 p-3 bg-light rounded">
+        <div class="d-flex align-items-center gap-4">
+            <span class="fw-bold me-2">Filter by Status:</span>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="hotelFilter" id="filterAvailable" value="available" checked>
+                <label class="form-check-label" for="filterAvailable">
+                    <i class="fas fa-check-circle text-success"></i> Available Hotels
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="hotelFilter" id="filterBooked" value="booked">
+                <label class="form-check-label" for="filterBooked">
+                    <i class="fas fa-calendar-times text-danger"></i> Booked Hotels
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="hotelFilter" id="filterAll" value="all">
+                <label class="form-check-label" for="filterAll">
+                    <i class="fas fa-list text-primary"></i> Show All Hotels
+                </label>
+            </div>
+        </div>
+    </div>
+
     <div class="table-container">
-        <table class="table table-striped">
+        <table class="table table-striped" id="hotelsTable">
             <thead>
             <tr>
                 <th>Hotel Name</th>
                 <th>Location</th>
                 <th>Venue Cost</th>
                 <th>Capacity</th>
+                <th>Availability</th>
                 <th>Action</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:if="${availableVenues.isEmpty()}">
-                <td colspan="5" class="text-center p-4">No hotels found matching your criteria.</td>
+            <tbody id="hotelsTableBody">
+            <tr th:if="${availableVenues.isEmpty()}" class="no-results-row">
+                <td colspan="6" class="text-center p-4">No hotels found matching your criteria.</td>
             </tr>
-            <tr th:each="venue : ${availableVenues}">
+            <tr th:each="venue : ${availableVenues}"
+                class="hotel-row"
+                th:data-availability="${venue.availability}">
                 <td th:text="${venue.name}">Hotel Name</td>
                 <td th:text="${venue.location}">Location</td>
                 <td th:text="'$' + ${#numbers.formatDecimal(venue.venueCost, 1, 'COMMA', 2, 'POINT')}">5000.00</td>
                 <td th:text="${venue.capacity}">200</td>
-                <td><a href="#" class="btn btn-primary btn-sm">View Details</a></td>
+                <td>
+                    <span th:text="${venue.availability}"
+                          th:classappend="${venue.availability == 'Available' ? 'status-approved' : 'status-rejected'}"
+                          class="status-badge"></span>
+                </td>
+                <td><a href="#" class="btn btn-primary btn-sm">Book Now</a></td>
             </tr>
             </tbody>
         </table>

@@ -35,7 +35,8 @@ public class VenueController {
         boolean isSearchPerformed = false;
 
         if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
-            availableVenues = venueService.getAvailableVenues();
+            // Changed to fetch ALL venues instead of just available ones
+            availableVenues = venueService.getAllVenues();
         } else {
             availableVenues = venueService.searchVenues(location, venueCost, capacity);
             isSearchPerformed = true;
@@ -106,7 +107,8 @@ public class VenueController {
         boolean isSearchPerformed = false;
 
         if ((location == null || location.isEmpty()) && venueCost == null && capacity == null) {
-            venues = venueService.getAvailableVenues();
+            // Changed to fetch ALL venues instead of just available ones
+            venues = venueService.getAllVenues();
         } else {
             venues = venueService.searchVenues(location, venueCost, capacity);
             isSearchPerformed = true;

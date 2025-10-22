@@ -56,23 +56,184 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        const showUpdateTab = /*[[${showUpdateTab}]]*/ false;
+        // Handle Update Tab showing
+        var showUpdateTab = /*[[${showUpdateTab}]]*/ false;
 
         if (showUpdateTab) {
-            const updateTab = document.getElementById('update-tab');
+            var updateTab = document.getElementById('update-tab');
             if (updateTab) {
-                const updateTabTrigger = new bootstrap.Tab(updateTab);
+                var updateTabTrigger = new bootstrap.Tab(updateTab);
                 updateTabTrigger.show();
             }
         }
 
-        const alerts = document.querySelectorAll('.alert');
+        // Auto-dismiss alerts
+        var alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
             setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(alert);
+                var bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }, 5000);
         });
+
+        // Add Hotel Form Toggle - Available Hotels Tab
+        var toggleAddHotelBtn = document.getElementById('toggleAddHotelBtn');
+        var addHotelFormContainer = document.getElementById('addHotelFormContainer');
+        var cancelAddHotelBtn = document.getElementById('cancelAddHotelBtn');
+        var addHotelForm = document.getElementById('add-hotel-form');
+
+        if (toggleAddHotelBtn && addHotelFormContainer) {
+            toggleAddHotelBtn.addEventListener('click', function() {
+                if (addHotelFormContainer.style.display === 'none' || addHotelFormContainer.style.display === '') {
+                    addHotelFormContainer.style.display = 'block';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-minus-circle"></i> Hide Form';
+                    // Smooth scroll to form
+                    setTimeout(function() {
+                        addHotelFormContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    addHotelFormContainer.style.display = 'none';
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
+
+        if (cancelAddHotelBtn && addHotelFormContainer && addHotelForm) {
+            cancelAddHotelBtn.addEventListener('click', function() {
+                addHotelForm.reset();
+                addHotelFormContainer.style.display = 'none';
+                if (toggleAddHotelBtn) {
+                    toggleAddHotelBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Hotel';
+                }
+            });
+        }
+
+        // ============ HOTEL FILTER FUNCTIONALITY ============
+        function initializeHotelFilters() {
+            console.log('Initializing hotel filters...');
+
+            var filterRadios = document.querySelectorAll('input[name="hotelFilter"]');
+            var tbody = document.getElementById('hotelsTableBody');
+
+            if (!tbody) {
+                console.error('Table body not found');
+                return;
+            }
+
+            console.log('Filter radios found:', filterRadios.length);
+
+            function filterHotels(filterValue) {
+                console.log('=== Filtering hotels by:', filterValue, '===');
+
+                var allRows = tbody.querySelectorAll('tr');
+                console.log('Total rows in table:', allRows.length);
+
+                var visibleCount = 0;
+                var noResultsRow = null;
+
+                // Process each row
+                allRows.forEach(function(row, index) {
+                    // Check if this is the no-results row
+                    if (row.classList.contains('no-results-row')) {
+                        noResultsRow = row;
+                        console.log('Found no-results row at index:', index);
+                        return;
+                    }
+
+                    // Check if this is a hotel row
+                    if (!row.classList.contains('hotel-row')) {
+                        console.log('Row', index, 'is not a hotel row, skipping');
+                        return;
+                    }
+
+                    var availability = row.getAttribute('data-availability');
+                    console.log('Row', index, '- Availability attribute:', availability);
+
+                    if (!availability) {
+                        console.warn('Row', index, 'has no availability attribute');
+                        row.style.display = 'none';
+                        return;
+                    }
+
+                    var shouldShow = false;
+
+                    if (filterValue === 'all') {
+                        shouldShow = true;
+                        console.log('Row', index, '- Show All mode, showing');
+                    } else if (filterValue === 'available') {
+                        shouldShow = (availability === 'Available');
+                        console.log('Row', index, '- Available filter:', availability, '=== "Available"?', shouldShow);
+                    } else if (filterValue === 'booked') {
+                        shouldShow = (availability === 'Booked');
+                        console.log('Row', index, '- Booked filter:', availability, '=== "Booked"?', shouldShow);
+                    }
+
+                    if (shouldShow) {
+                        row.style.display = '';
+                        visibleCount++;
+                        console.log('Row', index, '✓ VISIBLE');
+                    } else {
+                        row.style.display = 'none';
+                        console.log('Row', index, '✗ HIDDEN');
+                    }
+                });
+
+                console.log('=== Total visible rows:', visibleCount, '===');
+
+                // Handle no results message
+                if (noResultsRow) {
+                    if (visibleCount === 0) {
+                        noResultsRow.style.display = '';
+                        var td = noResultsRow.querySelector('td');
+                        if (td) {
+                            if (filterValue === 'available') {
+                                td.textContent = 'No available hotels at the moment.';
+                            } else if (filterValue === 'booked') {
+                                td.textContent = 'No booked hotels at the moment.';
+                            } else {
+                                td.textContent = 'No hotels found.';
+                            }
+                        }
+                    } else {
+                        noResultsRow.style.display = 'none';
+                    }
+                }
+            }
+
+            // Add event listeners to radio buttons
+            filterRadios.forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    console.log('Radio button changed to:', this.value);
+                    filterHotels(this.value);
+                });
+            });
+
+            // Initialize with Available Hotels filter
+            setTimeout(function() {
+                var availableRadio = document.getElementById('filterAvailable');
+                if (availableRadio) {
+                    availableRadio.checked = true;
+                    console.log('Setting initial filter to: available');
+                    filterHotels('available');
+                } else {
+                    console.error('Available radio button not found');
+                }
+            }, 300);
+        }
+
+        // Initialize filters on page load
+        initializeHotelFilters();
+
+        // Re-initialize filters when the Available Hotels tab is shown
+        var hotelsTab = document.getElementById('hotels-tab');
+        if (hotelsTab) {
+            hotelsTab.addEventListener('shown.bs.tab', function() {
+                console.log('Available Hotels tab shown, re-initializing filters...');
+                setTimeout(function() {
+                    initializeHotelFilters();
+                }, 100);
+            });
+        }
     });
 </script>
 

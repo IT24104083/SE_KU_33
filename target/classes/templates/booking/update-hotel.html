@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <body>
 
 <div th:fragment="update-hotel" class="update-hotel-container">
@@ -49,6 +49,15 @@
                    placeholder="Enter Capacity" min="0" required>
         </div>
 
+        <div class="form-group">
+            <label for="update-availability" class="form-label">Availability:</label>
+            <select id="update-availability" name="availability" class="form-select" required>
+                <option value="">-- Choose Availability --</option>
+                <option value="Available">Available</option>
+                <option value="Booked">Booked</option>
+            </select>
+        </div>
+
         <div class="form-actions">
             <button type="reset" class="btn btn-secondary" id="cancel-btn">Cancel</button>
             <button type="submit" class="btn btn-primary">Update Details</button>
@@ -63,6 +72,7 @@
         const locationInput = document.getElementById('update-location');
         const venueCostInput = document.getElementById('update-venue-cost');
         const capacityInput = document.getElementById('update-capacity');
+        const availabilitySelect = document.getElementById('update-availability');
         const cancelBtn = document.getElementById('cancel-btn');
 
         if (hotelSelect) {
@@ -77,10 +87,11 @@
                             return response.json();
                         })
                         .then(data => {
-                            hotelNameInput.value = data.name;
-                            locationInput.value = data.location;
-                            venueCostInput.value = data.venueCost;
-                            capacityInput.value = data.capacity;
+                            hotelNameInput.value = data.name || '';
+                            locationInput.value = data.location || '';
+                            venueCostInput.value = data.venueCost != null ? data.venueCost : '';
+                            capacityInput.value = data.capacity != null ? data.capacity : '';
+                            availabilitySelect.value = data.availability || '';
                         })
                         .catch(error => {
                             console.error('Error fetching venue details:', error);
@@ -107,6 +118,7 @@
             locationInput.value = '';
             venueCostInput.value = '';
             capacityInput.value = '';
+            if (availabilitySelect) availabilitySelect.value = '';
         }
     });
 </script>

@@ -77,9 +77,9 @@ public class VenueService {
         jdbcTemplate.update(sql, name, location, venueCost, capacity, venueId);
     }
 
-    // Search venues with filters
+    // Search venues with filters - Modified to return all venues (not just available)
     public List<Venue> searchVenues(String location, Double venueCost, Integer capacity) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM Venue WHERE Availability = 'Available'");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Venue WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (location != null && !location.isEmpty()) {

@@ -8,171 +8,737 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}" />
     <style>
-        .filter-section .card-body {
-            padding: var(--card-padding);
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --border: #e9ecef;
+            --radius: 12px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
         }
-        .filter-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: flex-end;
-        }
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        .filter-group label {
+
+        /* Generic Button Styles (Added for completeness/consistency) */
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
             font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 8px;
-            display: block;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
         }
-        .price-inputs {
-            display: flex;
-            gap: 10px;
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
-        .price-inputs input {
-            flex: 1;
-            padding: 10px;
-            border-radius: var(--radius);
-            border: 1px solid var(--light-gray);
-            font-size: 14px;
+        .btn-primary:hover {
+            background: var(--primary-dark);
         }
-        .vendor-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .service-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .service-tab {
-            padding: 10px 20px;
-            border-radius: var(--radius);
+
+        .btn-secondary {
             background: var(--light);
             color: var(--dark);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            border-color: var(--border);
         }
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+        /* End Generic Button Styles */
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title h1 {
+            margin: 0 0 8px 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .content-main {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Service Navigation */
+        .service-nav {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .service-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .service-tab {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--light);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--dark);
+        }
+
         .service-tab:hover {
-            background: var(--light-gray);
+            background: white;
+            border-color: var(--primary);
             transform: translateY(-2px);
         }
+
         .service-tab.active {
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .service-tab.active .service-icon {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .service-info {
+            flex: 1;
+        }
+
+        .service-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
         .service-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 500;
-            margin-left: 10px;
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
-        .status-assigned {
-            background: #f0fff4;
-            color: #38a169;
-            border: 1px solid #c6f6d5;
+
+        .service-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
-        .status-needed {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
+
+        /* Vendor Grid */
+        .vendor-section {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: none;
         }
-        .status-not-requested {
+
+        .vendor-section.active {
+            display: block;
+        }
+
+        .section-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
             background: var(--light);
-            color: var(--gray);
-            border: 1px solid var(--light-gray);
         }
-        .status-badge {
-            display: inline-flex;
+
+        .section-title {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--dark);
+            display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 500;
+            gap: 12px;
         }
-        .status-available {
-            background: #f0fff4;
-            color: #38a169;
-            border: 1px solid #c6f6d5;
+
+        .section-body {
+            padding: 25px;
         }
-        .status-booked {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
+
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
-        .info-group {
-            margin-bottom: 15px;
+
+        .vendor-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
         }
-        .info-label {
+
+        .vendor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .vendor-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--light) 0%, #f1f3f4 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vendor-name {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--dark);
+        }
+
+        .vendor-type {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .vendor-card-body {
+            padding: 20px;
+        }
+
+        .vendor-detail {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .detail-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 2px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .vendor-actions {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: var(--light);
+        }
+
+        .btn-assign {
+            width: 100%;
+            padding: 12px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-assign:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-reassign {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-reassign:hover {
+            background: #e0a800;
+        }
+
+        .btn-remove {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-remove:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Sidebar Components */
+        .sidebar-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-title {
+            margin: 0 0 20px 0;
+            font-size: 1.2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .assigned-vendors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .assigned-vendor {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .vendor-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .vendor-info {
+            flex: 1;
+        }
+
+        .vendor-service {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .vendor-assigned-name {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .quick-actions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .quick-action:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .quick-action i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .empty-description {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
             margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .info-label i {
-            color: var(--primary);
-            width: 16px;
+
+        .price-inputs {
+            display: flex;
+            gap: 10px;
         }
-        .info-value {
-            padding: 12px 15px;
-            background: var(--light);
-            border-radius: var(--radius);
-            border: 1px solid var(--light-gray);
+
+        .price-inputs input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 14px;
-            color: var(--dark);
         }
-        .badge {
-            background: var(--secondary);
+
+        .sort-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sort {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-sort.active {
+            background: var(--primary);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin-left: 10px;
+            border-color: var(--primary);
         }
+
+        .btn-sort:hover:not(.active) {
+            background: var(--light);
+        }
+
+        /* Improvement: Filter Action Buttons Side-by-Side */
+        .filter-actions-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .filter-actions-group > * {
+            flex: 1;
+        }
+
+        .filter-group:last-child {
+            /* Aligns the buttons to the bottom of the grid cell for vertical alignment with price inputs */
+            display: flex;
+            align-items: flex-end;
+        }
+        /* End Improvement */
+
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
         @media (max-width: 768px) {
-            .filter-row { flex-direction: column; align-items: stretch; }
-            .price-inputs { flex-direction: column; }
-            .vendor-grid { grid-template-columns: 1fr; }
+            .header-main {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                justify-content: center;
+            }
+
+            .service-tabs {
+                grid-template-columns: 1fr;
+            }
+
+            .vendor-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-inputs {
+                flex-direction: column;
+            }
+
+            /* Improvement: Stack filter buttons on mobile */
+            .filter-actions-group {
+                flex-direction: column;
+            }
+            .filter-group:last-child {
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                padding: 20px;
+            }
+
+            .section-body {
+                padding: 15px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vendor-section {
+            animation: fadeIn 0.5s ease;
         }
     </style>
 </head>
 <body>
-<!-- Animated background elements -->
 <div class="bg-element bg-element-1"></div>
 <div class="bg-element bg-element-2"></div>
 <div class="bg-element bg-element-3"></div>
 
 <div class="container">
-    <div class="header">
-        <div class="logo">
-            <i class="fas fa-glass-cheers logo-icon"></i>
-            <span>PartySlate</span>
-        </div>
-        <h1>Manage Vendors for Event #<span th:text="${event.EventID}"></span></h1>
-        <div class="header-actions">
-            <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Overview
-            </a>
-            <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="btn btn-primary">
-                <i class="fas fa-building"></i> Manage Venue
-            </a>
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-main">
+                <div class="header-title">
+                    <h1><i class="fas fa-users-cog"></i> Manage Vendors</h1>
+                    <p>
+                        Event #<span th:text="${event.EventID}"></span> -
+                        <span th:text="${event.EventType}"></span> on
+                        <span th:text="${eventDate}"></span>
+                    </p>
+                </div>
+                <div class="header-actions">
+                    <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}"
+                       class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Overview
+                    </a>
+                    <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}"
+                       class="btn btn-primary">
+                        <i class="fas fa-building"></i> Manage Venue
+                    </a>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${assignedVendors != null ? assignedVendors.size() : 0}">0</span>
+                    <div class="stat-label">Vendors Assigned</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${(inquiry.Photographer ? 1 : 0) + (inquiry.Catering ? 1 : 0) + (inquiry.DJ ? 1 : 0) + (inquiry.Decorations ? 1 : 0)}">0</span>
+                    <div class="stat-label">Services Requested</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${(photographerAssigned ? 1 : 0) + (catererAssigned ? 1 : 0) + (djAssigned ? 1 : 0) + (decoratorAssigned ? 1 : 0)}">0</span>
+                    <div class="stat-label">Services Assigned</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" th:text="${event.Status}"></span>
+                    <div class="stat-label">Event Status</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Flash Messages -->
     <div th:if="${success}" class="alert alert-success">
         <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
     </div>
@@ -180,542 +746,596 @@
         <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
     </div>
 
-    <!-- Filter Vendors Section -->
-    <div class="card filter-section">
-        <div class="card-header">
-            <h3 class="section-title"><i class="fas fa-filter section-icon"></i> Filter Vendors</h3>
-        </div>
-        <div class="card-body">
-            <form th:action="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" method="get" class="form-actions">
-                <input type="hidden" name="id" th:value="${event.EventID}">
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label><i class="fas fa-sort-amount-down"></i> Sort by Price</label>
-                        <div class="form-actions">
-                            <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='min-max')}"
-                               class="btn btn-sm"
-                               th:classappend="${currentSort == 'min-max'} ? 'btn-primary' : 'btn-secondary'">
-                                Min to Max
-                            </a>
-                            <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='max-min')}"
-                               class="btn btn-sm"
-                               th:classappend="${currentSort == 'max-min'} ? 'btn-primary' : 'btn-secondary'">
-                                Max to Min
-                            </a>
-                            <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
-                               class="btn btn-sm btn-secondary">
-                                Clear Sort
-                            </a>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="service-nav">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-list"></i> Services
+                </h3>
+                <div class="service-tabs">
+                    <a class="service-tab active" onclick="showService('photographer')">
+                        <div class="service-icon">
+                            <i class="fas fa-camera"></i>
                         </div>
-                    </div>
-                    <div class="filter-group">
-                        <label><i class="fas fa-money-bill"></i> Price Range</label>
-                        <div class="price-inputs">
-                            <input type="number" name="minPrice" th:value="${currentMinPrice}" placeholder="Min price" class="form-control price-input" step="0.01" min="0">
-                            <input type="number" name="maxPrice" th:value="${currentMaxPrice}" placeholder="Max price" class="form-control price-input" step="0.01" min="0">
+                        <div class="service-info">
+                            <div class="service-name">Photographers</div>
+                            <div class="service-status" th:if="${inquiry.Photographer}"
+                                 th:text="${photographerAssigned ? 'Assigned' : 'Needed'}"></div>
+                            <div class="service-status" th:unless="${inquiry.Photographer}">Not Requested</div>
                         </div>
-                    </div>
-                    <div class="filter-group">
-                        <button type="submit" class="btn btn-submit">
-                            <i class="fas fa-check"></i> Apply Filters
-                        </button>
-                        <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Clear All
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+                        <div class="service-badge" th:text="${photographers != null ? photographers.size() : 0}"></div>
+                    </a>
 
-    <!-- Currently Assigned Vendors -->
-    <div th:if="${assignedVendors != null and !assignedVendors.empty}" class="card">
-        <div class="card-header">
-            <h2 class="section-title"><i class="fas fa-users-cog section-icon"></i> Currently Assigned Vendors</h2>
-        </div>
-        <div class="card-body">
-            <div class="vendor-grid">
-                <div th:each="vendor : ${assignedVendors}" class="card assigned-vendor">
-                    <h3 class="card-header" th:text="${vendor.ServiceType}"></h3>
-                    <div class="card-body">
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-user"></i> Vendor</div>
-                            <div class="info-value" th:text="${vendor.VendorName}"></div>
+                    <a class="service-tab" onclick="showService('caterer')">
+                        <div class="service-icon">
+                            <i class="fas fa-utensils"></i>
                         </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                            <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                        <div class="service-info">
+                            <div class="service-name">Caterers</div>
+                            <div class="service-status" th:if="${inquiry.Catering}"
+                                 th:text="${catererAssigned ? 'Assigned' : 'Needed'}"></div>
+                            <div class="service-status" th:unless="${inquiry.Catering}">Not Requested</div>
                         </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                            <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                        <div class="service-badge" th:text="${caterers != null ? caterers.size() : 0}"></div>
+                    </a>
+
+                    <a class="service-tab" onclick="showService('dj')">
+                        <div class="service-icon">
+                            <i class="fas fa-music"></i>
                         </div>
-                        <div class="info-group">
-                            <div class="info-label"><i class="fas fa-info-circle"></i> Status</div>
-                            <div class="info-value">
-                                <span class="status-badge"
-                                      th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                      th:text="${vendor.Availability}"></span>
-                            </div>
+                        <div class="service-info">
+                            <div class="service-name">DJs</div>
+                            <div class="service-status" th:if="${inquiry.DJ}"
+                                 th:text="${djAssigned ? 'Assigned' : 'Needed'}"></div>
+                            <div class="service-status" th:unless="${inquiry.DJ}">Not Requested</div>
                         </div>
-                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post" class="form-actions">
-                            <input type="hidden" name="eventId" th:value="${event.EventID}">
-                            <input type="hidden" name="serviceType" th:value="${vendor.ServiceType}">
-                            <button type="submit" class="btn btn-delete"
-                                    onclick="return confirm('Are you sure you want to remove this ' + '${vendor.ServiceType}' + '?')">
-                                <i class="fas fa-trash"></i> Remove <span th:text="${vendor.ServiceType}"></span>
-                            </button>
-                        </form>
+                        <div class="service-badge" th:text="${djs != null ? djs.size() : 0}"></div>
+                    </a>
+
+                    <a class="service-tab" onclick="showService('decorator')">
+                        <div class="service-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="service-info">
+                            <div class="service-name">Decorators</div>
+                            <div class="service-status" th:if="${inquiry.Decorations}"
+                                 th:text="${decoratorAssigned ? 'Assigned' : 'Needed'}"></div>
+                            <div class="service-status" th:unless="${inquiry.Decorations}">Not Requested</div>
+                        </div>
+                        <div class="service-badge" th:text="${decorators != null ? decorators.size() : 0}"></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-card" th:if="${assignedVendors != null and !assignedVendors.empty}">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                    Assigned Vendors
+                    <span class="service-badge" th:text="${assignedVendors.size()}"></span>
+                </h3>
+                <div class="assigned-vendors-list">
+                    <div th:each="vendor : ${assignedVendors}" class="assigned-vendor">
+                        <div class="vendor-avatar">
+                            <i th:if="${vendor.ServiceType == 'Photographer'}" class="fas fa-camera"></i>
+                            <i th:if="${vendor.ServiceType == 'Caterer'}" class="fas fa-utensils"></i>
+                            <i th:if="${vendor.ServiceType == 'DJ'}" class="fas fa-music"></i>
+                            <i th:if="${vendor.ServiceType == 'Decorator'}" class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="vendor-info">
+                            <div class="vendor-service" th:text="${vendor.ServiceType}"></div>
+                            <div class="vendor-assigned-name" th:text="${vendor.VendorName}"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Empty State for Assigned Vendors -->
-    <div th:if="${assignedVendors == null or assignedVendors.empty}" class="empty-state">
-        <i class="fas fa-users-cog"></i>
-        <h3>No Vendors Assigned Yet</h3>
-        <p>Start by assigning vendors for the requested services below.</p>
-    </div>
-
-    <!-- Service Tabs -->
-    <div class="service-tabs">
-        <a class="service-tab active" onclick="showService('photographer')"><i class="fas fa-camera"></i> Photographers</a>
-        <a class="service-tab" onclick="showService('caterer')"><i class="fas fa-utensils"></i> Caterers</a>
-        <a class="service-tab" onclick="showService('dj')"><i class="fas fa-music"></i> DJs</a>
-        <a class="service-tab" onclick="showService('decorator')"><i class="fas fa-paint-brush"></i> Decorators</a>
-    </div>
-
-    <!-- Photographer Section -->
-    <div id="photographer-section" class="card service-section">
-        <div class="card-header">
-            <h2 class="section-title"><i class="fas fa-camera section-icon"></i> Photographers
-                <span th:if="${photographers != null}" class="badge" th:text="${photographers.size()}"></span>
-            </h2>
-            <span th:if="${inquiry.Photographer}"
-                  th:class="${photographerAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${photographerAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
-            <span th:unless="${inquiry.Photographer}" class="service-status status-not-requested">Not Requested</span>
-        </div>
-        <div class="card-body">
-            <div th:if="${inquiry.Photographer}">
-                <div th:if="${photographerAssigned}" class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Photographer already assigned. You can remove and assign a different one if needed.
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-bolt" style="color: var(--primary);"></i>
+                    Quick Actions
+                </h3>
+                <div class="quick-actions-list">
+                    <a th:href="@{/event-coordinator/events/manage/{id}(id=${event.EventID})}" class="quick-action">
+                        <i class="fas fa-eye"></i>
+                        <span>Event Overview</span>
+                    </a>
+                    <a th:href="@{/event-coordinator/events/manage/{id}/venue(id=${event.EventID})}" class="quick-action">
+                        <i class="fas fa-building"></i>
+                        <span>Manage Venue</span>
+                    </a>
+                    <a th:href="@{/event-coordinator/dashboard}" class="quick-action">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a th:href="@{/event-coordinator/events/needing-assignments}" class="quick-action">
+                        <i class="fas fa-tasks"></i>
+                        <span>All Assignments</span>
+                    </a>
                 </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${photographers}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
+            </div>
+        </div>
+
+        <div class="content-main">
+            <div class="filter-section">
+                <h3 class="section-title" style="margin: 0 0 20px 0;">
+                    <i class="fas fa-filter"></i> Filter & Sort Vendors
+                </h3>
+                <form th:action="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}" method="get">
+                    <input type="hidden" name="id" th:value="${event.EventID}">
+                    <div class="filter-grid">
+                        <div class="filter-group">
+                            <label><i class="fas fa-sort-amount-down"></i> Sort by Price</label>
+                            <div class="sort-actions">
+                                <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='min-max')}"
+                                   class="btn-sort"
+                                   th:classappend="${currentSort == 'min-max'} ? 'active' : ''">
+                                    Low to High
+                                </a>
+                                <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID}, sort='max-min')}"
+                                   class="btn-sort"
+                                   th:classappend="${currentSort == 'max-min'} ? 'active' : ''">
+                                    High to Low
+                                </a>
+                                <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
+                                   class="btn-sort">
+                                    Clear
+                                </a>
                             </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="fas fa-money-bill"></i> Price Range (LKR)</label>
+                            <div class="price-inputs">
+                                <input type="number" name="minPrice" th:value="${currentMinPrice}"
+                                       placeholder="Min price" class="form-control price-input" step="0.01" min="0">
+                                <input type="number" name="maxPrice" th:value="${currentMaxPrice}"
+                                       placeholder="Max price" class="form-control price-input" step="0.01" min="0">
                             </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-actions-group">
+                                <button type="submit" class="btn btn-submit">
+                                    <i class="fas fa-check"></i> Apply Filters
+                                </button>
+                                <a th:href="@{/event-coordinator/events/manage/{id}/vendors(id=${event.EventID})}"
+                                   class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Clear All
+                                </a>
                             </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="photographer-section" class="vendor-section active">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-camera"></i> Available Photographers
+                    </h2>
+                </div>
+                <div class="section-body">
+                    <div th:if="${inquiry.Photographer}">
+                        <div th:if="${photographerAssigned}" class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Photographer already assigned. You can reassign if needed.
+                        </div>
+                        <div class="vendor-grid" th:if="${photographers != null and !photographers.empty}">
+                            <div th:each="vendor : ${photographers}" class="vendor-card">
+                                <div class="vendor-card-header">
+                                    <h3 class="vendor-name" th:text="${vendor.VendorName}"></h3>
+                                    <p class="vendor-type" th:text="${vendor.VendorType}"></p>
+                                </div>
+                                <div class="vendor-card-body">
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-money-bill"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Price</div>
+                                            <div class="detail-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Contact</div>
+                                            <div class="detail-value" th:text="${vendor.ContactNo}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value" style="color: var(--success);">Available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vendor-actions">
+                                    <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                                        <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                        <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                        <input type="hidden" name="serviceType" value="Photographer">
+                                        <button type="submit" class="btn-assign" th:classappend="${photographerAssigned} ? 'btn-reassign' : ''">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span th:if="${photographerAssigned}">Reassign Photographer</span>
+                                            <span th:unless="${photographerAssigned}">Assign Photographer</span>
+                                        </button>
+                                    </form>
+                                    <div th:if="${photographerAssigned}">
+                                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post">
+                                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                            <input type="hidden" name="serviceType" value="Photographer">
+                                            <button type="submit" class="btn-remove">
+                                                <i class="fas fa-times-circle"></i> Remove Assignment
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Photographer">
-                                <button type="submit" class="btn btn-submit"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span th:if="${photographerAssigned}">Reassign Photographer</span>
-                                    <span th:unless="${photographerAssigned}">Assign Photographer</span>
-                                </button>
-                            </form>
                         </div>
+                        <div th:if="${photographers == null or photographers.empty}" class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3 class="empty-title">No Photographers Available</h3>
+                            <p class="empty-description">There are no photographers available for the selected date.</p>
+                        </div>
+                    </div>
+                    <div th:unless="${inquiry.Photographer}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="empty-title">Photographer Not Requested</h3>
+                        <p class="empty-description">This service was not requested for this event.</p>
                     </div>
                 </div>
             </div>
-            <div th:unless="${inquiry.Photographer}">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Photographer service was not requested by the customer, but you can still add it if needed.
-                </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${photographers}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
-                                </div>
-                            </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Photographer">
-                                <button type="submit" class="btn btn-primary"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-plus-circle"></i> Add Photographer Service
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Caterer Section -->
-    <div id="caterer-section" class="card service-section" style="display: none;">
-        <div class="card-header">
-            <h2 class="section-title"><i class="fas fa-utensils section-icon"></i> Caterers
-                <span th:if="${caterers != null}" class="badge" th:text="${caterers.size()}"></span>
-            </h2>
-            <span th:if="${inquiry.Catering}"
-                  th:class="${catererAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${catererAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
-            <span th:unless="${inquiry.Catering}" class="service-status status-not-requested">Not Requested</span>
-        </div>
-        <div class="card-body">
-            <div th:if="${inquiry.Catering}">
-                <div th:if="${catererAssigned}" class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Caterer already assigned. You can remove and assign a different one if needed.
+            <div id="caterer-section" class="vendor-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-utensils"></i> Available Caterers
+                    </h2>
                 </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${caterers}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
+                <div class="section-body">
+                    <div th:if="${inquiry.Catering}">
+                        <div th:if="${catererAssigned}" class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Caterer already assigned. You can reassign if needed.
+                        </div>
+                        <div class="vendor-grid" th:if="${caterers != null and !caterers.empty}">
+                            <div th:each="vendor : ${caterers}" class="vendor-card">
+                                <div class="vendor-card-header">
+                                    <h3 class="vendor-name" th:text="${vendor.VendorName}"></h3>
+                                    <p class="vendor-type" th:text="${vendor.VendorType}"></p>
+                                </div>
+                                <div class="vendor-card-body">
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-money-bill"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Price</div>
+                                            <div class="detail-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Contact</div>
+                                            <div class="detail-value" th:text="${vendor.ContactNo}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value" style="color: var(--success);">Available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vendor-actions">
+                                    <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                                        <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                        <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                        <input type="hidden" name="serviceType" value="Caterer">
+                                        <button type="submit" class="btn-assign" th:classappend="${catererAssigned} ? 'btn-reassign' : ''">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span th:if="${catererAssigned}">Reassign Caterer</span>
+                                            <span th:unless="${catererAssigned}">Assign Caterer</span>
+                                        </button>
+                                    </form>
+                                    <div th:if="${catererAssigned}">
+                                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post">
+                                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                            <input type="hidden" name="serviceType" value="Caterer">
+                                            <button type="submit" class="btn-remove">
+                                                <i class="fas fa-times-circle"></i> Remove Assignment
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Caterer">
-                                <button type="submit" class="btn btn-submit"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span th:if="${catererAssigned}">Reassign Caterer</span>
-                                    <span th:unless="${catererAssigned}">Assign Caterer</span>
-                                </button>
-                            </form>
                         </div>
+                        <div th:if="${caterers == null or caterers.empty}" class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3 class="empty-title">No Caterers Available</h3>
+                            <p class="empty-description">There are no caterers available for the selected date.</p>
+                        </div>
+                    </div>
+                    <div th:unless="${inquiry.Catering}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="empty-title">Catering Not Requested</h3>
+                        <p class="empty-description">This service was not requested for this event.</p>
                     </div>
                 </div>
             </div>
-            <div th:unless="${inquiry.Catering}">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Catering service was not requested by the customer, but you can still add it if needed.
-                </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${caterers}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
-                                </div>
-                            </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Caterer">
-                                <button type="submit" class="btn btn-primary"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-plus-circle"></i> Add Catering Service
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- DJ Section -->
-    <div id="dj-section" class="card service-section" style="display: none;">
-        <div class="card-header">
-            <h2 class="section-title"><i class="fas fa-music section-icon"></i> DJs
-                <span th:if="${djs != null}" class="badge" th:text="${djs.size()}"></span>
-            </h2>
-            <span th:if="${inquiry.DJ}"
-                  th:class="${djAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${djAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
-            <span th:unless="${inquiry.DJ}" class="service-status status-not-requested">Not Requested</span>
-        </div>
-        <div class="card-body">
-            <div th:if="${inquiry.DJ}">
-                <div th:if="${djAssigned}" class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> DJ already assigned. You can remove and assign a different one if needed.
+            <div id="dj-section" class="vendor-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-music"></i> Available DJs
+                    </h2>
                 </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${djs}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
+                <div class="section-body">
+                    <div th:if="${inquiry.DJ}">
+                        <div th:if="${djAssigned}" class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> DJ already assigned. You can reassign if needed.
+                        </div>
+                        <div class="vendor-grid" th:if="${djs != null and !djs.empty}">
+                            <div th:each="vendor : ${djs}" class="vendor-card">
+                                <div class="vendor-card-header">
+                                    <h3 class="vendor-name" th:text="${vendor.VendorName}"></h3>
+                                    <p class="vendor-type" th:text="${vendor.VendorType}"></p>
+                                </div>
+                                <div class="vendor-card-body">
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-money-bill"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Price</div>
+                                            <div class="detail-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Contact</div>
+                                            <div class="detail-value" th:text="${vendor.ContactNo}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value" style="color: var(--success);">Available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vendor-actions">
+                                    <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                                        <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                        <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                        <input type="hidden" name="serviceType" value="DJ">
+                                        <button type="submit" class="btn-assign" th:classappend="${djAssigned} ? 'btn-reassign' : ''">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span th:if="${djAssigned}">Reassign DJ</span>
+                                            <span th:unless="${djAssigned}">Assign DJ</span>
+                                        </button>
+                                    </form>
+                                    <div th:if="${djAssigned}">
+                                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post">
+                                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                            <input type="hidden" name="serviceType" value="DJ">
+                                            <button type="submit" class="btn-remove">
+                                                <i class="fas fa-times-circle"></i> Remove Assignment
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="DJ">
-                                <button type="submit" class="btn btn-submit"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span th:if="${djAssigned}">Reassign DJ</span>
-                                    <span th:unless="${djAssigned}">Assign DJ</span>
-                                </button>
-                            </form>
                         </div>
+                        <div th:if="${djs == null or djs.empty}" class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <h3 class="empty-title">No DJs Available</h3>
+                            <p class="empty-description">There are no DJs available for the selected date.</p>
+                        </div>
+                    </div>
+                    <div th:unless="${inquiry.DJ}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="empty-title">DJ Not Requested</h3>
+                        <p class="empty-description">This service was not requested for this event.</p>
                     </div>
                 </div>
             </div>
-            <div th:unless="${inquiry.DJ}">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> DJ service was not requested by the customer, but you can still add it if needed.
-                </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${djs}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
-                                </div>
-                            </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="DJ">
-                                <button type="submit" class="btn btn-primary"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-plus-circle"></i> Add DJ Service
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Decorator Section -->
-    <div id="decorator-section" class="card service-section" style="display: none;">
-        <div class="card-header">
-            <h2 class="section-title"><i class="fas fa-paint-brush section-icon"></i> Decorators
-                <span th:if="${decorators != null}" class="badge" th:text="${decorators.size()}"></span>
-            </h2>
-            <span th:if="${inquiry.Decorations}"
-                  th:class="${decoratorAssigned ? 'service-status status-assigned' : 'service-status status-needed'}"
-                  th:text="${decoratorAssigned ? '✓ Assigned' : '⚡ Needed'}"></span>
-            <span th:unless="${inquiry.Decorations}" class="service-status status-not-requested">Not Requested</span>
-        </div>
-        <div class="card-body">
-            <div th:if="${inquiry.Decorations}">
-                <div th:if="${decoratorAssigned}" class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Decorator already assigned. You can remove and assign a different one if needed.
+            <div id="decorator-section" class="vendor-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-paint-brush"></i> Available Decorators
+                    </h2>
                 </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${decorators}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
+                <div class="section-body">
+                    <div th:if="${inquiry.Decorations}">
+                        <div th:if="${decoratorAssigned}" class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Decorator already assigned. You can reassign if needed.
+                        </div>
+                        <div class="vendor-grid" th:if="${decorators != null and !decorators.empty}">
+                            <div th:each="vendor : ${decorators}" class="vendor-card">
+                                <div class="vendor-card-header">
+                                    <h3 class="vendor-name" th:text="${vendor.VendorName}"></h3>
+                                    <p class="vendor-type" th:text="${vendor.VendorType}"></p>
+                                </div>
+                                <div class="vendor-card-body">
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-money-bill"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Price</div>
+                                            <div class="detail-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Contact</div>
+                                            <div class="detail-value" th:text="${vendor.ContactNo}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="vendor-detail">
+                                        <div class="detail-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value" style="color: var(--success);">Available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vendor-actions">
+                                    <form th:action="@{/event-coordinator/events/assign-vendor}" method="post">
+                                        <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                        <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
+                                        <input type="hidden" name="serviceType" value="Decorator">
+                                        <button type="submit" class="btn-assign" th:classappend="${decoratorAssigned} ? 'btn-reassign' : ''">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span th:if="${decoratorAssigned}">Reassign Decorator</span>
+                                            <span th:unless="${decoratorAssigned}">Assign Decorator</span>
+                                        </button>
+                                    </form>
+                                    <div th:if="${decoratorAssigned}">
+                                        <form th:action="@{/event-coordinator/events/remove-vendor-service}" method="post">
+                                            <input type="hidden" name="eventId" th:value="${event.EventID}">
+                                            <input type="hidden" name="serviceType" value="Decorator">
+                                            <button type="submit" class="btn-remove">
+                                                <i class="fas fa-times-circle"></i> Remove Assignment
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Decorator">
-                                <button type="submit" class="btn btn-submit"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span th:if="${decoratorAssigned}">Reassign Decorator</span>
-                                    <span th:unless="${decoratorAssigned}">Assign Decorator</span>
-                                </button>
-                            </form>
+                        </div>
+                        <div th:if="${decorators == null or decorators.empty}" class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <h3 class="empty-title">No Decorators Available</h3>
+                            <p class="empty-description">There are no decorators available for the selected date.</p>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div th:unless="${inquiry.Decorations}">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Decorator service was not requested by the customer, but you can still add it if needed.
-                </div>
-                <div class="vendor-grid">
-                    <div th:each="vendor : ${decorators}" class="vendor-card card">
-                        <h3 class="card-header" th:text="${vendor.VendorName}"></h3>
-                        <div class="card-body">
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-cogs"></i> Type</div>
-                                <div class="info-value" th:text="${vendor.VendorType}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-money-bill"></i> Price</div>
-                                <div class="info-value">LKR <span th:text="${#numbers.formatDecimal(vendor.Price, 0, 'COMMA', 2, 'POINT')}"></span></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-phone"></i> Contact</div>
-                                <div class="info-value" th:text="${vendor.ContactNo}"></div>
-                            </div>
-                            <div class="info-group">
-                                <div class="info-label"><i class="fas fa-info-circle"></i> Availability</div>
-                                <div class="info-value">
-                                    <span class="status-badge"
-                                          th:class="${vendor.Availability == 'Available' ? 'status-available' : 'status-booked'}"
-                                          th:text="${vendor.Availability}"></span>
-                                </div>
-                            </div>
-                            <form th:action="@{/event-coordinator/events/assign-vendor}" method="post" class="form-actions">
-                                <input type="hidden" name="eventId" th:value="${event.EventID}">
-                                <input type="hidden" name="vendorId" th:value="${vendor.VendorID}">
-                                <input type="hidden" name="serviceType" value="Decorator">
-                                <button type="submit" class="btn btn-primary"
-                                        th:disabled="${vendor.Availability != 'Available'}">
-                                    <i class="fas fa-plus-circle"></i> Add Decorator Service
-                                </button>
-                            </form>
+                    <div th:unless="${inquiry.Decorations}" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-ban"></i>
                         </div>
+                        <h3 class="empty-title">Decorations Not Requested</h3>
+                        <p class="empty-description">This service was not requested for this event.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- No Vendors Available -->
-    <div th:if="${(photographers == null or photographers.empty) and
-                  (caterers == null or caterers.empty) and
-                  (djs == null or djs.empty) and
-                  (decorators == null or decorators.empty)}"
-         class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
-        <h3>No Available Vendors</h3>
-        <p>No vendors match your filters. Please try different filter criteria.</p>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add staggered animation to cards
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
-        });
         // Initialize default tab
-        showService('photographer');
+        // Check URL for active tab preference, otherwise default to photographer
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialService = urlParams.get('service') || 'photographer';
+
+        // Find the correct tab element to activate it
+        const initialTab = document.querySelector(`.service-tab[onclick*='${initialService}']`);
+        if (initialTab) {
+            // Need to simulate a click to ensure both the section and the tab are set correctly
+            // Create a mock event object for the function call
+            showService({ currentTarget: initialTab }, initialService);
+        } else {
+            // Fallback to photographer if initialService is invalid or tab not found
+            const fallbackTab = document.querySelector(`.service-tab[onclick*='photographer']`);
+            if (fallbackTab) {
+                showService({ currentTarget: fallbackTab }, 'photographer');
+            }
+        }
     });
 
-    function showService(serviceType) {
-        document.querySelectorAll('.service-section').forEach(section => {
-            section.style.display = 'none';
+    // Modified function to accept the service type directly if event object is not fully reliable
+    function showService(event, serviceTypeOverride) {
+        const serviceType = serviceTypeOverride || event.currentTarget.getAttribute('onclick').match(/'(.*)'/)[1];
+
+        // Hide all vendor sections
+        document.querySelectorAll('.vendor-section').forEach(section => {
+            section.classList.remove('active');
         });
+
+        // Remove active class from all tabs
         document.querySelectorAll('.service-tab').forEach(tab => {
             tab.classList.remove('active');
         });
-        document.getElementById(serviceType + '-section').style.display = 'block';
-        event.target.classList.add('active');
+
+        // Show selected section
+        const targetSection = document.getElementById(serviceType + '-section');
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+
+        // Activate the clicked tab
+        event.currentTarget.classList.add('active');
     }
+
+    // Original simplified function logic for onclick attributes:
+    // This is kept for compatibility with the HTML's inline onclick='showService('photographer')'
+    function showService(serviceType) {
+        // Hide all vendor sections
+        document.querySelectorAll('.vendor-section').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll('.service-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show selected section
+        const targetSection = document.getElementById(serviceType + '-section');
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+
+        // Find and activate the clicked tab
+        const clickedTab = document.querySelector(`.service-tab[onclick*='${serviceType}']`);
+        if (clickedTab) {
+            clickedTab.classList.add('active');
+        }
+    }
+    // Re-linking the event handler to the final, more robust version
+    document.querySelectorAll('.service-tab').forEach(tab => {
+        const serviceTypeMatch = tab.getAttribute('onclick').match(/'(.*)'/);
+        if (serviceTypeMatch && serviceTypeMatch[1]) {
+            const serviceType = serviceTypeMatch[1];
+            tab.onclick = (event) => showService(serviceType);
+        }
+    });
 </script>
 </body>
 </html>

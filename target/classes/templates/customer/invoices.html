@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Invoices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #7f8c8d;
+        }
+        .invoices-list {
+            display: grid;
+            gap: 20px;
+        }
+        .invoice-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .invoice-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .invoice-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-paid {
+            background: #27ae60;
+            color: white;
+        }
+        .status-pending {
+            background: #e74c3c;
+            color: white;
+        }
+        .invoice-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            margin-bottom: 8px;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .detail-value {
+            color: #2c3e50;
+        }
+        .cost-summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .total-amount {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        .payment-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .payment-info h4 {
+            color: #2980b9;
+            margin-bottom: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>My Invoices</h1>
+        <div class="user-info">
+            Welcome, <span th:text="${customer.Customer_Name}">John Doe</span>
+        </div>
+    </div>
+
+    <a th:href="@{/customer/profile}" class="back-btn">← Back to Profile</a>
+
+    <!-- Error Messages -->
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <!-- Invoices List -->
+    <div class="invoices-list">
+        <div th:each="invoice : ${invoices}" class="invoice-card">
+            <div class="invoice-header">
+                <div class="invoice-title">
+                    Invoice #<span th:text="${invoice.InvoiceID}">123</span> -
+                    <span th:text="${invoice.EventType}">Wedding</span>
+                </div>
+                <div th:class="${invoice.PaymentStatus == 'Received'} ? 'invoice-status status-paid' : 'invoice-status status-pending'"
+                     th:text="${invoice.PaymentStatus}">
+                    Pending
+                </div>
+            </div>
+
+            <div class="invoice-details">
+                <div class="detail-item">
+                    <div class="detail-label">Event Date</div>
+                    <!-- FIXED: Changed from #temporals.format to #dates.format -->
+                    <div class="detail-value" th:text="${#dates.format(invoice.EventDate, 'dd/MM/yyyy')}">15/12/2024</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Issue Date</div>
+                    <!-- FIXED: Changed from #temporals.format to #dates.format -->
+                    <div class="detail-value" th:text="${#dates.format(invoice.IssueDate, 'dd/MM/yyyy')}">01/12/2024</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Due Date</div>
+                    <!-- FIXED: Changed from #temporals.format to #dates.format -->
+                    <div class="detail-value" th:text="${#dates.format(invoice.DueDate, 'dd/MM/yyyy')}">15/12/2024</div>
+                </div>
+            </div>
+
+            <div class="cost-summary">
+                <div class="cost-item">
+                    <span>Venue Cost:</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(invoice.VenueCost, 1, 2)}">$1,000.00</span>
+                </div>
+                <div class="cost-item">
+                    <span>Vendor Costs:</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(invoice.VendorCost, 1, 2)}">$500.00</span>
+                </div>
+                <div class="cost-item">
+                    <span>Additional Charges:</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(invoice.AdditionalCharges + invoice.ServiceCharges + invoice.TaxAmount + invoice.OtherCharges, 1, 2)}">$325.00</span>
+                </div>
+                <div class="cost-item total-amount">
+                    <span>Total Amount:</span>
+                    <span th:text="'$' + ${#numbers.formatDecimal(invoice.Total_Pay, 1, 2)}">$1,825.00</span>
+                </div>
+            </div>
+
+            <div class="payment-info" th:if="${invoice.PaymentStatus == 'Pending'}">
+                <h4>💳 Payment Instructions</h4>
+                <p>Please make your payment via cash at our office. Bring this invoice number with you for reference.</p>
+                <p><strong>Office Hours:</strong> Monday-Friday, 9:00 AM - 5:00 PM</p>
+                <p><strong>Address:</strong> 123 Event Street, City, State 12345</p>
+            </div>
+
+            <div class="payment-info" th:if="${invoice.PaymentStatus == 'Received'}" style="background: #d4edda; border-left-color: #27ae60;">
+                <h4>✅ Payment Received</h4>
+                <p>Thank you for your payment! Your event is confirmed and we're looking forward to making it memorable.</p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${invoices.empty}" class="empty-state">
+        <h3>No invoices found.</h3>
+        <p>You don't have any invoices yet. Invoices will appear here once your events are confirmed by our team.</p>
+    </div>
+</div>
+</body>
+</html>

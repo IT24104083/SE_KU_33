@@ -22,23 +22,53 @@ public class Venue {
     }
 
     // Getters and Setters
-    public Integer getVenueID() { return venueID; }
-    public void setVenueID(Integer venueID) { this.venueID = venueID; }
+    public Integer getVenueID() {
+        return venueID;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setVenueID(Integer venueID) {
+        this.venueID = venueID;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getName() {
+        return name;
+    }
 
-    public BigDecimal getVenueCost() { return venueCost; }
-    public void setVenueCost(BigDecimal venueCost) { this.venueCost = venueCost; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Integer getCapacity() { return capacity; }
-    public void setCapacity(Integer capacity) { this.capacity = capacity; }
+    public String getLocation() {
+        return location;
+    }
 
-    public String getAvailability() { return availability; }
-    public void setAvailability(String availability) { this.availability = availability; }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public BigDecimal getVenueCost() {
+        return venueCost;
+    }
+
+    public void setVenueCost(BigDecimal venueCost) {
+        this.venueCost = venueCost;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
 
     @Override
     public String toString() {

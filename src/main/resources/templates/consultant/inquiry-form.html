@@ -201,6 +201,8 @@
     .service-checkbox {
       position: absolute;
       opacity: 0;
+      width: 0;
+      height: 0;
     }
 
     .service-label {
@@ -214,6 +216,8 @@
       transition: all 0.3s ease;
       font-weight: 500;
       color: #4a5568;
+      position: relative;
+      overflow: hidden; /* Added for the checkmark positioning */
     }
 
     .service-label:hover {
@@ -221,16 +225,58 @@
       transform: translateY(-2px);
     }
 
+    /* FIXED: Clear visual indicators for checkbox selection */
     .service-checkbox:checked + .service-label {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border-color: #667eea;
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      animation: gentlePulse 0.5s ease;
+    }
+
+    .service-checkbox:checked + .service-label::after {
+      content: '✓';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: #10b981;
+      color: white;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+      z-index: 2;
+      animation: checkmarkPop 0.3s ease;
+    }
+
+    .service-checkbox:checked + .service-label .service-icon {
+      color: white;
     }
 
     .service-icon {
       margin-right: 10px;
       font-size: 1.1rem;
+      color: #667eea;
+      transition: color 0.3s ease;
+    }
+
+    /* Animation for checkmark */
+    @keyframes checkmarkPop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Add a subtle pulse effect for better feedback */
+    @keyframes gentlePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
     }
 
     .form-actions-enhanced {
@@ -481,7 +527,7 @@
         </div>
       </div>
 
-      <!-- Services Required -->
+      <!-- Services Required - FIXED CHECKBOXES WITH CLEAR VISUAL INDICATORS -->
       <div class="form-section-enhanced">
         <div class="section-header">
           <div class="section-icon">
@@ -489,9 +535,12 @@
           </div>
           <h3 class="section-title">Services Required</h3>
         </div>
+
         <div class="services-grid">
           <div class="service-option">
-            <input type="checkbox" id="photographer" name="photographer" th:checked="*{photographer}" class="service-checkbox"/>
+            <input type="checkbox" id="photographer" name="photographer"
+                   th:checked="${inquiry?.photographer}" value="true" class="service-checkbox"/>
+            <input type="hidden" name="_photographer" value="on"/>
             <label for="photographer" class="service-label">
               <i class="fas fa-camera service-icon"></i>
               <span>Photographer</span>
@@ -499,7 +548,9 @@
           </div>
 
           <div class="service-option">
-            <input type="checkbox" id="catering" name="catering" th:checked="*{catering}" class="service-checkbox"/>
+            <input type="checkbox" id="catering" name="catering"
+                   th:checked="${inquiry?.catering}" value="true" class="service-checkbox"/>
+            <input type="hidden" name="_catering" value="on"/>
             <label for="catering" class="service-label">
               <i class="fas fa-utensils service-icon"></i>
               <span>Catering</span>
@@ -507,7 +558,9 @@
           </div>
 
           <div class="service-option">
-            <input type="checkbox" id="dj" name="dj" th:checked="*{dj}" class="service-checkbox"/>
+            <input type="checkbox" id="dj" name="dj"
+                   th:checked="${inquiry?.dj}" value="true" class="service-checkbox"/>
+            <input type="hidden" name="_dj" value="on"/>
             <label for="dj" class="service-label">
               <i class="fas fa-music service-icon"></i>
               <span>DJ Services</span>
@@ -515,7 +568,9 @@
           </div>
 
           <div class="service-option">
-            <input type="checkbox" id="decorations" name="decorations" th:checked="*{decorations}" class="service-checkbox"/>
+            <input type="checkbox" id="decorations" name="decorations"
+                   th:checked="${inquiry?.decorations}" value="true" class="service-checkbox"/>
+            <input type="hidden" name="_decorations" value="on"/>
             <label for="decorations" class="service-label">
               <i class="fas fa-paint-brush service-icon"></i>
               <span>Decorations</span>
@@ -590,23 +645,53 @@
       });
     });
 
-    // Add service selection effects
+    // FIXED: Service selection effects
     const serviceOptions = document.querySelectorAll('.service-checkbox');
-    serviceOptions.forEach(option => {
-      option.addEventListener('change', function() {
-        const label = this.nextElementSibling;
-        if (this.checked) {
-          label.classList.add('selected');
-        } else {
-          label.classList.remove('selected');
-        }
-      });
 
-      // Initialize selected state
-      if (option.checked) {
-        option.nextElementSibling.classList.add('selected');
-      }
+    // Initialize selected state on page load
+    serviceOptions.forEach(option => {
+      updateServiceVisualState(option);
+
+      option.addEventListener('change', function() {
+        updateServiceVisualState(this);
+      });
     });
+
+    // FIXED: Handle label clicks for better UX
+    const serviceLabels = document.querySelectorAll('.service-label');
+    serviceLabels.forEach(label => {
+      label.addEventListener('click', function(e) {
+        const checkbox = this.previousElementSibling;
+        checkbox.checked = !checkbox.checked;
+        updateServiceVisualState(checkbox);
+        const event = new Event('change', { bubbles: true });
+        checkbox.dispatchEvent(event);
+      });
+    });
+
+    // Helper function to update visual state
+    function updateServiceVisualState(checkbox) {
+      const label = checkbox.nextElementSibling;
+      if (checkbox.checked) {
+        label.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+        label.style.color = 'white';
+        label.style.borderColor = '#667eea';
+        label.style.boxShadow = '0 5px 15px rgba(102, 126, 234, 0.3)';
+        const icon = label.querySelector('.service-icon');
+        if (icon) {
+          icon.style.color = 'white';
+        }
+      } else {
+        label.style.background = 'white';
+        label.style.color = '#4a5568';
+        label.style.borderColor = '#e2e8f0';
+        label.style.boxShadow = 'none';
+        const icon = label.querySelector('.service-icon');
+        if (icon) {
+          icon.style.color = '#667eea';
+        }
+      }
+    }
 
     // Date validation
     const dateInput = document.getElementById('proposedDate');

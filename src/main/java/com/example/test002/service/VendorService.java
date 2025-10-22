@@ -25,13 +25,13 @@ public class VendorService {
     }
 
     public void addVendor(Vendor vendor) {
-        jdbcTemplate.update("INSERT INTO Vendor (VendorName, VendorType, Price, ContactNo, Availability) VALUES (?, ?, ?, ?, ?)",
-                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo(), vendor.getAvailability());
+        jdbcTemplate.update("INSERT INTO Vendor (VendorName, VendorType, Price, ContactNo) VALUES (?, ?, ?, ?)",
+                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo());
     }
 
     public void updateVendor(Vendor vendor) {
-        jdbcTemplate.update("UPDATE Vendor SET VendorName=?, VendorType=?, Price=?, ContactNo=?, Availability=? WHERE VendorID=?",
-                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo(), vendor.getAvailability(), vendor.getVendorID());
+        jdbcTemplate.update("UPDATE Vendor SET VendorName=?, VendorType=?, Price=?, ContactNo=? WHERE VendorID=?",
+                vendor.getVendorName(), vendor.getVendorType(), vendor.getPrice(), vendor.getContactNo(), vendor.getVendorID());
     }
 
     public void deleteVendor(Integer id) {
@@ -46,9 +46,8 @@ public class VendorService {
             v.setVendorType(rs.getString("VendorType"));
             v.setPrice(rs.getBigDecimal("Price"));
             v.setContactNo(rs.getString("ContactNo"));
-            v.setAvailability(rs.getString("Availability"));
+            // Availability column removed - no longer reading from database
             return v;
         }
     }
 }
-

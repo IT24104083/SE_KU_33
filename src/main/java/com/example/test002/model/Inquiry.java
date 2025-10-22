@@ -67,6 +67,12 @@ public class Inquiry {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    // Helper methods for Thymeleaf templates
+    public boolean isPhotographer() { return photographer != null && photographer; }
+    public boolean isCatering() { return catering != null && catering; }
+    public boolean isDj() { return dj != null && dj; }
+    public boolean isDecorations() { return decorations != null && decorations; }
+
     @Override
     public String toString() {
         return "Inquiry{" +

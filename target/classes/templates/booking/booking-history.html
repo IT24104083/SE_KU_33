@@ -1,0 +1,42 @@
+<div th:fragment="booking-history">
+    <h2>Completed Booking History</h2>
+
+    <div class="history-buttons">
+        <button class="btn btn-primary" id="defaultBtn">Sort by Date</button>
+        <button class="btn btn-secondary" id="mostUsedBtn">Sort by Most Used</button>
+    </div>
+
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>Inquiry ID</th>
+                <th>Customer ID</th>
+                <th>Event Type</th>
+                <th>Proposed Date</th>
+                <th>Guest Count</th>
+                <th>Budget</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${inquiries.isEmpty()}">
+                <td colspan="7" class="text-center p-4">There is no booking history to display.</td>
+            </tr>
+            <tr th:each="inquiry : ${inquiries}">
+                <td th:text="${inquiry.inquiryID}"></td>
+                <td th:text="${inquiry.customerID}"></td>
+                <td th:text="${inquiry.eventType}"></td>
+                <td th:text="${inquiry.proposedDate}"></td>
+                <td th:text="${inquiry.guestCount}"></td>
+                <td th:text="'$' + ${#numbers.formatDecimal(inquiry.budget, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td>
+                    <span th:classappend="${(inquiry.status == 'Approved' or inquiry.status == 'Accepted') ? 'status-approved' : 'status-rejected'}"
+                          class="status-badge"
+                          th:text="${inquiry.status}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

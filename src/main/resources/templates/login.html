@@ -8,44 +8,127 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" th:href="@{/style.css}" />
   <style>
+    :root {
+      --primary: #3498db;
+      --primary-light: #5dade2;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --secondary-light: #58d68d;
+      --secondary-dark: #27ae60;
+      --dark: #2c3e50;
+      --gray: #7f8c8d;
+      --light-gray: #ecf0f1;
+      --light: #f8f9fa;
+      --error: #e74c3c;
+      --success: #2ecc71;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: var(--light);
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       margin: 0;
       overflow: auto;
+      font-family: 'Montserrat', sans-serif;
     }
+
+    .bg-element {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.15;
+    }
+
+    .bg-element-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      top: -100px;
+      left: -100px;
+    }
+
+    .bg-element-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--secondary);
+      bottom: -50px;
+      right: 20%;
+    }
+
+    .bg-element-3 {
+      width: 150px;
+      height: 150px;
+      background: var(--primary-light);
+      top: 30%;
+      right: -50px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
     .login-card {
       background: white;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 2.5rem;
-      max-width: 500px;
       width: 100%;
       margin: 2rem auto;
       border: 1px solid var(--light-gray);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
+    .login-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-5px);
+    }
+
     .login-header {
       text-align: center;
       margin-bottom: 2rem;
     }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
     .login-header h1 {
       font-size: 2rem;
       font-weight: 700;
       color: var(--dark);
       margin-bottom: 0.5rem;
     }
+
     .login-subtitle {
       font-size: 1rem;
       color: var(--gray);
       font-weight: 400;
       margin: 0;
     }
+
     .messages-container {
       margin-bottom: 1.5rem;
     }
+
     .alert {
       display: flex;
       align-items: center;
@@ -54,17 +137,33 @@
       border-radius: var(--radius);
       font-size: 0.9rem;
     }
+
+    .alert-error {
+      background-color: rgba(231, 76, 60, 0.1);
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+
+    .alert-success {
+      background-color: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
     .alert i {
       font-size: 1.2rem;
     }
+
     .login-form {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
+
     .form-group {
       position: relative;
     }
+
     .form-group label {
       display: flex;
       align-items: center;
@@ -73,10 +172,12 @@
       color: var(--dark);
       margin-bottom: 8px;
     }
+
     .form-group label i {
       color: var(--primary);
       width: 16px;
     }
+
     .form-group input {
       width: 100%;
       padding: 12px 15px;
@@ -86,51 +187,89 @@
       color: var(--dark);
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
+
     .form-group input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
       outline: none;
     }
+
     .form-group input::placeholder {
       color: var(--gray);
     }
+
     .form-group.focused label {
       color: var(--primary);
     }
+
     .form-actions {
       text-align: center;
     }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
     .btn-login {
       padding: 12px 24px;
       font-size: 1.1rem;
       font-weight: 600;
       transition: all 0.3s ease;
+      width: 100%;
     }
+
     .demo-credentials {
       margin-top: 2rem;
       padding-top: 1.5rem;
       border-top: 1px solid var(--light-gray);
     }
+
     .demo-header {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 1.5rem;
     }
+
     .demo-header h3 {
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--dark);
       margin: 0;
     }
+
     .demo-header i {
       color: var(--primary);
       font-size: 1.2rem;
     }
+
     .credentials-list {
       display: grid;
       gap: 1rem;
     }
+
     .credential-item {
       background: var(--light);
       border: 1px solid var(--light-gray);
@@ -139,10 +278,13 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
     }
+
     .credential-item:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow);
+      border-color: var(--primary-light);
     }
+
     .credential-role {
       display: flex;
       align-items: center;
@@ -151,18 +293,22 @@
       color: var(--dark);
       margin-bottom: 0.75rem;
     }
+
     .credential-role i {
       color: var(--primary);
       width: 16px;
     }
+
     .credential-details p {
       margin: 0.5rem 0;
       font-size: 0.9rem;
       color: var(--dark);
     }
+
     .credential-details strong {
       color: var(--primary);
     }
+
     .copy-btn {
       background: none;
       border: none;
@@ -172,23 +318,28 @@
       margin-left: 10px;
       transition: color 0.3s ease;
     }
+
     .copy-btn:hover {
       color: var(--primary-dark);
     }
+
     .login-footer {
       text-align: center;
       margin-top: 2rem;
       font-size: 0.85rem;
       color: var(--gray);
     }
+
     @media (max-width: 768px) {
       .login-card {
         margin: 1rem;
         padding: 1.5rem;
       }
+
       .login-header h1 {
         font-size: 1.5rem;
       }
+
       .login-subtitle {
         font-size: 0.9rem;
       }
@@ -263,48 +414,69 @@
         <h3>Demo Access Credentials</h3>
       </div>
       <div class="credentials-list">
-        <div class="credential-item" onclick="copyCredentials('consultant@eventmgmt.com', 'consultant123')">
+        <div class="credential-item" onclick="copyCredentials('customerconsultant@system.com', 'ccpass123')">
           <div class="credential-role">
             <i class="fas fa-user-tie"></i>
             <span>Customer Consultant</span>
           </div>
           <div class="credential-details">
-            <p><strong>Email:</strong> consultant@eventmgmt.com <button class="copy-btn" onclick="copyToClipboard('consultant@eventmgmt.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
-            <p><strong>Password:</strong> consultant123 <button class="copy-btn" onclick="copyToClipboard('consultant123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Email:</strong> customerconsultant@system.com <button class="copy-btn" onclick="copyToClipboard('customerconsultant@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> ccpass123 <button class="copy-btn" onclick="copyToClipboard('ccpass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
           </div>
         </div>
 
-        <div class="credential-item" onclick="copyCredentials('eventcoord@eventmgmt.com', 'eventcoord123')">
+        <div class="credential-item" onclick="copyCredentials('eventcoordinator@system.com', 'ecpass123')">
           <div class="credential-role">
             <i class="fas fa-calendar-alt"></i>
             <span>Event Coordinator</span>
           </div>
           <div class="credential-details">
-            <p><strong>Email:</strong> eventcoord@eventmgmt.com <button class="copy-btn" onclick="copyToClipboard('eventcoord@eventmgmt.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
-            <p><strong>Password:</strong> eventcoord123 <button class="copy-btn" onclick="copyToClipboard('eventcoord123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Email:</strong> eventcoordinator@system.com <button class="copy-btn" onclick="copyToClipboard('eventcoordinator@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> ecpass123 <button class="copy-btn" onclick="copyToClipboard('ecpass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
           </div>
         </div>
 
-        <div class="credential-item" onclick="copyCredentials('vendorcoordeventmgmt@gmail.com', 'vendorcoord123')">
+        <div class="credential-item" onclick="copyCredentials('venuecoordinator@system.com', 'vcpass123')">
+          <div class="credential-role">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Venue Coordinator</span>
+          </div>
+          <div class="credential-details">
+            <p><strong>Email:</strong> venuecoordinator@system.com <button class="copy-btn" onclick="copyToClipboard('venuecoordinator@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> vcpass123 <button class="copy-btn" onclick="copyToClipboard('vcpass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+          </div>
+        </div>
+
+        <div class="credential-item" onclick="copyCredentials('vendorcoordinator@system.com', 'vdcpass123')">
           <div class="credential-role">
             <i class="fas fa-user-cog"></i>
             <span>Vendor Coordinator</span>
           </div>
           <div class="credential-details">
-            <p><strong>Email:</strong> vendorcoordeventmgmt@gmail.com <button class="copy-btn" onclick="copyToClipboard('vendorcoordeventmgmt@gmail.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
-            <p><strong>Password:</strong> vendorcoord123 <button class="copy-btn" onclick="copyToClipboard('vendorcoord123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Email:</strong> vendorcoordinator@system.com <button class="copy-btn" onclick="copyToClipboard('vendorcoordinator@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> vdcpass123 <button class="copy-btn" onclick="copyToClipboard('vdcpass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
           </div>
         </div>
 
-        <!-- New Customer Support Officer Credential -->
-        <div class="credential-item" onclick="copyCredentials('support@eventmgmt.com', 'support123')">
+        <div class="credential-item" onclick="copyCredentials('financeofficer@system.com', 'fopass123')">
+          <div class="credential-role">
+            <i class="fas fa-chart-line"></i>
+            <span>Financial Officer</span>
+          </div>
+          <div class="credential-details">
+            <p><strong>Email:</strong> financeofficer@system.com <button class="copy-btn" onclick="copyToClipboard('financeofficer@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> fopass123 <button class="copy-btn" onclick="copyToClipboard('fopass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+          </div>
+        </div>
+
+        <div class="credential-item" onclick="copyCredentials('customersupport@system.com', 'csopass123')">
           <div class="credential-role">
             <i class="fas fa-headset"></i>
             <span>Customer Support Officer</span>
           </div>
           <div class="credential-details">
-            <p><strong>Email:</strong> support@eventmgmt.com <button class="copy-btn" onclick="copyToClipboard('support@eventmgmt.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
-            <p><strong>Password:</strong> support123 <button class="copy-btn" onclick="copyToClipboard('support123', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Email:</strong> customersupport@system.com <button class="copy-btn" onclick="copyToClipboard('customersupport@system.com', event)"><i class="fas fa-copy"></i> Copy</button></p>
+            <p><strong>Password:</strong> csopass123 <button class="copy-btn" onclick="copyToClipboard('csopass123', event)"><i class="fas fa-copy"></i> Copy</button></p>
           </div>
         </div>
       </div>

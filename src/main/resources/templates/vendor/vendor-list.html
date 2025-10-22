@@ -5,6 +5,419 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}" />
+    <style>
+        /* Enhanced Vendor Management Styles */
+        .dashboard-highlight-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-highlight-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .highlight-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .highlight-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .highlight-btn-primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .highlight-btn-primary:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        .vendor-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .vendor-section:hover {
+            transform: translateX(5px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .vendor-count {
+            background: #f7fafc;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .filter-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .filter-title i {
+            color: #667eea;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: #667eea;
+            width: 16px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-reset {
+            background: white;
+            color: #718096;
+            border: 2px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reset:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            color: #4a5568;
+            transform: translateY(-2px);
+        }
+
+        .vendor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .vendor-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .vendor-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .vendor-table tr:hover {
+            background: #f8fafc;
+            transform: translateX(5px);
+            transition: all 0.3s ease;
+        }
+
+        .vendor-type {
+            background: #f7fafc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .price {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit {
+            background: #4299e1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-delete:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .system-status-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator.online {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38a169;
+        }
+
+        .status-item i {
+            color: #667eea;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .highlight-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .highlight-actions {
+                justify-content: center;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                justify-content: center;
+            }
+
+            .vendor-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .system-status-footer {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 <!-- Animated background elements -->
@@ -13,30 +426,54 @@
 <div class="bg-element bg-element-3"></div>
 
 <div class="container">
+    <!-- Header Section -->
     <div class="header">
         <div class="logo">
-            <i class="fas fa-glass-cheers logo-icon"></i>
-            <span>PartySlate</span>
+            <i class="fas fa-user-tie logo-icon"></i>
+            <span>EventSlate</span>
         </div>
         <h1>Vendor Management</h1>
         <div class="header-actions">
-            <a th:href="@{/vendors/new}" class="btn-primary">
+            <a th:href="@{/vendors/new}" class="highlight-btn highlight-btn-primary">
                 <i class="fas fa-plus"></i> Add Vendor
             </a>
-            <a th:href="@{/login}" class="btn-logout">
+            <a th:href="@{/login}" class="highlight-btn">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
     </div>
 
-    <!-- Filter Form -->
+    <!-- Vendor Management Highlight Section -->
+    <div class="dashboard-highlight-section">
+        <div class="highlight-header">
+            <h2 class="highlight-title">
+                <i class="fas fa-users"></i> Vendor Management
+            </h2>
+            <div class="highlight-actions">
+                <a th:href="@{/vendors/new}" class="highlight-btn highlight-btn-primary">
+                    <i class="fas fa-plus-circle"></i> Add New Vendor
+                </a>
+                <a th:href="@{/vendors}" class="highlight-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh List
+                </a>
+            </div>
+        </div>
+        <p style="position: relative; z-index: 2; opacity: 0.9; margin-bottom: 0;">
+            Manage your vendor network efficiently. Add new vendors, update information, and filter by type or price range.
+        </p>
+    </div>
+
+    <!-- Filter Section -->
     <div class="filter-container">
         <div class="filter-title">
             <i class="fas fa-filter"></i> Filter Vendors
         </div>
         <form th:action="@{/vendors/filter}" method="get" class="filter-form">
             <div class="form-group">
-                <label for="type">Vendor Type:</label>
+                <label for="type">
+                    <i class="fas fa-tag"></i>
+                    Vendor Type
+                </label>
                 <select name="type" id="type">
                     <option value="">All Types</option>
                     <option value="Photographer" th:selected="${selectedType == 'Photographer'}">Photographer</option>
@@ -47,12 +484,18 @@
             </div>
 
             <div class="form-group">
-                <label for="minPrice">Min Price (Rs.):</label>
+                <label for="minPrice">
+                    <i class="fas fa-dollar-sign"></i>
+                    Min Price (Rs.)
+                </label>
                 <input type="number" step="0.01" id="minPrice" name="minPrice" th:value="${minPrice}" placeholder="Min Price"/>
             </div>
 
             <div class="form-group">
-                <label for="maxPrice">Max Price (Rs.):</label>
+                <label for="maxPrice">
+                    <i class="fas fa-dollar-sign"></i>
+                    Max Price (Rs.)
+                </label>
                 <input type="number" step="0.01" id="maxPrice" name="maxPrice" th:value="${maxPrice}" placeholder="Max Price"/>
             </div>
 
@@ -71,7 +514,10 @@
     <div class="vendor-section" th:if="${vendors != null and !vendors.isEmpty()}">
         <div class="section-header">
             <h2 class="section-title">
-                <i class="fas fa-users section-icon"></i> All Vendors
+                <div class="section-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                All Vendors
             </h2>
             <span class="vendor-count" th:text="${vendors.size()} + ' vendors'"></span>
         </div>
@@ -82,7 +528,6 @@
                 <th>Type</th>
                 <th>Price</th>
                 <th>Contact</th>
-                <th>Availability</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -94,10 +539,6 @@
                 </td>
                 <td class="price" th:text="'Rs. ' + ${vendor.price}"></td>
                 <td th:text="${vendor.contactNo}"></td>
-                <td>
-                            <span th:class="${vendor.availability} ? 'status-available' : 'status-unavailable'"
-                                  th:text="${vendor.availability} ? 'Available' : 'Unavailable'"></span>
-                </td>
                 <td>
                     <div class="action-buttons">
                         <a class="btn-edit" th:href="@{'/vendors/edit/' + ${vendor.vendorID}}">
@@ -118,14 +559,57 @@
     <div class="vendor-section" th:if="${vendors == null or vendors.isEmpty()}">
         <div class="empty-state">
             <i class="fas fa-users"></i>
-            <p>No vendors found. <a th:href="@{/vendors/new}" style="color: var(--primary); text-decoration: none;">Add your first vendor</a> to get started.</p>
+            <p>No vendors found. <a th:href="@{/vendors/new}" style="color: #667eea; text-decoration: none; font-weight: 600;">Add your first vendor</a> to get started.</p>
+        </div>
+    </div>
+
+    <!-- System Status Footer -->
+    <div class="system-status-footer">
+        <div class="status-item">
+            <div class="status-indicator online"></div>
+            <span>System: <strong>Operational</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database"></i>
+            <span>Database: <strong>Connected</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security: <strong>Active</strong></span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-users"></i>
+            <span>Vendors: <strong th:text="${vendors != null ? vendors.size() : '0'}">0</strong> Total</span>
         </div>
     </div>
 </div>
 
 <script>
-    // Add confirmation for delete actions
+    // Add interactive effects
     document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to all interactive elements
+        const interactiveElements = document.querySelectorAll('.vendor-section, .filter-container, .highlight-btn');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to action buttons
+        const actionButtons = document.querySelectorAll('.btn-edit, .btn-delete, .highlight-btn');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Add confirmation for delete actions
         const deleteButtons = document.querySelectorAll('.btn-delete');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function(e) {
@@ -135,39 +619,12 @@
             });
         });
 
-        // Add staggered animation to vendor sections
-        const vendorSections = document.querySelectorAll('.vendor-section');
-        vendorSections.forEach((section, index) => {
-            section.style.animationDelay = ${index * 0.1}s;
+        // Add staggered animation to vendor table rows
+        const vendorRows = document.querySelectorAll('.vendor-table tbody tr');
+        vendorRows.forEach((row, index) => {
+            row.style.animationDelay = (index * 0.1) + 's';
         });
     });
 </script>
-
-<style>
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .btn-logout {
-        background: var(--gray);
-        color: white;
-        padding: 10px 20px;
-        border-radius: var(--radius);
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-logout:hover {
-        background: var(--dark);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow);
-    }
-</style>
 </body>
 </html>

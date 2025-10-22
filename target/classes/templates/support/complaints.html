@@ -3,93 +3,669 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Complaints</title>
-    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .status-new { background-color: #ffebee; }
-        .status-resolved { background-color: #e8f5e8; }
-        .filter-form { margin: 20px 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Elements */
+        .bg-element {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            top: 50%;
+            left: 10%;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .user-info {
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .navigation {
+            margin-top: 20px;
+        }
+
+        .btn-back {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-back:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            color: #4a5568;
+        }
+
+        /* Filter Form */
+        .filter-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+
+        .filter-form form {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-form label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-right: 10px;
+        }
+
+        .filter-form select {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form select:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
+        }
+
+        .btn-clear {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-clear:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            color: #4a5568;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Complaints Table */
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Styles */
+        .status-new {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+        }
+
+        .status-resolved {
+            background: #f0fff4;
+            border-left: 4px solid #68d391;
+        }
+
+        .status-in-progress {
+            background: #fef5e7;
+            border-left: 4px solid #f6ad55;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-new .status-badge { background: #fed7d7; color: #c53030; }
+        .status-in-progress .status-badge { background: #fef5e7; color: #d69e2e; }
+        .status-resolved .status-badge { background: #c6f6d5; color: #276749; }
+
+        /* Customer Info */
+        .customer-info {
+            line-height: 1.4;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .customer-contact {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-respond {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-respond:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+            color: white;
+        }
+
+        .status-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.1);
+        }
+
+        /* Response Text */
+        .response-text {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .response-text.has-response {
+            color: #2d3748;
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .table-container, .filter-form, .header {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        tr {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        tr:nth-child(1) { animation-delay: 0.1s; }
+        tr:nth-child(2) { animation-delay: 0.2s; }
+        tr:nth-child(3) { animation-delay: 0.3s; }
+        tr:nth-child(4) { animation-delay: 0.4s; }
+        tr:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .filter-form form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-form label {
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .table-container {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .btn-respond {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .status-form {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .filter-form, .header, .table-container {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+
+            .customer-contact {
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Manage Customer Complaints</h1>
-    <p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div class="navigation">
-        <a th:href="@{/support/dashboard}">← Back to Dashboard</a>
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Manage Customer Complaints</h1>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            Logged in as: <strong th:text="${userEmail}">user@email.com</strong>
+        </div>
+        <div class="navigation">
+            <a th:href="@{/support/dashboard}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
     </div>
 
     <!-- Filter Form -->
     <div class="filter-form">
         <form th:action="@{/support/complaints/filter}" method="get">
-            <label>Filter by Status:</label>
-            <select name="status">
+            <label for="statusFilter">Filter by Status:</label>
+            <select id="statusFilter" name="status">
                 <option value="all">All Statuses</option>
                 <option value="New">New</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Resolved">Resolved</option>
             </select>
-            <button type="submit">Filter</button>
-            <a th:href="@{/support/complaints}">Clear Filter</a>
+            <button type="submit" class="btn-filter">
+                <i class="fas fa-filter"></i> Apply Filter
+            </button>
+            <a th:href="@{/support/complaints}" class="btn-clear">
+                <i class="fas fa-times"></i> Clear Filter
+            </a>
         </form>
     </div>
 
     <!-- Success Message -->
     <div th:if="${param.success}" class="success-message">
-        <p th:if="${param.success == 'response_submitted'}">Response submitted successfully!</p>
-        <p th:if="${param.success == 'status_updated'}">Status updated successfully!</p>
+        <i class="fas fa-check-circle"></i>
+        <span th:if="${param.success == 'response_submitted'}">Response submitted successfully!</span>
+        <span th:if="${param.success == 'status_updated'}">Status updated successfully!</span>
     </div>
 
     <!-- Complaints Table -->
-    <div th:if="${complaints.empty}">
-        <p>No complaints found.</p>
-    </div>
+    <div class="table-container">
+        <div th:if="${complaints.empty}">
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>No Complaints Found</h3>
+                <p>There are currently no complaints matching your criteria.</p>
+            </div>
+        </div>
 
-    <div th:unless="${complaints.empty}">
-        <table>
-            <thead>
-            <tr>
-                <th>Complaint ID</th>
-                <th>Customer</th>
-                <th>Description</th>
-                <th>Date Submitted</th>
-                <th>Status</th>
-                <th>Response</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="complaint : ${complaints}"
-                th:classappend="${complaint.Status == 'New'} ? 'status-new' :
-                                      (${complaint.Status == 'Resolved'} ? 'status-resolved' : '')">
-                <td th:text="${complaint.ComplaintID}"></td>
-                <td>
-                    <strong th:text="${complaint.Customer_Name}"></strong><br>
-                    <small th:text="${complaint.Email}"></small><br>
-                    <small th:text="${complaint.Phone}"></small>
-                </td>
-                <td th:text="${complaint.Description}"></td>
-                <td th:text="${complaint.DateSubmitted}"></td>
-                <td th:text="${complaint.Status}"></td>
-                <td th:text="${complaint.Response} ?: 'No response yet'"></td>
-                <td>
-                    <a th:href="@{'/support/complaints/respond?id=' + ${complaint.ComplaintID}}">Respond</a>
-                    <form th:action="@{/support/complaints/update-status}" method="post" style="display: inline;">
-                        <input type="hidden" name="complaintId" th:value="${complaint.ComplaintID}">
-                        <select name="status" onchange="this.form.submit()">
-                            <option value="New" th:selected="${complaint.Status == 'New'}">New</option>
-                            <option value="In Progress" th:selected="${complaint.Status == 'In Progress'}">In Progress</option>
-                            <option value="Resolved" th:selected="${complaint.Status == 'Resolved'}">Resolved</option>
-                        </select>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div th:unless="${complaints.empty}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>Customer</th>
+                    <th>Description</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                    <th>Response</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="complaint : ${complaints}"
+                    th:classappend="${complaint.Status == 'New'} ? 'status-new' :
+                                  (${complaint.Status == 'Resolved'} ? 'status-resolved' :
+                                  (${complaint.Status == 'In Progress'} ? 'status-in-progress' : ''))">
+                    <td th:text="${complaint.ComplaintID}"></td>
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-name" th:text="${complaint.Customer_Name}"></div>
+                            <div class="customer-contact" th:text="${complaint.Email}"></div>
+                            <div class="customer-contact" th:text="${complaint.Phone} ?: 'No phone'"></div>
+                        </div>
+                    </td>
+                    <td th:text="${complaint.Description}"></td>
+                    <td th:text="${complaint.DateSubmitted}"></td>
+                    <td>
+                        <span class="status-badge" th:text="${complaint.Status}"></span>
+                    </td>
+                    <td>
+                        <span class="response-text"
+                              th:classappend="${complaint.Response} ? 'has-response' : ''"
+                              th:text="${complaint.Response} ?: 'No response yet'">
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{'/support/complaints/respond?id=' + ${complaint.ComplaintID}}"
+                               class="btn-respond">
+                                <i class="fas fa-reply"></i> Respond
+                            </a>
+                            <form th:action="@{/support/complaints/update-status}" method="post" class="status-form">
+                                <input type="hidden" name="complaintId" th:value="${complaint.ComplaintID}">
+                                <select name="status" class="status-select" onchange="this.form.submit()">
+                                    <option value="New" th:selected="${complaint.Status == 'New'}">New</option>
+                                    <option value="In Progress" th:selected="${complaint.Status == 'In Progress'}">In Progress</option>
+                                    <option value="Resolved" th:selected="${complaint.Status == 'Resolved'}">Resolved</option>
+                                </select>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add interactive effects to table rows
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to action buttons
+        const actionButtons = document.querySelectorAll('.btn-respond, .btn-filter, .btn-clear');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Preserve filter selection
+        const urlParams = new URLSearchParams(window.location.search);
+        const statusParam = urlParams.get('status');
+        if (statusParam) {
+            const statusSelect = document.getElementById('statusFilter');
+            if (statusSelect) {
+                statusSelect.value = statusParam;
+            }
+        }
+    });
+</script>
 </body>
 </html>
+

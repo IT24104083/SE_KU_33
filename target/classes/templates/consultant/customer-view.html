@@ -7,6 +7,386 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Enhanced Customer View Styles with EventSlate Theme */
+        .card {
+            background: white;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f7fafc;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .section-icon {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .customer-id {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-item:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .detail-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-content label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            display: block;
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .password-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            -webkit-text-security: disc;
+        }
+
+        .toggle-password {
+            color: #667eea;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .toggle-password:hover {
+            color: #764ba2;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #fed7d7;
+            color: #c53030;
+            border: 2px solid #feb2b2;
+        }
+
+        .btn-delete:hover {
+            background: #feb2b2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(254, 178, 178, 0.4);
+            color: #c53030;
+        }
+
+        .card-footer {
+            background: #f7fafc;
+            padding: 20px 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .customer-stats {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .stat-item i {
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .stat-item strong {
+            color: #2d3748;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .logo-icon {
+            color: #667eea;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cancel {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-cancel:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            color: #4a5568;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Background Elements */
+        .bg-element {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: 50%;
+            left: 10%;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                justify-content: center;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .customer-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Animation for detail items */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-item {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0.1s; }
+        .detail-item:nth-child(2) { animation-delay: 0.2s; }
+        .detail-item:nth-child(3) { animation-delay: 0.3s; }
+        .detail-item:nth-child(4) { animation-delay: 0.4s; }
+        .detail-item:nth-child(5) { animation-delay: 0.5s; }
+    </style>
 </head>
 <body>
 <!-- Animated background elements -->
@@ -88,9 +468,9 @@
                     <div class="detail-content">
                         <label>Password</label>
                         <span class="detail-value password-field">
-                                <span th:text="${customer.password}"></span>
-                                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility(this)"></i>
-                            </span>
+                            <span th:text="${customer.password}"></span>
+                            <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility(this)"></i>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -145,6 +525,17 @@
             });
             item.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Add click effects to action buttons
+        const actionButtons = document.querySelectorAll('.btn-edit, .btn-delete');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
             });
         });
     });

@@ -16,84 +16,175 @@
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
             min-height: 100vh;
-            padding: 20px;
             color: #333;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Elements */
+        .bg-element {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            top: 50%;
+            left: 10%;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
-        h1 {
-            color: #444;
-            margin-bottom: 15px;
-            font-size: 28px;
+        /* Header Section */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+
+        .header h1 {
             font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 32px;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        h1 i {
+        .header h1 i {
             color: #ff8c00;
         }
 
-        p {
-            margin-bottom: 15px;
-            color: #666;
+        .user-info {
+            color: #4a5568;
             font-weight: 500;
+            margin-bottom: 15px;
         }
 
         .navigation {
-            margin-bottom: 25px;
+            margin-top: 20px;
         }
 
-        .navigation a {
-            background: #f8f9fa;
-            color: #666;
-            border: 2px solid #e1e5ee;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
+        .btn-back {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 12px 25px;
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .navigation a:hover {
-            background: #fff;
-            border-color: #ff8c00;
-            color: #ff8c00;
+        .btn-back:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.2);
+            color: #4a5568;
         }
 
+        /* Success Message */
         .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #28a745;
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
             font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .success-message i {
-            color: #28a745;
+            color: #38a169;
         }
 
+        /* Table Container */
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Table Styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -104,137 +195,201 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
-        th {
-            background: linear-gradient(135deg, #ff8c00, #ffa500);
-            color: white;
-            padding: 15px 12px;
+        th, td {
+            padding: 16px;
             text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
             font-weight: 600;
+            color: #2d3748;
             font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px 12px;
-            vertical-align: top;
+            color: #4a5568;
+            font-weight: 500;
         }
 
         tr {
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         tr:hover {
-            background-color: #f8f9fa;
+            background: #f7fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .rating-1 { background-color: #ffebee; }
-        .rating-2 { background-color: #ffcdd2; }
-        .rating-3 { background-color: #fff3e0; }
-        .rating-4 { background-color: #e8f5e8; }
-        .rating-5 { background-color: #c8e6c9; }
+        /* Rating Background Colors */
+        .rating-1 { background: #fff5f5; border-left: 4px solid #fc8181; }
+        .rating-2 { background: #fed7d7; border-left: 4px solid #f56565; }
+        .rating-3 { background: #fef5e7; border-left: 4px solid #f6ad55; }
+        .rating-4 { background: #e8f5e8; border-left: 4px solid #68d391; }
+        .rating-5 { background: #c6f6d5; border-left: 4px solid #38a169; }
 
-        strong {
-            color: #444;
-            font-weight: 600;
-        }
-
-        small {
-            color: #666;
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
         }
 
-        a {
-            color: #ff8c00;
-            text-decoration: none;
+        .status-new { background: #fed7d7; color: #c53030; }
+        .status-reviewed { background: #fef5e7; color: #d69e2e; }
+        .status-responded { background: #c6f6d5; color: #276749; }
+
+        /* Customer Info */
+        .customer-info {
+            line-height: 1.4;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .customer-contact {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* Event Info */
+        .event-info {
+            line-height: 1.4;
+        }
+
+        .event-type {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .event-date {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* Rating Stars */
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .rating-stars i {
+            color: #ffa500;
+            font-size: 14px;
+        }
+
+        .rating-value {
+            margin-left: 8px;
+            font-weight: 700;
+            color: #2d3748;
+            background: #f7fafc;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Text Content */
+        .text-content {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #718096;
+        }
+
+        .text-content.has-content {
+            color: #2d3748;
             font-weight: 500;
-            transition: color 0.3s ease;
         }
 
-        a:hover {
-            color: #e67e00;
-            text-decoration: underline;
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 140px;
         }
 
-        form {
-            display: inline;
-            margin-left: 10px;
-        }
-
-        select {
-            padding: 6px 10px;
-            border: 2px solid #e1e5ee;
-            border-radius: 6px;
-            font-size: 12px;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-
-        select:focus {
-            border-color: #ff8c00;
-            outline: none;
-        }
-
-        /* Status badges */
-        td:nth-child(8) {
+        .btn-respond {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
             font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        td:nth-child(8):contains("New") {
-            color: #856404;
-            background: #fff3cd;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .btn-respond:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+            color: white;
         }
 
-        td:nth-child(8):contains("Reviewed") {
-            color: #004085;
-            background: #cce7ff;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .status-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
-        td:nth-child(8):contains("Responded") {
-            color: #155724;
-            background: #d4edda;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .status-select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            flex: 1;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            table {
-                display: block;
-                overflow-x: auto;
+        .status-select:focus {
+            outline: none;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-
-            .container {
-                padding: 20px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 24px;
-            }
-
-            th, td {
-                padding: 10px 8px;
-                font-size: 12px;
-            }
-        }
-
-        /* Animation for table rows */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .table-container, .header {
+            animation: fadeInUp 0.6s ease forwards;
         }
 
         tr {
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
         }
 
         tr:nth-child(1) { animation-delay: 0.1s; }
@@ -243,153 +398,246 @@
         tr:nth-child(4) { animation-delay: 0.4s; }
         tr:nth-child(5) { animation-delay: 0.5s; }
 
-        /* Action buttons styling */
-        td:last-child {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 150px;
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                min-width: 120px;
+            }
         }
 
-        td:last-child a {
-            background: #ff8c00;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.3s ease;
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .table-container {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .btn-respond {
+                flex: 1;
+                min-width: 100px;
+            }
+
+            .status-form {
+                flex-direction: column;
+            }
+
+            .text-content {
+                max-width: 150px;
+            }
         }
 
-        td:last-child a:hover {
-            background: #e67e00;
-            transform: translateY(-1px);
-            text-decoration: none;
-            box-shadow: 0 3px 8px rgba(255, 140, 0, 0.3);
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header, .table-container {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+
+            .customer-contact, .event-date {
+                font-size: 11px;
+            }
+
+            .rating-stars i {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>
-        <i class="fas fa-comment-dots"></i>
-        Manage Customer Feedback
-    </h1>
-    <p>Logged in as: <span th:text="${userEmail}">user@email.com</span></p>
+<!-- Animated background elements -->
+<div class="bg-element bg-element-1"></div>
+<div class="bg-element bg-element-2"></div>
+<div class="bg-element bg-element-3"></div>
 
-    <div class="navigation">
-        <a th:href="@{/support/dashboard}">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </a>
+<div class="container">
+    <!-- Header Section -->
+    <div class="header">
+        <h1>
+            <i class="fas fa-comment-dots"></i>
+            Manage Customer Feedback
+        </h1>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            Logged in as: <strong th:text="${userEmail}">user@email.com</strong>
+        </div>
+        <div class="navigation">
+            <a th:href="@{/support/dashboard}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
     </div>
 
     <!-- Success Message -->
     <div th:if="${param.success}" class="success-message">
         <i class="fas fa-check-circle"></i>
-        <p th:if="${param.success == 'response_submitted'}">Response submitted successfully!</p>
-        <p th:if="${param.success == 'status_updated'}">Status updated successfully!</p>
+        <span th:if="${param.success == 'response_submitted'}">Response submitted successfully!</span>
+        <span th:if="${param.success == 'status_updated'}">Status updated successfully!</span>
     </div>
 
     <!-- Feedback Table -->
-    <div th:if="${feedbackList.empty}">
-        <p>No feedback found.</p>
-    </div>
+    <div class="table-container">
+        <div th:if="${feedbackList.empty}">
+            <div class="empty-state">
+                <i class="fas fa-comments"></i>
+                <h3>No Feedback Found</h3>
+                <p>There are currently no customer feedback entries.</p>
+            </div>
+        </div>
 
-    <div th:unless="${feedbackList.empty}">
-        <table>
-            <thead>
-            <tr>
-                <th>Feedback ID</th>
-                <th>Customer</th>
-                <th>Event</th>
-                <th>Rating</th>
-                <th>Issue Description</th>
-                <th>Comments</th>
-                <th>Date Submitted</th>
-                <th>Status</th>
-                <th>Response</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="feedback : ${feedbackList}"
-                th:classappend="'rating-' + ${feedback.Rating}">
-                <td th:text="${feedback.FeedbackID}"></td>
-                <td>
-                    <strong th:text="${feedback.Customer_Name}"></strong><br>
-                    <small th:text="${feedback.Email}"></small>
-                </td>
-                <td>
-                    <span th:text="${feedback.EventType} ?: 'N/A'"></span><br>
-                    <small th:text="${feedback.EventDate} ?: ''"></small>
-                </td>
-                <td th:text="${feedback.Rating}"></td>
-                <td th:text="${feedback.IssueDescription} ?: 'No issue description'"></td>
-                <td th:text="${feedback.Comments} ?: 'No comments'"></td>
-                <td th:text="${feedback.DateSubmitted}"></td>
-                <td th:text="${feedback.Status}"></td>
-                <td th:text="${feedback.Response} ?: 'No response yet'"></td>
-                <td>
-                    <a th:href="@{'/support/feedbacks/respond?id=' + ${feedback.FeedbackID}}">Respond</a>
-                    <form th:action="@{/support/feedbacks/update-status}" method="post" style="display: inline;">
-                        <input type="hidden" name="feedbackId" th:value="${feedback.FeedbackID}">
-                        <select name="status" onchange="this.form.submit()">
-                            <option value="New" th:selected="${feedback.Status == 'New'}">New</option>
-                            <option value="Reviewed" th:selected="${feedback.Status == 'Reviewed'}">Reviewed</option>
-                            <option value="Responded" th:selected="${feedback.Status == 'Responded'}">Responded</option>
-                        </select>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div th:unless="${feedbackList.empty}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Feedback ID</th>
+                    <th>Customer</th>
+                    <th>Event</th>
+                    <th>Rating</th>
+                    <th>Issue Description</th>
+                    <th>Comments</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                    <th>Response</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="feedback : ${feedbackList}"
+                    th:classappend="'rating-' + ${feedback.Rating}">
+                    <td th:text="${feedback.FeedbackID}"></td>
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-name" th:text="${feedback.Customer_Name}"></div>
+                            <div class="customer-contact" th:text="${feedback.Email}"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="event-info">
+                            <div class="event-type" th:text="${feedback.EventType} ?: 'N/A'"></div>
+                            <div class="event-date" th:text="${feedback.EventDate} ?: ''"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="rating-stars">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                <i th:classappend="${i <= feedback.Rating} ? 'fas fa-star' : 'far fa-star'"></i>
+                            </span>
+                            <span class="rating-value" th:text="${feedback.Rating}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="text-content"
+                              th:classappend="${feedback.IssueDescription} ? 'has-content' : ''"
+                              th:text="${feedback.IssueDescription} ?: 'No issue description'">
+                        </span>
+                    </td>
+                    <td>
+                        <span class="text-content"
+                              th:classappend="${feedback.Comments} ? 'has-content' : ''"
+                              th:text="${feedback.Comments} ?: 'No comments'">
+                        </span>
+                    </td>
+                    <td th:text="${feedback.DateSubmitted}"></td>
+                    <td>
+                        <span th:classappend="'status-badge status-' + ${#strings.toLowerCase(feedback.Status)}"
+                              th:text="${feedback.Status}">
+                        </span>
+                    </td>
+                    <td>
+                        <span class="text-content"
+                              th:classappend="${feedback.Response} ? 'has-content' : ''"
+                              th:text="${feedback.Response} ?: 'No response yet'">
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{'/support/feedbacks/respond?id=' + ${feedback.FeedbackID}}"
+                               class="btn-respond">
+                                <i class="fas fa-reply"></i> Respond
+                            </a>
+                            <form th:action="@{/support/feedbacks/update-status}" method="post" class="status-form">
+                                <input type="hidden" name="feedbackId" th:value="${feedback.FeedbackID}">
+                                <select name="status" class="status-select" onchange="this.form.submit()">
+                                    <option value="New" th:selected="${feedback.Status == 'New'}">New</option>
+                                    <option value="Reviewed" th:selected="${feedback.Status == 'Reviewed'}">Reviewed</option>
+                                    <option value="Responded" th:selected="${feedback.Status == 'Responded'}">Responded</option>
+                                </select>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add status badge styling
-        const statusCells = document.querySelectorAll('td:nth-child(8)');
-        statusCells.forEach(cell => {
-            const status = cell.textContent.trim();
-            if (status === 'New') {
-                cell.style.color = '#856404';
-                cell.style.background = '#fff3cd';
-                cell.style.padding = '4px 8px';
-                cell.style.borderRadius = '12px';
-                cell.style.fontSize = '12px';
-                cell.style.fontWeight = '600';
-            } else if (status === 'Reviewed') {
-                cell.style.color = '#004085';
-                cell.style.background = '#cce7ff';
-                cell.style.padding = '4px 8px';
-                cell.style.borderRadius = '12px';
-                cell.style.fontSize = '12px';
-                cell.style.fontWeight = '600';
-            } else if (status === 'Responded') {
-                cell.style.color = '#155724';
-                cell.style.background = '#d4edda';
-                cell.style.padding = '4px 8px';
-                cell.style.borderRadius = '12px';
-                cell.style.fontSize = '12px';
-                cell.style.fontWeight = '600';
-            }
-        });
-
-        // Add hover effects to table rows
+        // Add interactive effects to table rows
         const tableRows = document.querySelectorAll('tbody tr');
         tableRows.forEach(row => {
             row.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = '#f8f9fa';
+                this.style.transform = 'translateY(-2px)';
             });
-
             row.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = '';
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to action buttons
+        const actionButtons = document.querySelectorAll('.btn-respond');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Add hover tooltip for truncated text
+        const textContents = document.querySelectorAll('.text-content');
+        textContents.forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                if (this.scrollWidth > this.clientWidth) {
+                    this.title = this.textContent;
+                }
             });
         });
     });
 </script>
 </body>
 </html>
+
